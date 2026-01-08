@@ -412,7 +412,7 @@ export default function NewExperiencePage() {
                                         </span>
                                     </p>
                                     <p className="text-sm text-neutral-500 mt-1">
-                                        Enable this if you're a local offering experiences to travellers.
+                                        Enable this if you&apos;re a local offering experiences to travellers.
                                         Additional verification may be required.
                                     </p>
                                 </div>

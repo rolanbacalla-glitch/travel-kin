@@ -59,7 +59,7 @@ export default function CompanionPage({ params }: CompanionPageProps) {
                             <span className="hidden sm:inline">All Companions</span>
                         </Link>
                         <div className="h-6 w-px bg-sand-200" />
-                        <span className="font-semibold text-neutral-900">{companion.name}'s Profile</span>
+                        <span className="font-semibold text-neutral-900">{companion.name}&apos;s Profile</span>
                     </div>
                     <Button
                         variant={isWaved ? 'secondary' : 'default'}
@@ -117,7 +117,7 @@ export default function CompanionPage({ params }: CompanionPageProps) {
 
                                     <div className="p-4 bg-sand-50/50 rounded-2xl border border-sand-100/50 group-hover:bg-sand-50 transition-colors">
                                         <p className="text-neutral-700 leading-relaxed italic">
-                                            "{companion.bio}"
+                                            &quot;{companion.bio}&quot;
                                         </p>
                                     </div>
                                 </div>

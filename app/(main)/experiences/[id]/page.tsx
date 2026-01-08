@@ -265,7 +265,7 @@ export default function ExperiencePage({ params }: ExperiencePageProps) {
                         {/* Participants */}
                         <Card className="p-6 group transition-all duration-300 hover:shadow-soft-md">
                             <h2 className="text-lg font-semibold text-neutral-900 mb-4">
-                                Who's joining ({experience.currentParticipants})
+                                Who&apos;s joining ({experience.currentParticipants})
                             </h2>
                             <div className="flex flex-wrap gap-2">
                                 {participants.slice(0, 6).map((p: Companion) => (

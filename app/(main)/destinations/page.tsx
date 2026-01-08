@@ -84,7 +84,7 @@ export default function DestinationsPage() {
             {/* Empty State */}
             {filteredDestinations.length === 0 && (
                 <div className="text-center py-16">
-                    <p className="text-neutral-500">No destinations found matching "{search}"</p>
+                    <p className="text-neutral-500">No destinations found matching &quot;{search}&quot;</p>
                 </div>
             )}
         </div>
