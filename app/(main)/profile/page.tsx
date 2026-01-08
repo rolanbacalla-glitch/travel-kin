@@ -10,8 +10,10 @@ import {
     CheckCircle,
     Edit,
     Save,
-    Languages
+    Languages,
+    Compass
 } from 'lucide-react';
+import Link from 'next/link';
 import { Button, Input, Card, Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
 import { Chip, ChipGroup } from '@/components/shared';
 import { useAuth, useToastActions } from '@/lib/hooks';
@@ -90,8 +92,31 @@ export default function ProfilePage() {
 
     if (!isAuthenticated || !user) {
         return (
-            <div className="section-container py-16 text-center">
-                <p className="text-neutral-500">Please sign in to view your profile.</p>
+            <div className="section-container py-16 flex flex-col items-center justify-center min-h-[60vh]">
+                <div className="w-full max-w-md">
+                    <Card className="p-8 text-center space-y-6">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center mx-auto mb-6">
+                            <Compass className="w-8 h-8 text-white" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <h2 className="text-2xl font-bold text-neutral-900">Join Travel Kin</h2>
+                            <p className="text-neutral-500">
+                                Connect with other solo travellers, manage your profile, and plan your next adventure.
+                            </p>
+                        </div>
+
+                        <div className="space-y-3 pt-2">
+                            <Link href="/sign-in" className="block w-full">
+                                <Button className="w-full" size="lg">Sign In</Button>
+                            </Link>
+
+                            <Link href="/sign-up" className="block w-full">
+                                <Button variant="outline" className="w-full" size="lg">Create Account</Button>
+                            </Link>
+                        </div>
+                    </Card>
+                </div>
             </div>
         );
     }
@@ -255,8 +280,8 @@ export default function ProfilePage() {
                                             key={band}
                                             onClick={() => setFormData({ ...formData, budgetBand: band })}
                                             className={`flex-1 py-2 rounded-xl border text-sm font-medium transition-all capitalize ${formData.budgetBand === band
-                                                    ? 'border-sunset-400 bg-sunset-50 text-sunset-700'
-                                                    : 'border-sand-200 hover:border-sand-300 text-neutral-600'
+                                                ? 'border-sunset-400 bg-sunset-50 text-sunset-700'
+                                                : 'border-sand-200 hover:border-sand-300 text-neutral-600'
                                                 }`}
                                         >
                                             {band}
