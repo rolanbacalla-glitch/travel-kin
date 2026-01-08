@@ -146,7 +146,7 @@ export const destinations: Destination[] = [
         name: 'Chiang Mai',
         country: 'Thailand',
         vibeStatement: 'Ancient temples, night markets, and mountain adventures',
-        heroImage: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=1200&q=80',
+        heroImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
         overview: 'Northern Thailand\'s cultural capital combines old-world charm with modern conveniences. Solo travellers find it easy to make friends at cooking classes, temple tours, and the many digital nomad cafés.',
         neighbourhoods: [
             {
