@@ -1,0 +1,57 @@
+# Rename App to Travel Kin
+
+## Tasks
+- [x] Create implementation plan
+- [x] Rename in `package.json`
+- [x] Rename in `app/layout.tsx` (Metadata)
+- [x] Rename in `components/layout/navbar.tsx`
+- [x] Rename in `components/layout/footer.tsx`
+- [x] Rename in `app/page.tsx`, `sign-in`, `sign-up`
+- [x] Rename in `README.md`
+- [x] Fix Chiang Mai photo in `lib/data/destinations.ts` (Fixed with reliable fallback)
+- [x] Fix broken photos (Chiang Mai)
+- [x] Verify changes
+- [x] Upload to GitHub
+- [x] Fix deployment path (Verify fix)
+- [x] Implement Profile Sign In/Sign Up UI
+- [x] Implement Logout functionality
+- [x] Implement Experiences Persistence (CRUD)
+  - [x] Create `useExperiences` hook
+  - [x] Implement `experiences/page.tsx` with Auth-guarded actions
+  - [x] Update `experiences/new/page.tsx` with Auth protection
+  - [x] Create `experiences/[id]/edit/page.tsx` with Auth protection
+- [x] Implement Auth Guard for Interactions
+  - [x] Protect "Request to Join" on Experience Details
+  - [x] Protect "Wave" on Companions Page
+- [x] Add ASEAN countries and China to destinations
+- [x] Implement Interaction Persistence
+  - [x] Update `User` type with `requests` and `wavedCompanions`
+  - [x] Upgrade `useAuth` to handle interaction persistence
+  - [x] Connect "Request to Join" to persistent storage
+  - [x] Connect "Wave" to persistent storage
+  - [x] Add "My Requests" and "My Waves" to Profile page
+
+- [x] Aesthetic Refinement & UX Polish
+  - [x] Define premium animations in `tailwind.config.ts` (float, reveal, slide-up, pulse-soft)
+  - [x] Enhance Landing Page with dynamic entry animations
+  - [x] Refine navbar with glassmorphism and interactive logo
+  - [x] Add reveal animations to Destination cards
+  - [x] Apply consistent premium polish to Experience and Companion feeds
+  - [x] **New!** Refined all Detail and Profile pages with staggered animations
+  - [x] **New!** Enhanced Auth flow (Sign In/Up) with glassmorphism and animations
+  - [x] **New!** Created and polished Companion Detail page
+- [x] Final Pass & Type Safety
+  - [x] Polish Destination Map page (Glassmorphism, animated sidebar)
+  - [x] Polish New Experience page (Form animations, micro-interactions)
+  - [x] Sweep feeds (Destinations, Experiences, Companions) for visual consistency
+  - [x] Integrate premium aesthetics in Landing Page
+  - [x] Resolve remaining TypeScript errors (Type annotations & Page props)
+  - [x] GitHub Upload
+    - [x] Locate git executable
+    - [x] Update .gitignore
+    - [x] Stage and commit all changes
+  - [x] Push to origin/main
+- [x] Fix Vercel Build Errors
+    - [x] Resolve `react/no-unescaped-entities` in `profile`, `safety`, `page`, `sign-in`, `not-found`, `companions/[id]`, `destinations`, `experiences/[id]`, and `experiences/new`
+    - [x] Address `next/image` warnings across core pages
+    - [x] Re-upload to GitHub
