@@ -23,7 +23,7 @@ export default function LandingPage() {
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center">
                             <Compass className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-semibold text-neutral-900">Workingname</span>
+                        <span className="font-semibold text-neutral-900">Travel Kin</span>
                     </div>
                     <div className="flex items-center gap-4">
                         <Link href="/sign-in" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors">
@@ -290,13 +290,13 @@ export default function LandingPage() {
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center">
                                 <Compass className="w-5 h-5 text-white" />
                             </div>
-                            <span className="font-semibold text-neutral-900">Workingname</span>
+                            <span className="font-semibold text-neutral-900">Travel Kin</span>
                         </div>
                         <p className="text-sm text-neutral-400 flex items-center gap-1">
                             Made with <Heart className="w-4 h-4 text-sunset-400 fill-sunset-400" /> for solo travellers
                         </p>
                         <p className="text-sm text-neutral-400">
-                            © 2026 Workingname. All rights reserved.
+                            © 2026 Travel Kin. All rights reserved.
                         </p>
                     </div>
                 </div>

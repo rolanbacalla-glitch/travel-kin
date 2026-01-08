@@ -41,7 +41,7 @@ export default function SignUpPage() {
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center">
                         <Compass className="w-6 h-6 text-white" />
                     </div>
-                    <span className="text-xl font-semibold text-neutral-900">Workingname</span>
+                    <span className="text-xl font-semibold text-neutral-900">Travel Kin</span>
                 </div>
 
                 <Card>

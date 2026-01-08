@@ -43,7 +43,7 @@ export function Navbar() {
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center">
                             <Compass className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-semibold text-neutral-900">Workingname</span>
+                        <span className="font-semibold text-neutral-900">Travel Kin</span>
                     </Link>
 
                     {/* Nav Links */}
@@ -103,7 +103,7 @@ export function Navbar() {
                         <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center">
                             <Compass className="w-4 h-4 text-white" />
                         </div>
-                        <span className="font-semibold text-neutral-900 text-sm">Workingname</span>
+                        <span className="font-semibold text-neutral-900 text-sm">Travel Kin</span>
                     </Link>
                 </div>
             </header>

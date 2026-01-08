@@ -10,11 +10,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-    title: 'Workingname - Travel Together, Safely',
+    title: 'Travel Kin - Travel Together, Safely',
     description: 'Connect with fellow solo travellers, discover local experiences, and explore Southeast Asia with confidence.',
     keywords: ['travel', 'solo travel', 'backpacking', 'Philippines', 'Southeast Asia', 'travel companions'],
     openGraph: {
-        title: 'Workingname - Travel Together, Safely',
+        title: 'Travel Kin - Travel Together, Safely',
         description: 'Connect with fellow solo travellers, discover local experiences, and explore with confidence.',
         type: 'website',
     },

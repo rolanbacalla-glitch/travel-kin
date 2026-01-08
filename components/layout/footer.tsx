@@ -12,7 +12,7 @@ export function Footer() {
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center">
                                 <Compass className="w-5 h-5 text-white" />
                             </div>
-                            <span className="font-semibold text-neutral-900">Workingname</span>
+                            <span className="font-semibold text-neutral-900">Travel Kin</span>
                         </div>
                         <p className="text-neutral-500 text-sm max-w-sm">
                             Connect with fellow solo travellers, discover local experiences, and explore with confidence.
@@ -65,7 +65,7 @@ export function Footer() {
 
                 <div className="border-t border-sand-200 mt-8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p className="text-sm text-neutral-400">
-                        © 2026 Workingname. All rights reserved.
+                        © 2026 Travel Kin. All rights reserved.
                     </p>
                     <p className="text-sm text-neutral-400 flex items-center gap-1">
                         Made with <Heart className="w-4 h-4 text-sunset-400 fill-sunset-400" /> for solo travellers

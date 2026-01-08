@@ -1,4 +1,4 @@
-# Workingname - Social Travel Companion
+# Travel Kin - Social Travel Companion
 
 A production-ready, responsive web app for solo travellers to explore Southeast Asia destinations, find travel companions, and join local experiences—with safety deeply integrated.
 
