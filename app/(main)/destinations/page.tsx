@@ -6,11 +6,12 @@ import { Search, MapPin } from 'lucide-react';
 import { Input, Card } from '@/components/ui';
 import { Chip, ChipGroup } from '@/components/shared';
 import { destinations } from '@/lib/data';
+import { Destination, Neighbourhood } from '@/lib/types';
 
 export default function DestinationsPage() {
     const [search, setSearch] = useState('');
 
-    const filteredDestinations = destinations.filter((dest) =>
+    const filteredDestinations = destinations.filter((dest: Destination) =>
         dest.name.toLowerCase().includes(search.toLowerCase()) ||
         dest.country.toLowerCase().includes(search.toLowerCase())
     );
@@ -30,29 +31,34 @@ export default function DestinationsPage() {
                     type="text"
                     placeholder="Search destinations..."
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                     className="pl-12"
                 />
             </div>
 
             {/* Destinations Grid */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredDestinations.map((destination) => (
-                    <Link key={destination.id} href={`/destinations/${destination.id}`}>
-                        <Card interactive className="overflow-hidden h-full">
+                {filteredDestinations.map((destination: Destination, index: number) => (
+                    <Link
+                        key={destination.id}
+                        href={`/destinations/${destination.id}`}
+                        className="animate-reveal-left"
+                        style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                        <Card interactive className="overflow-hidden h-full group">
                             <div className="relative h-48">
                                 <img
                                     src={destination.heroImage}
                                     alt={destination.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:from-black/70 transition-colors" />
                                 <div className="absolute bottom-4 left-4 right-4">
                                     <div className="flex items-center gap-1 text-white/80 text-sm mb-1">
                                         <MapPin className="w-4 h-4" />
                                         {destination.country}
                                     </div>
-                                    <h2 className="text-xl font-semibold text-white">{destination.name}</h2>
+                                    <h2 className="text-xl font-semibold text-white group-hover:translate-x-1 transition-transform">{destination.name}</h2>
                                 </div>
                             </div>
                             <div className="p-5">
@@ -60,8 +66,8 @@ export default function DestinationsPage() {
                                     {destination.vibeStatement}
                                 </p>
                                 <ChipGroup>
-                                    {destination.neighbourhoods.slice(0, 3).map((n) => (
-                                        <Chip key={n.id} className="text-xs">
+                                    {destination.neighbourhoods.slice(0, 3).map((n: Neighbourhood) => (
+                                        <Chip key={n.id} className="text-xs group-hover:bg-sand-100 transition-colors">
                                             {n.name}
                                         </Chip>
                                     ))}

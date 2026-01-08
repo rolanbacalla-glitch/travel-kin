@@ -58,6 +58,8 @@ export interface User {
     verificationStatus: 'basic' | 'verified' | 'trusted';
     badges: string[];
     interests: string[];
+    requests?: { experienceId: string; status: 'pending' | 'accepted'; date: string }[];
+    wavedCompanions?: string[];
 }
 
 export interface Companion extends User {

@@ -39,11 +39,11 @@ export function Navbar() {
             <nav className="hidden md:flex fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-b border-sand-100">
                 <div className="w-full max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     {/* Logo */}
-                    <Link href="/destinations" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center">
+                    <Link href="/destinations" className="flex items-center gap-2 group">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-sunset-sm">
                             <Compass className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-semibold text-neutral-900">Travel Kin</span>
+                        <span className="font-semibold text-neutral-900 group-hover:text-sunset-600 transition-colors">Travel Kin</span>
                     </Link>
 
                     {/* Nav Links */}
@@ -56,9 +56,9 @@ export function Navbar() {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                                        'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 relative group',
                                         isActive
-                                            ? 'bg-sand-100 text-neutral-900'
+                                            ? 'bg-sand-100 text-neutral-900 shadow-sm'
                                             : 'text-neutral-500 hover:text-neutral-900 hover:bg-sand-50'
                                     )}
                                 >

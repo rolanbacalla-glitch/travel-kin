@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
     Search,
@@ -16,6 +16,7 @@ import { Button, Input, Card, Avatar, AvatarImage, AvatarFallback } from '@/comp
 import { Chip, ChipGroup, EmptyState } from '@/components/shared';
 import { useToastActions, useAuth } from '@/lib/hooks';
 import { companions, destinations } from '@/lib/data';
+import { Companion, Destination } from '@/lib/types';
 import { formatDate, cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
@@ -27,20 +28,22 @@ export default function CompanionsPage() {
     const [ageFilter, setAgeFilter] = useState('all');
     const [styleFilter, setStyleFilter] = useState('all');
     const [showFilters, setShowFilters] = useState(false);
-    const [wavedCompanions, setWavedCompanions] = useState<Set<string>>(
-        new Set(companions.filter((c) => c.hasWaved).map((c) => c.id))
-    );
     const { success } = useToastActions();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, toggleWave, user } = useAuth();
     const router = useRouter();
 
-    const filteredCompanions = companions.filter((comp) => {
-        const matchesSearch = comp.name.toLowerCase().includes(search.toLowerCase()) ||
-            comp.nationality.toLowerCase().includes(search.toLowerCase());
-        const matchesAge = ageFilter === 'all' || comp.ageRange === ageFilter;
-        const matchesStyle = styleFilter === 'all' || comp.travelStyle.includes(styleFilter as any);
-        return matchesSearch && matchesAge && matchesStyle;
-    });
+    const filteredCompanions = useMemo(() => {
+        return companions.filter((companion: Companion) => {
+            const matchesSearch =
+                companion.name.toLowerCase().includes(search.toLowerCase()) ||
+                companion.nationality.toLowerCase().includes(search.toLowerCase());
+
+            const matchesAge = ageFilter === 'all' || companion.ageRange === ageFilter;
+            const matchesStyle = styleFilter === 'all' || companion.interests.some(i => i.toLowerCase().includes(styleFilter));
+
+            return matchesSearch && matchesAge && matchesStyle;
+        });
+    }, [search, ageFilter, styleFilter]);
 
     const handleWave = (companionId: string, name: string) => {
         if (!isAuthenticated) {
@@ -48,17 +51,15 @@ export default function CompanionsPage() {
             return;
         }
 
-        const newWaved = new Set(wavedCompanions);
-        if (newWaved.has(companionId)) {
-            newWaved.delete(companionId);
-        } else {
-            newWaved.add(companionId);
+        const isWaved = user?.wavedCompanions?.includes(companionId);
+        toggleWave(companionId);
+
+        if (!isWaved) {
             success('Wave sent! 👋', `${name} will be notified that you're interested in connecting.`);
         }
-        setWavedCompanions(newWaved);
     };
 
-    const getDestName = (destId: string) => destinations.find((d) => d.id === destId)?.name || destId;
+    const getDestName = (destId: string) => destinations.find((d: Destination) => d.id === destId)?.name || destId;
 
     return (
         <div className="section-container py-8">
@@ -77,7 +78,7 @@ export default function CompanionsPage() {
                             type="text"
                             placeholder="Search by name or nationality..."
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                             className="pl-12"
                         />
                     </div>
@@ -132,25 +133,29 @@ export default function CompanionsPage() {
             {/* Companions Grid */}
             {filteredCompanions.length > 0 ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredCompanions.map((companion) => {
-                        const hasWaved = wavedCompanions.has(companion.id);
+                    {filteredCompanions.map((companion: Companion, index: number) => {
+                        const hasWaved = user?.wavedCompanions?.includes(companion.id);
 
                         return (
-                            <Card key={companion.id} className="overflow-hidden">
+                            <Card
+                                key={companion.id}
+                                className="overflow-hidden group hover:shadow-soft-md transition-all duration-300 animate-reveal-right"
+                                style={{ animationDelay: `${index * 50}ms` }}
+                            >
                                 <div className="p-5">
                                     {/* Header */}
                                     <div className="flex items-start gap-4 mb-4">
-                                        <Avatar className="w-14 h-14">
+                                        <Avatar className="w-14 h-14 ring-2 ring-transparent group-hover:ring-ocean-100 transition-all">
                                             <AvatarImage src={companion.avatar} alt={companion.name} />
                                             <AvatarFallback>{companion.name[0]}</AvatarFallback>
                                         </Avatar>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2">
-                                                <h3 className="font-semibold text-neutral-900 truncate">
+                                                <h3 className="font-semibold text-neutral-900 truncate group-hover:text-sunset-600 transition-colors">
                                                     {companion.name}
                                                 </h3>
                                                 {companion.verificationStatus === 'trusted' && (
-                                                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                                                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0 group-hover:scale-110 transition-transform" />
                                                 )}
                                             </div>
                                             <p className="text-sm text-neutral-500">
@@ -160,14 +165,14 @@ export default function CompanionsPage() {
                                     </div>
 
                                     {/* Bio */}
-                                    <p className="text-sm text-neutral-600 mb-4 line-clamp-2">
+                                    <p className="text-sm text-neutral-600 mb-4 line-clamp-2 min-h-[40px]">
                                         {companion.bio}
                                     </p>
 
                                     {/* Interests */}
                                     <ChipGroup className="mb-4">
-                                        {companion.interests.slice(0, 3).map((interest) => (
-                                            <Chip key={interest} className="text-xs">{interest}</Chip>
+                                        {companion.interests.slice(0, 3).map((interest: string) => (
+                                            <Chip key={interest} className="text-xs group-hover:bg-sand-100 transition-colors">{interest}</Chip>
                                         ))}
                                         {companion.interests.length > 3 && (
                                             <Chip className="text-xs">+{companion.interests.length - 3}</Chip>
@@ -175,18 +180,18 @@ export default function CompanionsPage() {
                                     </ChipGroup>
 
                                     {/* Upcoming Destinations */}
-                                    <div className="space-y-2 mb-4">
-                                        <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">
+                                    <div className="space-y-2 mb-4 p-3 rounded-xl bg-sand-50/50 group-hover:bg-sand-50 transition-colors">
+                                        <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
                                             Upcoming trips
                                         </p>
-                                        {companion.upcomingDestinations.slice(0, 2).map((trip, index) => (
-                                            <div key={index} className="flex items-center gap-2 text-sm">
-                                                <MapPin className="w-4 h-4 text-sunset-500" />
-                                                <span className="font-medium text-neutral-900">
+                                        {companion.upcomingDestinations.slice(0, 2).map((trip: { destinationName: string; dates: { start: string } }, idx: number) => (
+                                            <div key={idx} className="flex items-center gap-2 text-sm group/trip">
+                                                <MapPin className="w-3.5 h-3.5 text-sunset-500 group-hover/trip:scale-110 transition-transform" />
+                                                <span className="font-medium text-neutral-900 text-xs">
                                                     {trip.destinationName}
                                                 </span>
-                                                <span className="text-neutral-400">·</span>
-                                                <span className="text-neutral-500 text-xs">
+                                                <span className="text-neutral-300">·</span>
+                                                <span className="text-neutral-500 text-[10px]">
                                                     {formatDate(trip.dates.start)}
                                                 </span>
                                             </div>
@@ -195,11 +200,11 @@ export default function CompanionsPage() {
 
                                     {/* Badges */}
                                     {companion.badges.length > 0 && (
-                                        <div className="flex items-center gap-2 mb-4">
-                                            {companion.badges.slice(0, 2).map((badge) => (
+                                        <div className="flex items-center gap-1.5 mb-4">
+                                            {companion.badges.slice(0, 3).map((badge: string) => (
                                                 <span
                                                     key={badge}
-                                                    className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full"
+                                                    className="bg-green-50 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-medium"
                                                 >
                                                     {badge}
                                                 </span>
@@ -209,18 +214,19 @@ export default function CompanionsPage() {
                                 </div>
 
                                 {/* Actions */}
-                                <div className="border-t border-sand-100 p-4 flex gap-2">
+                                <div className="border-t border-sand-100 p-3 flex gap-2 bg-sand-50/30 group-hover:bg-white transition-colors">
                                     <Button
                                         variant={hasWaved ? 'ocean' : 'secondary'}
                                         onClick={() => handleWave(companion.id, companion.name)}
-                                        className="flex-1 gap-2"
+                                        className="flex-1 gap-2 shadow-sm"
+                                        size="sm"
                                     >
                                         <Hand className={cn('w-4 h-4', hasWaved && 'animate-pulse')} />
                                         {hasWaved ? 'Waved ✓' : 'Wave 👋'}
                                     </Button>
                                     <Link href={`/companions/${companion.id}`} className="flex-1">
-                                        <Button variant="ghost" className="w-full gap-2">
-                                            View Profile
+                                        <Button variant="ghost" className="w-full gap-1 h-9" size="sm">
+                                            Profile
                                             <ChevronRight className="w-4 h-4" />
                                         </Button>
                                     </Link>

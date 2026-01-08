@@ -19,6 +19,7 @@ import { Chip, ChipGroup } from '@/components/shared';
 import { useToastActions, useExperiences, useAuth } from '@/lib/hooks';
 import { destinations } from '@/lib/data';
 import { useEffect } from 'react';
+import { Destination, Experience } from '@/lib/types';
 
 const categories = [
     { id: 'food', label: 'Food & Dining', icon: '🍜' },
@@ -59,20 +60,53 @@ export default function NewExperiencePage() {
         whatToBring: '',
     });
 
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const validateForm = () => {
+        const newErrors: Record<string, string> = {};
+        if (!formData.title || formData.title.length < 5) newErrors.title = 'Title must be at least 5 characters';
+        if (!formData.destinationId) newErrors.destinationId = 'Please select a destination';
+        if (!formData.category) newErrors.category = 'Please select a category';
+        if (!formData.vibeTag) newErrors.vibeTag = 'Please select a vibe';
+        if (!formData.date) newErrors.date = 'Date is required';
+        else if (new Date(formData.date) < new Date()) newErrors.date = 'Date must be in the future';
+        if (!formData.time) newErrors.time = 'Time is required';
+        if (!formData.duration) newErrors.duration = 'Duration is required';
+        if (!formData.capacity || Number(formData.capacity) < 2 || Number(formData.capacity) > 20) {
+            newErrors.capacity = 'Capacity must be between 2 and 20';
+        }
+        if (!formData.description || formData.description.length < 20) {
+            newErrors.description = 'Description must be at least 20 characters';
+        }
+        if (!formData.meetingPoint) newErrors.meetingPoint = 'Meeting point is required';
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        // Clear error when user types
+        if (errors[e.target.name]) {
+            setErrors({ ...errors, [e.target.name]: '' });
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!user) return;
 
+        if (!validateForm()) {
+            success('Please fix the errors', 'Check the form for missing or invalid information.');
+            return;
+        }
+
         setIsSubmitting(true);
 
         // Simulate network delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const newExperience: any = {
+        const newExperience: Experience = {
             id: `exp-${Date.now()}`,
             ...formData,
             capacity: Number(formData.capacity),
@@ -94,11 +128,11 @@ export default function NewExperiencePage() {
     return (
         <div className="min-h-screen pb-8">
             {/* Header */}
-            <div className="bg-white border-b border-sand-100 sticky top-14 md:top-16 z-30">
+            <div className="bg-white/80 backdrop-blur-xl border-b border-sand-100 sticky top-14 md:top-16 z-30 animate-fadeIn">
                 <div className="section-container py-4 flex items-center gap-4">
                     <Link
                         href="/experiences"
-                        className="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 transition-colors"
+                        className="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 transition-all hover:-translate-x-1"
                     >
                         <ArrowLeft className="w-5 h-5" />
                         <span className="hidden sm:inline">Back</span>
@@ -108,7 +142,7 @@ export default function NewExperiencePage() {
                 </div>
             </div>
 
-            <div className="section-container py-8">
+            <div className="section-container py-8 animate-slide-up">
                 <div className="max-w-2xl mx-auto">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Basic Info */}
@@ -126,8 +160,12 @@ export default function NewExperiencePage() {
                                         placeholder="e.g., Sunset Kayaking Adventure"
                                         value={formData.title}
                                         onChange={handleChange}
+                                        className={errors.title ? 'border-rose-500 focus:ring-rose-100' : ''}
                                         required
                                     />
+                                    {errors.title && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.title}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -140,13 +178,19 @@ export default function NewExperiencePage() {
                                         value={formData.destinationId}
                                         onChange={handleChange}
                                         required
-                                        className="flex h-11 w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-sm text-neutral-900 focus:border-ocean-400 focus:outline-none focus:ring-2 focus:ring-ocean-100"
+                                        className={`flex h-11 w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:ring-2 ${errors.destinationId
+                                            ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-100'
+                                            : 'border-sand-200 focus:border-ocean-400 focus:ring-ocean-100'
+                                            }`}
                                     >
                                         <option value="">Select a destination</option>
                                         {destinations.map((dest) => (
                                             <option key={dest.id} value={dest.id}>{dest.name}, {dest.country}</option>
                                         ))}
                                     </select>
+                                    {errors.destinationId && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.destinationId}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -159,13 +203,13 @@ export default function NewExperiencePage() {
                                                 key={cat.id}
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, category: cat.id })}
-                                                className={`p-3 rounded-xl border text-left transition-all ${formData.category === cat.id
-                                                    ? 'border-sunset-400 bg-sunset-50'
-                                                    : 'border-sand-200 hover:border-sand-300'
+                                                className={`p-3 rounded-xl border text-left transition-all duration-300 group ${formData.category === cat.id
+                                                    ? 'border-sunset-400 bg-sunset-50 shadow-sunset-sm'
+                                                    : 'border-sand-200 hover:border-sand-300 hover:bg-sand-50/50'
                                                     }`}
                                             >
-                                                <span className="text-xl mb-1 block">{cat.icon}</span>
-                                                <span className="text-sm font-medium">{cat.label}</span>
+                                                <span className={`text-xl mb-1 block transition-transform duration-300 ${formData.category === cat.id ? 'scale-110' : 'group-hover:scale-110'}`}>{cat.icon}</span>
+                                                <span className={`text-sm font-medium transition-colors ${formData.category === cat.id ? 'text-sunset-900' : 'text-neutral-600'}`}>{cat.label}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -260,8 +304,12 @@ export default function NewExperiencePage() {
                                         placeholder="e.g., 8"
                                         value={formData.capacity}
                                         onChange={handleChange}
+                                        className={errors.capacity ? 'border-rose-500 focus:ring-rose-100' : ''}
                                         required
                                     />
+                                    {errors.capacity && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.capacity}</p>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-neutral-700 mb-2">
@@ -273,9 +321,9 @@ export default function NewExperiencePage() {
                                                 key={level}
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, priceLevel: String(level) })}
-                                                className={`flex-1 py-3 rounded-xl border text-center font-medium transition-all ${formData.priceLevel === String(level)
-                                                    ? 'border-sunset-400 bg-sunset-50 text-sunset-700'
-                                                    : 'border-sand-200 hover:border-sand-300 text-neutral-600'
+                                                className={`flex-1 py-3 rounded-xl border text-center font-medium transition-all duration-300 ${formData.priceLevel === String(level)
+                                                    ? 'border-sunset-400 bg-sunset-50 text-sunset-700 shadow-sunset-sm'
+                                                    : 'border-sand-200 hover:border-sand-300 text-neutral-600 hover:bg-sand-50/50'
                                                     }`}
                                             >
                                                 {'₱'.repeat(level)}
@@ -303,8 +351,14 @@ export default function NewExperiencePage() {
                                         value={formData.description}
                                         onChange={handleChange}
                                         required
-                                        className="flex w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-ocean-400 focus:outline-none focus:ring-2 focus:ring-ocean-100"
+                                        className={`flex w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 ${errors.description
+                                            ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-100'
+                                            : 'border-sand-200 focus:border-ocean-400 focus:ring-ocean-100'
+                                            }`}
                                     />
+                                    {errors.description && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.description}</p>
+                                    )}
                                 </div>
 
                                 <div>

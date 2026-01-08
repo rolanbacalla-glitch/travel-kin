@@ -8,6 +8,7 @@ import { ArrowLeft, X, MapPin, Clock, Users, Utensils, Waves, Music, Mountain, L
 import { Button, Card } from '@/components/ui';
 import { Chip } from '@/components/shared';
 import { destinations, experiences } from '@/lib/data';
+import { Destination, Experience } from '@/lib/types';
 import { formatDate, formatTime, getPriceDisplay } from '@/lib/utils';
 
 // Dynamic import for Leaflet (client-side only)
@@ -41,7 +42,7 @@ const categoryIcons: Record<string, React.ElementType> = {
 };
 
 export default function MapPage({ params }: MapPageProps) {
-    const destination = destinations.find((d) => d.id === params.id);
+    const destination = destinations.find((d: Destination) => d.id === params.id);
     const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
     const [isClient, setIsClient] = useState(false);
 
@@ -55,22 +56,23 @@ export default function MapPage({ params }: MapPageProps) {
     }
 
     const destinationExperiences = experiences.filter(
-        (exp) => exp.destinationId === destination.id
+        (exp: Experience) => exp.destinationId === destination.id
     );
 
-    const selectedExp = destinationExperiences.find((e) => e.id === selectedExperience);
+    const selectedExp = destinationExperiences.find((e: Experience) => e.id === selectedExperience);
 
     return (
         <div className="h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] flex flex-col">
             {/* Header */}
-            <div className="bg-white border-b border-sand-100 px-4 py-3 flex items-center gap-4">
+            <div className="bg-white/80 backdrop-blur-xl border-b border-sand-100 px-4 py-3 flex items-center gap-4 sticky top-14 md:top-16 z-30 animate-fadeIn">
                 <Link
                     href={`/destinations/${destination.id}`}
-                    className="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 transition-colors"
+                    className="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 transition-all hover:-translate-x-1"
                 >
                     <ArrowLeft className="w-5 h-5" />
                     <span className="hidden sm:inline">Back to {destination.name}</span>
                 </Link>
+                <div className="h-6 w-px bg-sand-200" />
                 <h1 className="font-semibold text-neutral-900">{destination.name} Experiences</h1>
             </div>
 
@@ -82,7 +84,7 @@ export default function MapPage({ params }: MapPageProps) {
                         <h2 className="text-sm font-medium text-neutral-500 uppercase tracking-wide">
                             {destinationExperiences.length} Experiences
                         </h2>
-                        {destinationExperiences.map((exp) => {
+                        {destinationExperiences.map((exp: Experience) => {
                             const Icon = categoryIcons[exp.category] || MapPin;
                             const isSelected = selectedExperience === exp.id;
 
@@ -90,18 +92,18 @@ export default function MapPage({ params }: MapPageProps) {
                                 <button
                                     key={exp.id}
                                     onClick={() => setSelectedExperience(exp.id)}
-                                    className={`w-full text-left rounded-xl p-4 transition-all duration-200 ${isSelected
+                                    className={`w-full text-left rounded-xl p-4 transition-all duration-300 group ${isSelected
                                         ? 'bg-white shadow-soft-md ring-2 ring-sunset-400'
-                                        : 'bg-white shadow-soft hover:shadow-soft-md'
+                                        : 'bg-white shadow-soft hover:shadow-soft-md hover:-translate-y-0.5'
                                         }`}
                                 >
                                     <div className="flex items-start gap-3">
-                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-sunset-100' : 'bg-sand-100'
+                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-300 ${isSelected ? 'bg-sunset-100' : 'bg-sand-100 group-hover:bg-sand-200'
                                             }`}>
-                                            <Icon className={`w-5 h-5 ${isSelected ? 'text-sunset-600' : 'text-neutral-600'}`} />
+                                            <Icon className={`w-5 h-5 transition-colors duration-300 ${isSelected ? 'text-sunset-600' : 'text-neutral-600 group-hover:text-neutral-900'}`} />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="font-medium text-neutral-900 truncate">
+                                            <h3 className={`font-medium truncate transition-colors duration-300 ${isSelected ? 'text-sunset-900' : 'text-neutral-900'}`}>
                                                 {exp.title}
                                             </h3>
                                             <div className="flex items-center gap-2 text-sm text-neutral-500 mt-1">
@@ -109,7 +111,7 @@ export default function MapPage({ params }: MapPageProps) {
                                                 {formatDate(exp.date)} · {formatTime(exp.time)}
                                             </div>
                                             <div className="flex items-center gap-2 mt-2">
-                                                <Chip className="text-xs py-1">{exp.category}</Chip>
+                                                <Chip className="text-xs py-1 transition-colors group-hover:bg-sand-100">{exp.category}</Chip>
                                                 <span className="text-sm text-neutral-500">
                                                     {getPriceDisplay(exp.priceLevel)}
                                                 </span>
@@ -141,7 +143,7 @@ export default function MapPage({ params }: MapPageProps) {
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            {destinationExperiences.map((exp) => (
+                            {destinationExperiences.map((exp: Experience) => (
                                 <Marker
                                     key={exp.id}
                                     position={[exp.meetingPointCoords.lat, exp.meetingPointCoords.lng]}
@@ -162,24 +164,24 @@ export default function MapPage({ params }: MapPageProps) {
 
                     {/* Selected Experience Card Overlay */}
                     {selectedExp && (
-                        <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 z-10">
-                            <Card className="p-4">
+                        <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 z-10 animate-slide-up">
+                            <Card className="p-4 backdrop-blur-xl bg-white/90 shadow-soft-xl border-white/50">
                                 <div className="flex items-start justify-between gap-2 mb-3">
                                     <h3 className="font-semibold text-neutral-900">{selectedExp.title}</h3>
                                     <button
                                         onClick={() => setSelectedExperience(null)}
-                                        className="text-neutral-400 hover:text-neutral-600"
+                                        className="text-neutral-400 hover:text-neutral-600 transition-colors"
                                     >
                                         <X className="w-5 h-5" />
                                     </button>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-neutral-500 mb-3">
                                     <span className="flex items-center gap-1">
-                                        <Clock className="w-4 h-4" />
+                                        <Clock className="w-4 h-4 text-sunset-500 animate-pulse" />
                                         {formatTime(selectedExp.time)}
                                     </span>
                                     <span className="flex items-center gap-1">
-                                        <Users className="w-4 h-4" />
+                                        <Users className="w-4 h-4 text-ocean-500" />
                                         {selectedExp.currentParticipants}/{selectedExp.capacity}
                                     </span>
                                 </div>
@@ -187,7 +189,9 @@ export default function MapPage({ params }: MapPageProps) {
                                     {selectedExp.description}
                                 </p>
                                 <Link href={`/experiences/${selectedExp.id}`}>
-                                    <Button className="w-full">View details</Button>
+                                    <Button className="w-full shadow-sunset-sm hover:shadow-sunset-md active:scale-[0.98] transition-all">
+                                        View details
+                                    </Button>
                                 </Link>
                             </Card>
                         </div>

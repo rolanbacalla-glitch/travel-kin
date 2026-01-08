@@ -19,6 +19,8 @@ import { useRouter } from 'next/navigation';
 import { Button, Input, Card, Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
 import { Chip, ChipGroup } from '@/components/shared';
 import { useAuth, useToastActions } from '@/lib/hooks';
+import { experiences, companions } from '@/lib/data';
+import { Companion } from '@/lib/types';
 
 const ageRanges = ['20-25', '26-30', '31-35', '36-40'];
 const travelStyles = ['chill', 'party', 'adventurous', 'mixed'];
@@ -77,8 +79,8 @@ export default function ProfilePage() {
         updateProfile({
             name: formData.name,
             nationality: formData.nationality,
-            ageRange: formData.ageRange as any,
-            languages: formData.languages.split(',').map((l) => l.trim()),
+            ageRange: formData.ageRange as User['ageRange'],
+            languages: formData.languages.split(',').map((l: string) => l.trim()),
             bio: formData.bio,
             currentLocation: formData.currentLocation,
             nextDestination: formData.nextDestination,
@@ -86,8 +88,8 @@ export default function ProfilePage() {
                 start: formData.travelDatesStart,
                 end: formData.travelDatesEnd,
             },
-            travelStyle: formData.travelStyle as any,
-            budgetBand: formData.budgetBand as any,
+            travelStyle: formData.travelStyle as User['travelStyle'],
+            budgetBand: formData.budgetBand as User['budgetBand'],
         });
         setIsEditing(false);
         success('Profile updated', 'Your changes have been saved.');
@@ -130,12 +132,12 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="section-container py-8">
+        <div className="section-container py-8 animate-fadeIn">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 bg-white/50 backdrop-blur-md p-6 rounded-2xl border border-sand-100 shadow-soft-sm items-start">
                 <div>
                     <h1 className="text-3xl font-bold text-neutral-900 mb-2">Your Profile</h1>
-                    <p className="text-neutral-500">Manage your travel information</p>
+                    <p className="text-neutral-500">Manage your travel information and interactions</p>
                 </div>
                 <div className="flex items-center gap-2">
                     {!isEditing && (
@@ -164,15 +166,15 @@ export default function ProfilePage() {
 
             <div className="grid lg:grid-cols-3 gap-6">
                 {/* Main Content */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-6 animate-slide-up">
                     {/* Basic Info */}
-                    <Card className="p-6">
-                        <h2 className="text-lg font-semibold text-neutral-900 mb-6">Basic Information</h2>
+                    <Card className="p-6 transition-all duration-300 hover:shadow-soft-md group">
+                        <h2 className="text-lg font-semibold text-neutral-900 mb-6 group-hover:text-sunset-600 transition-colors">Basic Information</h2>
 
                         <div className="flex items-start gap-6 mb-6">
-                            <Avatar className="w-20 h-20">
+                            <Avatar className="w-20 h-20 ring-4 ring-white shadow-soft group-hover:rotate-3 transition-transform">
                                 <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback className="text-2xl">{user.name?.[0]}</AvatarFallback>
+                                <AvatarFallback className="text-2xl bg-gradient-to-br from-sand-100 to-sand-200">{user.name?.[0]}</AvatarFallback>
                             </Avatar>
                             {isEditing && (
                                 <div className="flex-1">
@@ -255,8 +257,8 @@ export default function ProfilePage() {
                     </Card>
 
                     {/* Bio */}
-                    <Card className="p-6">
-                        <h2 className="text-lg font-semibold text-neutral-900 mb-4">About me</h2>
+                    <Card className="p-6 transition-all duration-300 hover:shadow-soft-md group">
+                        <h2 className="text-lg font-semibold text-neutral-900 mb-4 group-hover:text-sunset-600 transition-colors">About me</h2>
                         {isEditing ? (
                             <textarea
                                 name="bio"
@@ -272,8 +274,8 @@ export default function ProfilePage() {
                     </Card>
 
                     {/* Travel Style */}
-                    <Card className="p-6">
-                        <h2 className="text-lg font-semibold text-neutral-900 mb-4">Travel style</h2>
+                    <Card className="p-6 transition-all duration-300 hover:shadow-soft-md group">
+                        <h2 className="text-lg font-semibold text-neutral-900 mb-4 group-hover:text-sunset-600 transition-colors">Travel style</h2>
                         <ChipGroup>
                             {travelStyles.map((style) => (
                                 <button
@@ -315,8 +317,8 @@ export default function ProfilePage() {
                     </Card>
 
                     {/* Trip Details */}
-                    <Card className="p-6">
-                        <h2 className="text-lg font-semibold text-neutral-900 mb-6">Current trip</h2>
+                    <Card className="p-6 transition-all duration-300 hover:shadow-soft-md group">
+                        <h2 className="text-lg font-semibold text-neutral-900 mb-6 group-hover:text-ocean-600 transition-colors">Current trip</h2>
                         <div className="grid sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-neutral-700 mb-2">Current location</label>
@@ -384,10 +386,61 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     </Card>
+
+                    {/* My Requests */}
+                    <Card className="p-6">
+                        <h2 className="text-lg font-semibold text-neutral-900 mb-6">My Requests</h2>
+                        {user.requests && user.requests.length > 0 ? (
+                            <div className="space-y-4">
+                                {user.requests.map((req: { experienceId: string; status: 'pending' | 'accepted'; date: string }, index: number) => {
+                                    const exp = experiences.find(e => e.id === req.experienceId);
+                                    if (!exp) return null;
+                                    return (
+                                        <div key={index} className="flex items-center justify-between p-4 bg-sand-50 rounded-xl border border-sand-100">
+                                            <div>
+                                                <p className="font-medium text-neutral-900">{exp.title}</p>
+                                                <p className="text-sm text-neutral-500">{exp.date} · {exp.priceLevel}</p>
+                                            </div>
+                                            <Chip className="capitalize bg-white shadow-sm" variant={req.status === 'accepted' ? 'active' : 'default'}>
+                                                {req.status}
+                                            </Chip>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <p className="text-neutral-500 text-sm">You haven't requested to join any experiences yet.</p>
+                        )}
+                    </Card>
+
+                    {/* My Waves */}
+                    <Card className="p-6">
+                        <h2 className="text-lg font-semibold text-neutral-900 mb-6">My Waves</h2>
+                        {user.wavedCompanions && user.wavedCompanions.length > 0 ? (
+                            <div className="flex flex-wrap gap-3">
+                                {companions
+                                    .filter((c: Companion) => user.wavedCompanions?.includes(c.id))
+                                    .map((companion: Companion) => (
+                                        <div key={companion.id} className="flex items-center gap-3 p-3 bg-sand-50 rounded-xl border border-sand-100 pr-5">
+                                            <Avatar className="w-10 h-10">
+                                                <AvatarImage src={companion.avatar} alt={companion.name} />
+                                                <AvatarFallback>{companion.name[0]}</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <p className="font-medium text-neutral-900 text-sm">{companion.name}</p>
+                                                <p className="text-xs text-neutral-500">{companion.nationality}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                        ) : (
+                            <p className="text-neutral-500 text-sm">You haven't waved at anyone yet.</p>
+                        )}
+                    </Card>
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-6">
+                <div className="space-y-6 animate-reveal-right" style={{ animationDelay: '150ms' }}>
                     {/* Verification Status */}
                     <Card className="p-6">
                         <div className="flex items-center gap-3 mb-4">

@@ -18,23 +18,23 @@ import { Button, Card } from '@/components/ui';
 
 export default function SafetyPage() {
     return (
-        <div className="section-container py-8">
+        <div className="section-container py-8 animate-fadeIn">
             {/* Header */}
-            <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-green-100 flex items-center justify-center">
+            <div className="mb-8 bg-white/50 backdrop-blur-md p-6 rounded-2xl border border-sand-100 shadow-soft-sm">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-green-100 flex items-center justify-center shadow-sm">
                         <Shield className="w-6 h-6 text-green-600" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-neutral-900">Safety Centre</h1>
-                        <p className="text-neutral-500">Your safety is our priority</p>
+                        <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">Safety Centre</h1>
+                        <p className="text-neutral-500 font-medium">Your peace of mind is our priority</p>
                     </div>
                 </div>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-6">
                 {/* Main Content */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-6 animate-slide-up">
                     {/* How We Keep You Safe */}
                     <Card className="p-6">
                         <h2 className="text-xl font-semibold text-neutral-900 mb-6">How we keep you safe</h2>
@@ -108,7 +108,7 @@ export default function SafetyPage() {
                                 'Use licensed transportation and avoid unlicensed taxis',
                                 'Stay aware of your surroundings, especially at night',
                                 'Keep valuables secure and avoid displaying expensive items',
-                            ].map((tip, index) => (
+                            ].map((tip: string, index: number) => (
                                 <li key={index} className="flex items-start gap-3">
                                     <span className="w-6 h-6 rounded-full bg-green-100 text-green-700 text-sm font-medium flex items-center justify-center shrink-0">
                                         {index + 1}
@@ -184,7 +184,7 @@ export default function SafetyPage() {
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-6">
+                <div className="space-y-6 animate-reveal-right" style={{ animationDelay: '150ms' }}>
                     {/* Your Controls */}
                     <Card className="p-6" id="guidelines">
                         <h2 className="text-lg font-semibold text-neutral-900 mb-4">Your controls</h2>

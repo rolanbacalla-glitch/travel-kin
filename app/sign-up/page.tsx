@@ -26,10 +26,12 @@ export default function SignUpPage() {
     };
 
     return (
-        <div className="min-h-screen bg-sand-50 flex flex-col items-center justify-center p-4">
+        <div className="min-h-screen bg-sand-50/30 flex flex-col items-center justify-center p-4 animate-fadeIn relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_120%,rgba(100,163,181,0.1),transparent)] z-0" />
+
             <Link
                 href="/"
-                className="absolute top-4 left-4 flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+                className="absolute top-6 left-6 flex items-center gap-2 text-sm font-medium text-neutral-500 hover:text-neutral-900 transition-all hover:-translate-x-1 z-10"
             >
                 <ArrowLeft className="w-4 h-4" />
                 Back to home
@@ -37,14 +39,14 @@ export default function SignUpPage() {
 
             <div className="w-full max-w-md">
                 {/* Logo */}
-                <div className="flex items-center justify-center gap-2 mb-8">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center">
-                        <Compass className="w-6 h-6 text-white" />
+                <div className="flex flex-col items-center gap-3 mb-8 animate-slide-up">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sunset-400 to-ocean-500 flex items-center justify-center shadow-sunset animate-float ring-4 ring-white">
+                        <Compass className="w-8 h-8 text-white" />
                     </div>
-                    <span className="text-xl font-semibold text-neutral-900">Travel Kin</span>
+                    <span className="text-2xl font-bold text-neutral-900 tracking-tight">Travel Kin</span>
                 </div>
 
-                <Card>
+                <Card className="backdrop-blur-xl bg-white/80 shadow-soft-xl border-white/50 animate-slide-up" style={{ animationDelay: '100ms' }}>
                     <CardHeader className="text-center">
                         <CardTitle>Start your journey</CardTitle>
                         <CardDescription>
@@ -62,7 +64,7 @@ export default function SignUpPage() {
                                     type="text"
                                     placeholder="Your name"
                                     value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                                     required
                                 />
                             </div>
@@ -75,7 +77,7 @@ export default function SignUpPage() {
                                     type="email"
                                     placeholder="you@example.com"
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                                     required
                                 />
                             </div>
@@ -84,7 +86,7 @@ export default function SignUpPage() {
                             </p>
                         </CardContent>
                         <CardFooter className="flex-col gap-4">
-                            <Button type="submit" className="w-full" disabled={isLoading}>
+                            <Button type="submit" className="w-full py-6 text-base shadow-sunset-sm hover:shadow-sunset-md transition-all active:scale-[0.98]" disabled={isLoading}>
                                 {isLoading ? 'Creating account...' : 'Create account'}
                             </Button>
                             <p className="text-sm text-neutral-500">

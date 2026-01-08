@@ -10,6 +10,8 @@ interface AuthContextType extends AuthState {
     signUp: (email: string, name: string) => void;
     signOut: () => void;
     updateProfile: (updates: Partial<User>) => void;
+    requestToJoin: (experienceId: string) => void;
+    toggleWave: (companionId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -78,6 +80,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const requestToJoin = (experienceId: string) => {
+        if (!authState.user) return;
+        const currentRequests = authState.user.requests || [];
+        // Prevent duplicate requests
+        if (currentRequests.some((r: { experienceId: string }) => r.experienceId === experienceId)) return;
+
+        const newRequest = {
+            experienceId,
+            status: 'pending' as const,
+            date: new Date().toISOString()
+        };
+
+        setAuthState({
+            ...authState,
+            user: {
+                ...authState.user,
+                requests: [...currentRequests, newRequest]
+            },
+        });
+    };
+
+    const toggleWave = (companionId: string) => {
+        if (!authState.user) return;
+        const currentWaves = authState.user.wavedCompanions || [];
+
+        let updatedWaves: string[];
+        if (currentWaves.includes(companionId)) {
+            updatedWaves = currentWaves.filter((id: string) => id !== companionId);
+        } else {
+            updatedWaves = [...currentWaves, companionId];
+        }
+
+        setAuthState({
+            ...authState,
+            user: {
+                ...authState.user,
+                wavedCompanions: updatedWaves
+            },
+        });
+    };
+
     // Don't render children until we've loaded from storage
     if (!isLoaded) {
         return null;
@@ -91,6 +134,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 signUp,
                 signOut,
                 updateProfile,
+                requestToJoin,
+                toggleWave,
             }}
         >
             {children}

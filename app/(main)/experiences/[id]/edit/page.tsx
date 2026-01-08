@@ -12,6 +12,7 @@ import { Button, Input, Card } from '@/components/ui';
 import { Chip, ChipGroup } from '@/components/shared';
 import { useToastActions, useExperiences, useAuth } from '@/lib/hooks';
 import { destinations } from '@/lib/data';
+import { Destination, Experience } from '@/lib/types';
 
 const categories = [
     { id: 'food', label: 'Food & Dining', icon: '🍜' },
@@ -45,6 +46,29 @@ export default function EditExperiencePage() {
         meetingPoint: '',
         whatToBring: '',
     });
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const validateForm = () => {
+        const newErrors: Record<string, string> = {};
+        if (!formData.title || formData.title.length < 5) newErrors.title = 'Title must be at least 5 characters';
+        if (!formData.destinationId) newErrors.destinationId = 'Please select a destination';
+        if (!formData.category) newErrors.category = 'Please select a category';
+        if (!formData.vibeTag) newErrors.vibeTag = 'Please select a vibe';
+        if (!formData.date) newErrors.date = 'Date is required';
+        else if (new Date(formData.date) < new Date()) newErrors.date = 'Date must be in the future';
+        if (!formData.time) newErrors.time = 'Time is required';
+        if (!formData.duration) newErrors.duration = 'Duration is required';
+        if (!formData.capacity || Number(formData.capacity) < 2 || Number(formData.capacity) > 20) {
+            newErrors.capacity = 'Capacity must be between 2 and 20';
+        }
+        if (!formData.description || formData.description.length < 20) {
+            newErrors.description = 'Description must be at least 20 characters';
+        }
+        if (!formData.meetingPoint) newErrors.meetingPoint = 'Meeting point is required';
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -83,10 +107,20 @@ export default function EditExperiencePage() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        // Clear error when user types
+        if (errors[e.target.name]) {
+            setErrors({ ...errors, [e.target.name]: '' });
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            error('Please fix the errors', 'Check the form for missing or invalid information.');
+            return;
+        }
+
         setIsSubmitting(true);
 
         // Simulate network delay
@@ -96,7 +130,7 @@ export default function EditExperiencePage() {
             ...formData,
             capacity: Number(formData.capacity),
             priceLevel: Number(formData.priceLevel) as 1 | 2 | 3,
-            whatToBring: formData.whatToBring.split(',').map(s => s.trim()).filter(Boolean),
+            whatToBring: formData.whatToBring.split(',').map((s: string) => s.trim()).filter(Boolean),
             // Cast types that we know are correct from the form
             category: formData.category as any,
             vibeTag: formData.vibeTag as any,
@@ -143,8 +177,12 @@ export default function EditExperiencePage() {
                                         placeholder="e.g., Sunset Kayaking Adventure"
                                         value={formData.title}
                                         onChange={handleChange}
+                                        className={errors.title ? 'border-rose-500 focus:ring-rose-100' : ''}
                                         required
                                     />
+                                    {errors.title && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.title}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -157,13 +195,19 @@ export default function EditExperiencePage() {
                                         value={formData.destinationId}
                                         onChange={handleChange}
                                         required
-                                        className="flex h-11 w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-sm text-neutral-900 focus:border-ocean-400 focus:outline-none focus:ring-2 focus:ring-ocean-100"
+                                        className={`flex h-11 w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:ring-2 ${errors.destinationId
+                                            ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-100'
+                                            : 'border-sand-200 focus:border-ocean-400 focus:ring-ocean-100'
+                                            }`}
                                     >
                                         <option value="">Select a destination</option>
-                                        {destinations.map((dest) => (
+                                        {destinations.map((dest: Destination) => (
                                             <option key={dest.id} value={dest.id}>{dest.name}, {dest.country}</option>
                                         ))}
                                     </select>
+                                    {errors.destinationId && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.destinationId}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -171,7 +215,7 @@ export default function EditExperiencePage() {
                                         Category
                                     </label>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        {categories.map((cat) => (
+                                        {categories.map((cat: { id: string; label: string; icon: string }) => (
                                             <button
                                                 key={cat.id}
                                                 type="button"
@@ -193,7 +237,7 @@ export default function EditExperiencePage() {
                                         Vibe
                                     </label>
                                     <ChipGroup>
-                                        {vibes.map((vibe) => (
+                                        {vibes.map((vibe: string) => (
                                             <button
                                                 key={vibe}
                                                 type="button"
@@ -277,15 +321,19 @@ export default function EditExperiencePage() {
                                         placeholder="e.g., 8"
                                         value={formData.capacity}
                                         onChange={handleChange}
+                                        className={errors.capacity ? 'border-rose-500 focus:ring-rose-100' : ''}
                                         required
                                     />
+                                    {errors.capacity && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.capacity}</p>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-neutral-700 mb-2">
                                         Approximate cost
                                     </label>
                                     <div className="flex gap-2">
-                                        {[1, 2, 3].map((level) => (
+                                        {[1, 2, 3].map((level: number) => (
                                             <button
                                                 key={level}
                                                 type="button"
@@ -320,8 +368,14 @@ export default function EditExperiencePage() {
                                         value={formData.description}
                                         onChange={handleChange}
                                         required
-                                        className="flex w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-ocean-400 focus:outline-none focus:ring-2 focus:ring-ocean-100"
+                                        className={`flex w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 ${errors.description
+                                            ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-100'
+                                            : 'border-sand-200 focus:border-ocean-400 focus:ring-ocean-100'
+                                            }`}
                                     />
+                                    {errors.description && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.description}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -365,7 +419,7 @@ export default function EditExperiencePage() {
                                     'Share your itinerary with someone you trust',
                                     'Keep group sizes manageable',
                                     'Have a backup plan for weather or safety issues',
-                                ].map((tip, index) => (
+                                ].map((tip: string, index: number) => (
                                     <li key={index} className="flex items-start gap-2 text-sm text-green-800">
                                         <CheckCircle className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
                                         {tip}

@@ -33,21 +33,21 @@ export function useExperiences() {
     }, [experiences, isLoaded]);
 
     const addExperience = (experience: Experience) => {
-        setExperiences((prev) => [experience, ...prev]);
+        setExperiences((prev: Experience[]) => [experience, ...prev]);
     };
 
     const updateExperience = (id: string, updates: Partial<Experience>) => {
-        setExperiences((prev) =>
-            prev.map((exp) => (exp.id === id ? { ...exp, ...updates } : exp))
+        setExperiences((prev: Experience[]) =>
+            prev.map((exp: Experience) => (exp.id === id ? { ...exp, ...updates } : exp))
         );
     };
 
     const deleteExperience = (id: string) => {
-        setExperiences((prev) => prev.filter((exp) => exp.id !== id));
+        setExperiences((prev: Experience[]) => prev.filter((exp: Experience) => exp.id !== id));
     };
 
     const getExperience = (id: string) => {
-        return experiences.find((exp) => exp.id === id);
+        return experiences.find((exp: Experience) => exp.id === id);
     };
 
     return {

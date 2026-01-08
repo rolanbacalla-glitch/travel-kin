@@ -6,13 +6,14 @@ import { ArrowLeft, MapPin, Shield, Map, ChevronRight } from 'lucide-react';
 import { Button, Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui';
 import { Chip, ChipGroup } from '@/components/shared';
 import { destinations } from '@/lib/data';
+import { Destination, Neighbourhood } from '@/lib/types';
 
 interface DestinationPageProps {
     params: { id: string };
 }
 
 export default function DestinationPage({ params }: DestinationPageProps) {
-    const destination = destinations.find((d) => d.id === params.id);
+    const destination = destinations.find((d: Destination) => d.id === params.id);
 
     if (!destination) {
         notFound();
@@ -32,23 +33,23 @@ export default function DestinationPage({ params }: DestinationPageProps) {
                 {/* Back Button */}
                 <Link
                     href="/destinations"
-                    className="absolute top-4 left-4 flex items-center gap-2 bg-white/20 backdrop-blur-lg text-white px-3 py-2 rounded-lg text-sm hover:bg-white/30 transition-colors"
+                    className="absolute top-4 left-4 flex items-center gap-2 bg-white/20 backdrop-blur-xl text-white px-4 py-2 rounded-xl text-sm hover:bg-white/40 transition-all shadow-soft border border-white/20 group z-20"
                 >
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                     Back
                 </Link>
 
                 {/* Hero Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 animate-slide-up">
                     <div className="section-container">
-                        <div className="flex items-center gap-2 text-white/80 text-sm mb-2">
-                            <MapPin className="w-4 h-4" />
+                        <div className="flex items-center gap-2 text-white/80 text-sm mb-2 translate-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700 fill-mode-forwards">
+                            <MapPin className="w-4 h-4 text-sunset-400" />
                             {destination.country}
                         </div>
-                        <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3">
+                        <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 tracking-tight">
                             {destination.name}
                         </h1>
-                        <p className="text-lg sm:text-xl text-white/90 max-w-2xl">
+                        <p className="text-lg sm:text-xl text-white/90 max-w-2xl leading-relaxed">
                             {destination.vibeStatement}
                         </p>
                     </div>
@@ -56,13 +57,13 @@ export default function DestinationPage({ params }: DestinationPageProps) {
             </div>
 
             {/* Content */}
-            <div className="section-container py-8">
+            <div className="section-container py-8 animate-fadeIn">
                 {/* Map Button */}
-                <Link href={`/destinations/${destination.id}/map`}>
-                    <Button variant="secondary" className="gap-2 mb-8">
-                        <Map className="w-4 h-4" />
-                        View experiences on map
-                        <ChevronRight className="w-4 h-4" />
+                <Link href={`/destinations/${destination.id}/map`} className="inline-block group">
+                    <Button variant="secondary" className="gap-2 mb-8 shadow-soft-sm hover:shadow-soft transition-all rounded-xl py-6 px-6">
+                        <Map className="w-5 h-5 text-ocean-500 group-hover:rotate-12 transition-transform" />
+                        <span className="text-base">View experiences on map</span>
+                        <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                 </Link>
 
@@ -93,20 +94,21 @@ export default function DestinationPage({ params }: DestinationPageProps) {
 
                     <TabsContent value="neighbourhoods" className="mt-6">
                         <div className="space-y-4">
-                            {destination.neighbourhoods.map((neighbourhood) => (
+                            {destination.neighbourhoods.map((neighbourhood: Neighbourhood, index: number) => (
                                 <div
                                     key={neighbourhood.id}
-                                    className="bg-white rounded-2xl p-6 shadow-soft"
+                                    className="bg-white rounded-2xl p-6 shadow-soft transition-all duration-300 hover:shadow-soft-md group animate-reveal-left"
+                                    style={{ animationDelay: `${index * 100}ms` }}
                                 >
                                     <div className="flex items-start justify-between gap-4 mb-3">
-                                        <h3 className="text-lg font-semibold text-neutral-900">
+                                        <h3 className="text-lg font-semibold text-neutral-900 group-hover:text-sunset-600 transition-colors">
                                             {neighbourhood.name}
                                         </h3>
-                                        <Chip variant="vibe" vibe={neighbourhood.vibe.toLowerCase().split(' ')[0]}>
+                                        <Chip variant="vibe" vibe={neighbourhood.vibe.toLowerCase().split(' ')[0]} className="shadow-sm">
                                             {neighbourhood.vibe}
                                         </Chip>
                                     </div>
-                                    <p className="text-neutral-600">{neighbourhood.description}</p>
+                                    <p className="text-neutral-600 leading-relaxed">{neighbourhood.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -121,7 +123,7 @@ export default function DestinationPage({ params }: DestinationPageProps) {
                                 <h2 className="text-xl font-semibold text-neutral-900">Safety Tips</h2>
                             </div>
                             <ul className="space-y-3">
-                                {destination.safetyTips.map((tip, index) => (
+                                {destination.safetyTips.map((tip: string, index: number) => (
                                     <li key={index} className="flex items-start gap-3">
                                         <span className="w-6 h-6 rounded-full bg-sand-100 text-neutral-600 text-sm font-medium flex items-center justify-center shrink-0">
                                             {index + 1}

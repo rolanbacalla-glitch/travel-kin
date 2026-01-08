@@ -216,7 +216,7 @@ export const destinations: Destination[] = [
         name: 'Siem Reap',
         country: 'Cambodia',
         vibeStatement: 'Gateway to Angkor, sunrise magic, and vibrant night markets',
-        heroImage: 'https://images.unsplash.com/photo-1507646227500-4d389b001c22?w=1200&q=80',
+        heroImage: 'https://images.unsplash.com/photo-1565063073708-348f94d03612?w=1200&q=80',
         overview: 'Siem Reap is the gateway to the ancient world of Angkor Wat. Beyond the temples, it boasts a lively backpacker scene, thriving arts culture, and incredible Khmer cuisine.',
         neighbourhoods: [
             {
@@ -321,7 +321,7 @@ export const destinations: Destination[] = [
         name: 'Bagan',
         country: 'Myanmar',
         vibeStatement: 'Thousands of temples, dusty paths, and timeless sunrises',
-        heroImage: 'https://images.unsplash.com/photo-1505537552809-f6ba3c82d02c?w=1200&q=80',
+        heroImage: 'https://images.unsplash.com/photo-1549618828-98e3c3b0f56a?w=1200&q=80',
         overview: 'Bagan is an archaeological wonderland with over 2,000 Buddhist monuments towering over green plains. Exploring the temples by e-bike or hot air balloon is an unforgettable experience.',
         neighbourhoods: [
             {
