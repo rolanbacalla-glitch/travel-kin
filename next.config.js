@@ -17,6 +17,7 @@ const nextConfig = {
         // your project has ESLint errors.
         ignoreDuringBuilds: true,
     },
+    basePath: '/app',
 };
 
 module.exports = nextConfig;
