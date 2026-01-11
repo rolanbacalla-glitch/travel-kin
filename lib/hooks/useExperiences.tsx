@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { sections } from '@/lib/data'; // fallback/initial data
 import { Experience } from '@/lib/types';
 import { experiences as initialExperiences } from '@/lib/data/experiences';
 
