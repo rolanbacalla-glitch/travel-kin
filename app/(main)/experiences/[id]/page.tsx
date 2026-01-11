@@ -25,7 +25,7 @@ import { Chip, ChipGroup } from '@/components/shared';
 import { useToastActions, useAuth } from '@/lib/hooks';
 import { useRouter } from 'next/navigation';
 import { experiences, companions, destinations } from '@/lib/data';
-import { Experience, Companion } from '@/lib/types';
+import { Experience, Companion, Destination } from '@/lib/types';
 import { formatDate, formatTime, getPriceDisplay, cn } from '@/lib/utils';
 
 const MapContainer = dynamic(
