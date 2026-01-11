@@ -108,15 +108,23 @@ export default function NewExperiencePage() {
 
         const newExperience: Experience = {
             id: `exp-${Date.now()}`,
-            ...formData,
+            title: formData.title,
+            destinationId: formData.destinationId,
+            category: formData.category as 'food' | 'island' | 'nightlife' | 'hike' | 'culture',
+            date: formData.date,
+            time: formData.time,
+            duration: formData.duration,
             capacity: Number(formData.capacity),
-            priceLevel: Number(formData.priceLevel) as 1 | 2 | 3,
-            whatToBring: formData.whatToBring.split(',').map((s: string) => s.trim()).filter(Boolean),
-            hostId: user.id,
             currentParticipants: 1,
+            priceLevel: Number(formData.priceLevel) as 1 | 2 | 3,
+            description: formData.description,
+            whatToBring: formData.whatToBring.split(',').map((s: string) => s.trim()).filter(Boolean),
+            meetingPoint: formData.meetingPoint,
+            meetingPointCoords: { lat: 0, lng: 0 }, // Placeholder
+            hostId: user.id,
             participantIds: [user.id],
             safetyNotes: [], // Default empty for now
-            meetingPointCoords: { lat: 0, lng: 0 }, // Placeholder
+            vibeTag: formData.vibeTag as 'chill' | 'party' | 'adventurous' | 'mixed',
         };
 
         addExperience(newExperience);
