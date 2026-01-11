@@ -223,7 +223,7 @@ export default function CompanionPage({ params }: CompanionPageProps) {
                                 <MessageSquare className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                             </Button>
                             <Button
-                                variant="outline"
+                                variant="secondary"
                                 className="w-full text-base py-6 hover:bg-sand-50 transition-colors"
                                 onClick={handleWave}
                             >
