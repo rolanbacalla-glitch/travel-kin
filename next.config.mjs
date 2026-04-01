@@ -16,6 +16,26 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'i.pravatar.cc',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.rappler.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'di262mgurvkjm.cloudfront.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.shangri-la.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.matteocolombo.com',
+        pathname: '/**',
       }
     ],
   },
