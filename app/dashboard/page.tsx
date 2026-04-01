@@ -36,6 +36,13 @@ const kins = [
 /* Components                                                    */
 /* ─────────────────────────────────────────────────────────── */
 
+import dynamic from "next/dynamic";
+
+const InteractiveMap = dynamic(() => import("@/components/map/InteractiveMap"), { 
+  ssr: false,
+  loading: () => <div className="w-full h-[600px] bg-slate/5 animate-pulse rounded-[2.5rem] flex items-center justify-center text-slate/20 font-black uppercase tracking-widest italic">Initialising Maps Engine...</div>
+});
+
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"hub" | "safety" | "messages">("hub");
 
@@ -162,6 +169,16 @@ function SafetyDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="md:col-span-2">
+           <div className="flex items-center justify-between mb-6">
+              <h3 className="font-bold text-slate text-lg uppercase tracking-tight">Live Security Map</h3>
+              <div className="flex gap-2">
+                  <div className="px-3 py-1.5 bg-green-50 text-green-600 text-[10px] font-black rounded-full border border-green-100 uppercase tracking-widest shadow-sm">GPS Tracking Active</div>
+              </div>
+           </div>
+           <InteractiveMap />
+        </div>
+
         <div className="bg-white p-8 rounded-[2rem] border border-slate/5 shadow-xl shadow-slate/5 space-y-6">
           <div className="flex items-center justify-between">
              <h3 className="font-bold text-slate text-lg uppercase tracking-tight">Active SafeZone</h3>
