@@ -362,7 +362,7 @@ function OnboardingSuccess() {
       >
         <Check className="w-12 h-12 text-sunset" />
       </motion.div>
-      <h2 className="text-5xl md:text-7xl font-serif text-white mb-6">You're All Set!</h2>
+      <h2 className="text-5xl md:text-7xl font-serif text-white mb-6">You&apos;re All Set!</h2>
       <p className="text-white/70 text-lg md:text-xl max-w-md mx-auto mb-12">
         Welcome to your tribe. Your profile is being prepared—your Southeast Asia journey starts here.
       </p>

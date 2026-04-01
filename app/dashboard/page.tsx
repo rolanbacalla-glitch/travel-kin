@@ -106,9 +106,13 @@ export default function DashboardPage() {
         </header>
 
         {/* Dynamic Content */}
-        <div className="p-6 md:p-12">
+        <div className="p-6 md:p-12 h-content">
           {activeTab === "hub" && <TravelCrewHub />}
-          {activeTab === "safety" && <SafetyDashboard />}
+          
+          <div className={cn(activeTab === "safety" ? "block" : "hidden")}>
+            <SafetyDashboard />
+          </div>
+
           {activeTab === "messages" && <MessagesPlaceholder />}
         </div>
       </main>
