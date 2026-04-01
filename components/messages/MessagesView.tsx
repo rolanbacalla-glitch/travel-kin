@@ -1,18 +1,42 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, ArrowLeft, MoreVertical, Phone, MapPin, Smile } from "lucide-react";
+import { 
+  Send, 
+  ArrowLeft, 
+  MoreVertical, 
+  Phone, 
+  MapPin, 
+  Smile, 
+  ShieldCheck, 
+  Lock, 
+  Zap,
+  CheckCircle2,
+  AlertTriangle,
+  History,
+  Navigation
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMessagesStore, TrustStatus } from "@/lib/stores/useMessages";
 
-/* ─── Types ─────────────────────────────────────────────────────────────── */
+// Dynamic Import for Leaflet to fix SSR
+const RadarMiniMap = dynamic(() => import("./RadarMiniMap"), { 
+    ssr: false,
+    loading: () => <div className="w-full h-full bg-slate/5 animate-pulse flex items-center justify-center text-slate/50 font-black uppercase tracking-widest italic">Syncing Radar...</div>
+});
+
+/* ─── Types & Mock Data (Extended) ─────────────────────────────────────────── */
 
 interface Message {
   id: string;
   fromMe: boolean;
   text: string;
   time: string;
+  type?: 'text' | 'handshake_request';
+  handshakeStatus?: 'pending' | 'accepted' | 'declined';
   read?: boolean;
 }
 
@@ -23,13 +47,11 @@ interface Conversation {
   status: "online" | "away" | "offline";
   image: string;
   vibe: string;
-  unread: number;
-  lastMessage: string;
-  lastTime: string;
+  lat: number;
+  lng: number;
+  verified: boolean;
   messages: Message[];
 }
-
-/* ─── Mock Data ─────────────────────────────────────────────────────────── */
 
 const CONVERSATIONS: Conversation[] = [
   {
@@ -39,16 +61,13 @@ const CONVERSATIONS: Conversation[] = [
     status: "online",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&h=200&auto=format&fit=crop",
     vibe: "Introvert · Foodie",
-    unread: 2,
-    lastMessage: "There's an amazing ramen spot near the moat 🍜",
-    lastTime: "2m ago",
+    lat: 18.7950,
+    lng: 98.9950,
+    verified: true,
     messages: [
-      { id: "m1", fromMe: false, text: "Hey! Saw your profile — you're into food too?", time: "10:12 AM", read: true },
-      { id: "m2", fromMe: true,  text: "Yes! Been hunting for the best khao soi in Chiang Mai 😄", time: "10:14 AM", read: true },
-      { id: "m3", fromMe: false, text: "Oh I know ALL the spots 🙌 Are you free tomorrow morning?", time: "10:15 AM", read: true },
-      { id: "m4", fromMe: true,  text: "Totally! What time works for you?", time: "10:18 AM", read: true },
-      { id: "m5", fromMe: false, text: "9am? There's an amazing ramen spot near the moat 🍜", time: "10:20 AM", read: false },
-      { id: "m6", fromMe: false, text: "It opens early and gets packed fast!", time: "10:20 AM", read: false },
+      { id: "m1", fromMe: false, text: "Hey! Saw your profile — you're into food too?", time: "10:12 AM" },
+      { id: "m2", fromMe: true,  text: "Yes! Been hunting for the best khao soi in Chiang Mai 😄", time: "10:14 AM" },
+      { id: "m5", fromMe: false, text: "There's an amazing ramen spot near the moat 🍜", time: "10:20 AM" },
     ],
   },
   {
@@ -58,492 +77,379 @@ const CONVERSATIONS: Conversation[] = [
     status: "away",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&auto=format&fit=crop",
     vibe: "Night Owl · Action",
-    unread: 1,
-    lastMessage: "Muay Thai class was insane btw 🥊",
-    lastTime: "1h ago",
+    lat: 13.7563,
+    lng: 100.5018,
+    verified: false,
     messages: [
-      { id: "m1", fromMe: true,  text: "Hey Liam! Any night market recs in Bangkok?", time: "Yesterday", read: true },
-      { id: "m2", fromMe: false, text: "Rod Fai is the move. Way cooler than the tourist ones", time: "Yesterday", read: true },
-      { id: "m3", fromMe: true,  text: "Sold. Going tonight!", time: "Yesterday", read: true },
-      { id: "m4", fromMe: false, text: "Muay Thai class was insane btw 🥊", time: "1h ago", read: false },
+      { id: "m1", fromMe: true,  text: "Hey Liam! Any night market recs in Bangkok?", time: "Yesterday" },
+      { id: "m2", fromMe: false, text: "Rod Fai is the move. Way cooler than the tourist ones", time: "Yesterday" },
     ],
-  },
-  {
-    id: "3",
-    name: "Nara",
-    location: "Phuket",
-    status: "online",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&h=200&auto=format&fit=crop",
-    vibe: "Early Bird · Zen",
-    unread: 0,
-    lastMessage: "The sunrise session was so peaceful ✨",
-    lastTime: "3h ago",
-    messages: [
-      { id: "m1", fromMe: false, text: "Morning! Joining the 6am beach meditation tomorrow?", time: "7:00 AM", read: true },
-      { id: "m2", fromMe: true,  text: "I'll try! I'm usually terrible before coffee lol", time: "7:05 AM", read: true },
-      { id: "m3", fromMe: false, text: "Ha! They provide herbal tea — it's a vibe 🌿", time: "7:06 AM", read: true },
-      { id: "m4", fromMe: true,  text: "Alright you've convinced me 😊", time: "7:10 AM", read: true },
-      { id: "m5", fromMe: false, text: "The sunrise session was so peaceful ✨", time: "3h ago", read: true },
-    ],
-  },
-  {
-    id: "4",
-    name: "Kevin",
-    location: "Bali",
-    status: "offline",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&h=200&auto=format&fit=crop",
-    vibe: "Remote Pro · Surf",
-    unread: 0,
-    lastMessage: "Canggu co-working scene is 🔥 highly recommend",
-    lastTime: "2d ago",
-    messages: [
-      { id: "m1", fromMe: true,  text: "Kevin! Any good remote work spots in Canggu?", time: "2d ago", read: true },
-      { id: "m2", fromMe: false, text: "Dojo is the classic, but try Outpost too — better vibes", time: "2d ago", read: true },
-      { id: "m3", fromMe: false, text: "Canggu co-working scene is 🔥 highly recommend", time: "2d ago", read: true },
-    ],
-  },
+  }
 ];
 
-/* ─── Status dot ────────────────────────────────────────────────────────── */
+/* ─── Handshake Card ───────────────────────────────────────────────────────── */
 
-const statusColor: Record<string, string> = {
-  online:  "bg-green-500",
-  away:    "bg-amber-400",
-  offline: "bg-slate/20",
-};
-
-/* ─── Typing indicator ──────────────────────────────────────────────────── */
-
-function TypingIndicator() {
+function HandshakeCard({ kinName, status, onAccept, onDecline }: { 
+    kinName: string; 
+    status: 'pending' | 'accepted' | 'declined'; 
+    onAccept: () => void;
+    onDecline: () => void;
+}) {
   return (
-    <div className="flex items-end gap-2">
-      <div className="w-7 h-7 rounded-full bg-slate/10 flex-shrink-0" />
-      <div className="flex items-center gap-1 px-4 py-3 bg-white rounded-2xl rounded-bl-sm shadow-sm border border-slate/5">
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="w-1.5 h-1.5 rounded-full bg-slate/30"
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 0.8, delay: i * 0.15, repeat: Infinity, ease: "easeInOut" }}
-          />
-        ))}
-      </div>
+    <div className="w-full max-w-sm bg-white rounded-3xl border border-slate/5 shadow-2xl p-6 space-y-4">
+        <div className="flex items-center gap-4">
+            <div className={cn(
+                "p-3 rounded-2xl",
+                status === 'pending' ? "bg-ocean/5 text-ocean" : (status === 'accepted' ? "bg-green-50 text-green-500" : "bg-slate/5 text-slate/30")
+            )}>
+                <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+                <h4 className="text-sm font-black text-slate uppercase tracking-widest">Kin Protocol</h4>
+                <p className="text-[10px] text-slate/60 font-bold uppercase tracking-tighter italic">Location Verification</p>
+            </div>
+        </div>
+
+        <p className="text-xs text-slate/60 leading-relaxed font-serif italic">
+            {status === 'pending' 
+                ? `${kinName} is requesting a Trust Handshake. Accept to share precise coordinates for 2 hours.` 
+                : (status === 'accepted' ? "Trust Handshake Active. Precise pins unlocked." : "Handshake Expired.")}
+        </p>
+
+        {status === 'pending' && (
+            <div className="flex items-center gap-2 pt-2">
+                <button 
+                  onClick={onAccept}
+                  className="flex-1 py-3 bg-ocean text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-ocean/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                  aria-label={`Accept trust handshake with ${kinName}`}
+                >
+                    Accept (2h Share)
+                </button>
+                <button 
+                  onClick={onDecline}
+                  className="px-4 py-3 bg-slate/5 text-slate/40 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate/10 transition-all text-center cursor-pointer"
+                  aria-label="Decline trust handshake"
+                >
+                    X
+                </button>
+            </div>
+        )}
     </div>
   );
 }
 
-/* ─── Message bubble ────────────────────────────────────────────────────── */
-
-function MessageBubble({ msg, showAvatar, convImage }: { msg: Message; showAvatar: boolean; convImage: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className={cn("flex items-end gap-2", msg.fromMe ? "flex-row-reverse" : "flex-row")}
-    >
-      {/* Avatar — only for their messages, only on last in a group */}
-      <div className="w-7 h-7 flex-shrink-0">
-        {!msg.fromMe && showAvatar && (
-          <div className="w-7 h-7 rounded-full overflow-hidden relative shadow-sm">
-            <Image src={convImage} alt="kin" fill className="object-cover" />
-          </div>
-        )}
-      </div>
-
-      <div className={cn("flex flex-col gap-1", msg.fromMe ? "items-end" : "items-start")}>
-        <div className={cn(
-          "max-w-[280px] px-4 py-3 text-sm leading-relaxed shadow-sm",
-          msg.fromMe
-            ? "bg-slate text-white rounded-2xl rounded-br-sm"
-            : "bg-white text-slate rounded-2xl rounded-bl-sm border border-slate/5"
-        )}>
-          {msg.text}
-        </div>
-        <span className="text-[10px] text-slate/30 font-medium px-1">{msg.time}</span>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── Chat thread ────────────────────────────────────────────────────────── */
+/* ─── Main Chat Thread Container ───────────────────────────────────────────── */
 
 function ChatThread({ conv, onBack }: { conv: Conversation; onBack: () => void }) {
-  const [messages, setMessages] = useState<Message[]>(conv.messages);
-  const [input, setInput]       = useState("");
+  const store = useMessagesStore();
+  const session = store.sessions[conv.id] || {
+    trustStatus: 'BLURRED',
+    handshakeExpiry: null,
+    isSOSActive: false,
+    proximityLevel: 1,
+    messages: conv.messages,
+  };
+
+  const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll logic
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
+  }, [session.messages]);
 
-  // Personality-driven AI response generator
-  const generateAIReply = (userText: string, kinName: string, kinVibe: string): string => {
-    const text = userText.toLowerCase();
-    const isFoodie = kinVibe.toLowerCase().includes("foodie");
-    const isZen = kinVibe.toLowerCase().includes("zen");
-    const isNightOwl = kinVibe.toLowerCase().includes("night owl");
-    const isRemote = kinVibe.toLowerCase().includes("remote");
-
-    // 1. Keyword-based matching
-    if (text.includes("hello") || text.includes("hi ") || text.length < 3) {
-      return `Hey! Good to hear from you. How's your day in ${conv.location} going?`;
-    }
-    if (text.includes("food") || text.includes("eat") || text.includes("restaurant") || text.includes("hungry")) {
-      if (isFoodie) return "Oh, I was just looking at a new spot! Have you tried the street food market yet? The flavors are incredible.";
-      return "I'm not the biggest foodie, but I heard there's a decent place nearby. Want me to check it out?";
-    }
-    if (text.includes("work") || text.includes("laptop") || text.includes("wifi") || text.includes("co-working")) {
-      if (isRemote) return "The wifi here is solid. I usually post up at a cafe around 10am. You should join!";
-      return "I usually try to stay offline while traveling, but I did see a place with good seating earlier.";
-    }
-    if (text.includes("tonight") || text.includes("party") || text.includes("drink")) {
-      if (isNightOwl) return "Tonight is going to be wild! There's a rooftop session starting at 9. You in?";
-      return "Not sure about a party, but a quiet drink by the water sounds nice.";
-    }
-    if (text.includes("morning") || text.includes("sunrise") || text.includes("yoga")) {
-      if (isZen) return "The morning energy here is so special. I'm doing a session at 6am if you can handle the early start! ✨";
-      return "Morning? I'm usually still asleep lol, but sunrise is beautiful if you can make it.";
-    }
-    if (text.includes("where") || text.includes("located") || text.includes("area")) {
-      return `I'm currently around the ${conv.location} area. It's a bit busy but has great energy. Where are you?`;
-    }
-
-    // 2. Personality-based fallbacks
-    const fallbacks: Record<string, string[]> = {
-      default: ["That's interesting! Tell me more about that.", "I was thinking something similar actually.", "Nice! Let's definitely try to coordinate that.", "Totally agree. By the way, have you seen the view from the center yet?"],
-      "Suki": ["I'm so down for whatever as long as there's good coffee involved ☕️", "Chiang Mai is just so peaceful, don't you think?", "Wait, did you see the weather forecast? Looks perfect for a walk."],
-      "Liam": ["Bangkok is a maze but honestly, that's the best part.", "Let's grab a bike and just explore the backstreets later!", "I'm always up for an adventure. Just say the word."],
-      "Nara": ["Phuket has some hidden spots most people miss. We should find them.", "Gentle reminder to take a deep breath! This place is magic.", "I'm feeling very recharged today. Ready for anything."],
-      "Kevin": ["Bali life is treating me well. Hope you're enjoying it too!", "Found a secret beach yesterday. Might head back there if the swell is good 🌊", "Gotta finish some emails first, then I'm free. Speak soon?"]
-    };
-
-    const kinReplies = fallbacks[kinName] || fallbacks.default;
-    return kinReplies[Math.floor(Math.random() * kinReplies.length)];
+  // Handshake Handlers
+  const handleRequestHandshake = () => {
+    store.addMessage(conv.id, {
+        fromMe: true,
+        text: "Requested Trust Handshake",
+        type: 'handshake_request',
+        handshakeStatus: 'pending'
+    });
   };
 
-  // True AI API Caller
-  const callAIChatAPI = async (userText: string, history: Message[]) => {
+  const handleAcceptHandshake = (msgId: string) => {
+    // In a real app, update the specific message
+    store.updateTrustStatus(conv.id, 'PRECISE', 2);
+    store.addMessage(conv.id, {
+        fromMe: true,
+        text: "Trust Handshake Accepted. Pins are live.",
+    });
+  };
+
+  const handleSend = async () => {
+    if (!input.trim() || isTyping) return;
+    
+    const userText = input.trim();
+    store.addMessage(conv.id, { fromMe: true, text: userText });
+    setInput("");
+    setIsTyping(true);
+
     try {
-      const res = await fetch("/api/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          userText, 
-          kinName: conv.name, 
+        body: JSON.stringify({
+          userText,
+          kinName: conv.name,
           kinVibe: conv.vibe,
           location: conv.location,
-          history: history.slice(-5) // Send last 5 for context
-        }),
+          history: session.messages
+        })
       });
 
-      if (!res.ok) throw new Error("API Offline");
-      const data = await res.json();
-      return data.text;
+      if (!response.ok) throw new Error("Connection failed");
+      const data = await response.json();
+      
+      if (data.text) {
+        store.addMessage(conv.id, { fromMe: false, text: data.text });
+      } else {
+        throw new Error("No response from AI");
+      }
     } catch (err) {
-      console.warn("Falling back to local brain...");
-      return generateAIReply(userText, conv.name, conv.vibe);
+      console.error("Chat Error:", err);
+      store.addMessage(conv.id, { 
+        fromMe: false, 
+        text: "I'm having a slight problem connecting to the Ring network. Give me a second!" 
+      });
+    } finally {
+      setIsTyping(false);
     }
-  };
-
-  // Simulate a reply after sending
-  const handleSend = async () => {
-    const text = input.trim();
-    if (!text) return;
-
-    const newMsg: Message = {
-      id:     `msg-${Date.now()}`,
-      fromMe: true,
-      text,
-      time:   new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
-      read:   false,
-    };
-
-    setMessages((prev) => [...prev, newMsg]);
-    setInput("");
-
-    // Change: Start typing immediately and wait for API + minimum time for "human" feel
-    setIsTyping(true);
-    
-    // Start the API call and a timer in parallel
-    const [replyText] = await Promise.all([
-      callAIChatAPI(text, messages),
-      new Promise(r => setTimeout(r, 2000)) // Minimum 2s typing time
-    ]);
-
-    setIsTyping(false);
-    const reply: Message = {
-      id:     `msg-${Date.now()}-r`,
-      fromMe: false,
-      text:   replyText,
-      time:   new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
-      read:   false,
-    };
-    setMessages((prev) => [...prev, reply]);
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="relative flex items-center gap-4 p-5 border-b border-slate/5 bg-white/60 backdrop-blur-xl flex-shrink-0">
-        {/* Connection status indicator */}
-        <div className="absolute top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-green-50 text-[8px] font-black uppercase tracking-widest text-green-600 rounded-full border border-green-100 flex items-center gap-1 shadow-sm opacity-60">
-           <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse" />
-           AI Brain Active
-        </div>
-        <button
-          onClick={onBack}
-          className="md:hidden p-2 rounded-xl hover:bg-slate/5 transition-colors text-slate/50"
-          aria-label="Back to conversations"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-
-        <div className="relative flex-shrink-0">
-          <div className="w-11 h-11 rounded-full overflow-hidden relative shadow-md">
-            <Image src={conv.image} alt={conv.name} fill className="object-cover" />
-          </div>
-          <div className={cn("absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white", statusColor[conv.status])} />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-slate leading-none">{conv.name}</h3>
-          <div className="flex items-center gap-1.5 mt-1">
-            <MapPin className="w-3 h-3 text-slate/30" />
-            <span className="text-xs text-slate/40 font-medium truncate">{conv.location}</span>
-            {conv.status === "online" && (
-              <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider">· Online</span>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <button className="p-2.5 rounded-xl hover:bg-slate/5 transition-colors text-slate/40 hover:text-ocean" aria-label="Voice call">
-            <Phone className="w-4 h-4" />
-          </button>
-          <button className="p-2.5 rounded-xl hover:bg-slate/5 transition-colors text-slate/40 hover:text-slate" aria-label="More options">
-            <MoreVertical className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Vibe tag */}
-      <div className="px-5 py-2 flex-shrink-0 bg-white/30 border-b border-slate/5">
-        <span className="text-[10px] font-black uppercase tracking-widest text-slate/30">{conv.vibe}</span>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-3 bg-[#F9F8F6]/80">
-        {messages.map((msg, i) => {
-          const isLast = i === messages.length - 1 || messages[i + 1]?.fromMe !== msg.fromMe;
-          return (
-            <MessageBubble key={msg.id} msg={msg} showAvatar={isLast} convImage={conv.image} />
-          );
-        })}
-
-        <AnimatePresence>
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-            >
-              <TypingIndicator />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input */}
-      <div className="p-4 border-t border-slate/5 bg-white/60 backdrop-blur-xl flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <button className="p-2.5 text-slate/30 hover:text-sunset transition-colors" aria-label="Emoji">
-            <Smile className="w-5 h-5" />
-          </button>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-            placeholder={`Message ${conv.name}...`}
-            className="flex-1 px-4 py-3 bg-slate/5 rounded-2xl text-sm text-slate placeholder:text-slate/30
-                       focus:outline-none focus:ring-2 focus:ring-ocean/20 focus:bg-white transition-all"
-            aria-label="Type a message"
+    <div className="flex flex-col h-full bg-[#F9F8F6]">
+      
+      {/* ── TOP: Integrated Map (The Command Center Split) ── */}
+      <div className="h-[35%] w-full relative overflow-hidden flex-shrink-0">
+          <RadarMiniMap 
+            kinLat={conv.lat} 
+            kinLng={conv.lng} 
+            trustStatus={session.trustStatus} 
+            isSOSActive={session.isSOSActive} 
           />
-          <motion.button
-            onClick={handleSend}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            disabled={!input.trim()}
-            className={cn(
-              "p-3 rounded-2xl transition-all shadow-md",
-              input.trim()
-                ? "bg-slate text-white shadow-slate/20 hover:bg-ocean"
-                : "bg-slate/10 text-slate/20 cursor-not-allowed shadow-none"
+          
+          {/* Overlay Info Layer */}
+          <div className="absolute top-6 left-6 right-6 z-[600] pointer-events-none">
+              <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 p-3 bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl pointer-events-auto">
+                    <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm">
+                        <Image src={conv.image} alt="kin" fill className="object-cover" />
+                    </div>
+                    <div>
+                        <h4 className="text-[10px] font-black text-slate uppercase tracking-widest">{conv.name}</h4>
+                        <div className="flex items-center gap-1">
+                            <Lock className={cn("w-2.5 h-2.5", session.trustStatus === 'BLURRED' ? "text-slate/30" : "text-green-500")} />
+                            <span className="text-[8px] font-bold text-slate/60 uppercase">
+                                {session.trustStatus === 'BLURRED' ? 'Blurred Privacy' : 'Full Precision'}
+                            </span>
+                        </div>
+                    </div>
+                  </div>
+
+                  {session.trustStatus === 'BLURRED' && (
+                    <button 
+                        onClick={handleRequestHandshake}
+                        className="p-3 bg-ocean text-white rounded-2xl shadow-xl shadow-ocean/20 pointer-events-auto active:scale-95 transition-all flex items-center gap-2"
+                        title="Kin Handshake"
+                    >
+                        <ShieldCheck className="w-5 h-5" />
+                        <span className="text-[9px] font-black uppercase tracking-widest hidden sm:block">Verify Pins</span>
+                    </button>
+                  )}
+              </div>
+          </div>
+      </div>
+
+      {/* ── MIDDLE: The Safe-Share Control Bar ── */}
+      <div className="sticky top-0 z-50 p-4 border-b border-slate/5 bg-white/60 backdrop-blur-3xl flex-shrink-0 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 text-slate/60" title="Proximity Distance">
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span className="text-[9px] font-black uppercase tracking-widest">~800m Away</span>
+              </div>
+              <div className={cn(
+                  "px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border shadow-sm transition-all flex items-center gap-1.5",
+                  conv.verified ? "bg-green-50 text-green-600 border-green-100" : "bg-slate/5 text-slate/60 border-slate/5"
+              )}>
+                  <div className={cn("w-1 h-1 rounded-full", conv.verified ? "bg-green-500 animate-pulse" : "bg-slate/20")} />
+                  {conv.verified ? "Verified Identity" : "Basic Hub Access"}
+              </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+              <button 
+                onClick={() => store.archiveChat(conv.id)}
+                className="flex items-center gap-2 text-slate/50 hover:text-ocean transition-all cursor-pointer"
+                title="Archive to Memories"
+                aria-label={`Archive chat with ${conv.name}`}
+              >
+                 <History className="w-4 h-4" />
+                 <span className="text-[8px] font-black uppercase tracking-widest hidden md:block">Archive</span>
+              </button>
+              <div className="w-px h-4 bg-slate/10" />
+              <button 
+                className="text-red-500/40 hover:text-red-600 transition-all cursor-pointer"
+                title="Report or SOS"
+                aria-label="Trigger Emergency SOS or Report User"
+              >
+                 <AlertTriangle className="w-4 h-4" />
+              </button>
+          </div>
+      </div>
+
+      {/* ── BOTTOM: The Thread ── */}
+      <div className="flex-1 overflow-y-auto px-5 py-8 space-y-6 flex flex-col items-center">
+            
+            {/* System Info Bubble */}
+            <div className="px-6 py-2 bg-slate/5 rounded-full text-[9px] font-black text-slate/60 uppercase tracking-[0.2em] mb-4">
+                Session Active · End-to-End Secure
+            </div>
+
+            {session.messages.map((msg: Message, i: number) => (
+                <div key={msg.id} className={cn("w-full flex", msg.fromMe ? "justify-end" : "justify-start")}>
+                    {msg.type === 'handshake_request' ? (
+                        <HandshakeCard 
+                           kinName={conv.name}
+                           status={msg.handshakeStatus || 'pending'}
+                           onAccept={() => handleAcceptHandshake(msg.id)}
+                           onDecline={() => {}} 
+                        />
+                    ) : (
+                        <div className={cn(
+                            "max-w-[85%] px-6 py-4 text-sm leading-relaxed",
+                            msg.fromMe
+                                ? "bg-slate text-white rounded-3xl rounded-br-sm shadow-xl shadow-slate/10"
+                                : "bg-white text-slate rounded-3xl rounded-bl-sm border border-slate/5 shadow-sm"
+                        )}>
+                            {msg.text}
+                            <div className={cn("text-[9px] mt-1 font-bold opacity-60 uppercase tracking-[0.1em]", msg.fromMe ? "text-right" : "text-left")}>
+                                {msg.time}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ))}
+
+            {isTyping && (
+                <div className="w-full flex justify-start">
+                    <div className="bg-white px-6 py-4 rounded-3xl rounded-bl-sm border border-slate/5 shadow-sm flex items-center gap-1.5">
+                        <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-slate/40 rounded-full" />
+                        <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.5 h-1.5 bg-slate/40 rounded-full" />
+                        <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.5 h-1.5 bg-slate/40 rounded-full" />
+                    </div>
+                </div>
             )}
-            aria-label="Send message"
-          >
-            <Send className="w-4 h-4" />
-          </motion.button>
-        </div>
+            <div ref={bottomRef} className="h-4" />
+      </div>
+
+      {/* ── INPUT AREA ── */}
+      <div className="p-6 pb-10 bg-white/80 backdrop-blur-3xl border-t border-slate/5">
+            <div className="flex items-center gap-3">
+                <input 
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                    placeholder={`Coordinate with ${conv.name}...`}
+                    className="flex-1 h-14 px-6 bg-[#F9F8F6] border border-slate/5 rounded-2xl text-sm text-slate placeholder:text-slate/60 focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all font-medium"
+                />
+                <button 
+                    onClick={handleSend}
+                    disabled={!input.trim()}
+                    className="w-14 h-14 bg-slate text-white rounded-2xl flex items-center justify-center shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-30 cursor-pointer"
+                    title="Send message"
+                    aria-label="Send message"
+                >
+                    <Send className="w-5 h-5 mx-auto" />
+                </button>
+            </div>
       </div>
     </div>
   );
 }
 
-/* ─── Conversation list item ────────────────────────────────────────────── */
+/* ── Main Export (Conversations Navigator) ─────────────────────────────────── */
 
-function ConvItem({ conv, active, onClick }: { conv: Conversation; active: boolean; onClick: () => void }) {
-  return (
-    <motion.button
-      onClick={onClick}
-      whileHover={{ x: 2 }}
-      className={cn(
-        "w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all",
-        active ? "bg-slate text-white shadow-xl shadow-slate/20" : "hover:bg-white hover:shadow-sm"
-      )}
-    >
-      {/* Avatar */}
-      <div className="relative flex-shrink-0">
-        <div className="w-12 h-12 rounded-full overflow-hidden relative shadow-md">
-          <Image src={conv.image} alt={conv.name} fill className="object-cover" />
-        </div>
-        <div className={cn(
-          "absolute bottom-0 right-0 w-3 h-3 rounded-full border-2",
-          active ? "border-slate" : "border-white",
-          statusColor[conv.status]
-        )} />
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
-          <span className={cn("font-bold text-sm truncate", active ? "text-white" : "text-slate")}>
-            {conv.name}
-          </span>
-          <span className={cn("text-[10px] flex-shrink-0", active ? "text-white/50" : "text-slate/30")}>
-            {conv.lastTime}
-          </span>
-        </div>
-        <p className={cn("text-xs truncate mt-0.5", active ? "text-white/60" : "text-slate/50")}>
-          {conv.lastMessage}
-        </p>
-      </div>
-
-      {/* Unread badge */}
-      {conv.unread > 0 && !active && (
-        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-sunset text-white text-[10px] font-black flex items-center justify-center">
-          {conv.unread}
-        </span>
-      )}
-    </motion.button>
-  );
-}
-
-/* ─── Main Export ────────────────────────────────────────────────────────── */
-
-interface MessagesViewProps {
-  /** Optionally open a specific conversation by kin id (from Kin card "Chat" button) */
-  openConvId?: string | null;
-}
-
-export default function MessagesView({ openConvId }: MessagesViewProps) {
-  const [conversations] = useState<Conversation[]>(CONVERSATIONS);
-  const [activeId, setActiveId] = useState<string | null>(openConvId ?? null);
-  const activeConv = conversations.find((c) => c.id === activeId) ?? null;
-
-  // When openConvId prop changes (e.g. clicking Chat from the Hub), open that conversation
-  useEffect(() => {
-    if (openConvId) setActiveId(openConvId);
-  }, [openConvId]);
+export default function MessagesView() {
+  const store = useMessagesStore();
+  const activeConv = CONVERSATIONS.find(c => c.id === store.activeId) || null;
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] bg-white rounded-[2.5rem] border border-slate/10 shadow-2xl overflow-hidden">
-
-      {/* ── Left: Conversation List ── */}
+    <div className="flex h-[calc(100vh-140px)] bg-white rounded-[3rem] border border-slate/10 shadow-2xl overflow-hidden">
+      
+      {/* List (Sidebar) */}
       <div className={cn(
-        "flex flex-col border-r border-slate/5 bg-[#F9F8F6]/60",
-        // Mobile: full width when no conv selected, hidden when a conv is open
-        // Desktop: always shown at fixed width
-        "w-full md:w-80 md:flex-shrink-0",
-        activeConv ? "hidden md:flex flex-col" : "flex flex-col"
+        "w-full md:w-96 border-r border-slate/5 flex flex-col bg-[#F9F8F6]/40",
+        activeConv ? "hidden md:flex" : "flex"
       )}>
-        {/* Header */}
-        <div className="p-6 border-b border-slate/5">
-          <h2 className="text-xl font-bold text-slate uppercase tracking-tight">Messages</h2>
-          <p className="text-xs text-slate/40 mt-1 font-medium">
-            {conversations.reduce((n, c) => n + c.unread, 0)} unread
-          </p>
-        </div>
-
-        {/* Search */}
-        <div className="px-4 pb-3">
-          <div className="flex items-center gap-2 px-3 py-2.5 bg-white rounded-xl border border-slate/5 shadow-sm">
-            <svg className="w-3.5 h-3.5 text-slate/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
-              placeholder="Search conversations..."
-              className="flex-1 bg-transparent text-xs text-slate placeholder:text-slate/30 focus:outline-none"
-              aria-label="Search conversations"
-            />
+          <div className="p-8 border-b border-slate/5">
+              <h2 className="text-3xl font-serif font-black text-slate">Ring</h2>
+              <p className="text-[10px] font-black text-slate/60 uppercase tracking-[0.2em] mt-1 mb-8">Active Conversations</p>
+              
+              {/* Search */}
+              <div className="relative group">
+                  <input 
+                    placeholder="Find Kin..."
+                    className="w-full pl-12 pr-4 py-4 bg-white border border-slate/5 rounded-[20px] text-xs font-bold text-slate shadow-sm focus:shadow-xl transition-all"
+                  />
+                  <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ocean" />
+              </div>
           </div>
-        </div>
 
-        {/* List */}
-        <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1">
-          {conversations.map((conv) => (
-            <ConvItem
-              key={conv.id}
-              conv={conv}
-              active={activeId === conv.id}
-              onClick={() => setActiveId(conv.id)}
-            />
-          ))}
-        </div>
+          <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3">
+              {CONVERSATIONS.map(c => (
+                  <button 
+                    key={c.id} 
+                    onClick={() => store.setActiveId(c.id)}
+                    className={cn(
+                        "w-full p-6 text-left rounded-[35px] transition-all flex items-center gap-5 cursor-pointer",
+                        store.activeId === c.id ? "bg-slate text-white shadow-2xl shadow-slate/30" : "hover:bg-white"
+                    )}
+                  >
+                      <div className="relative w-14 h-14 rounded-[22px] overflow-hidden shadow-md flex-shrink-0">
+                          <Image src={c.image} alt={c.name} fill className="object-cover" />
+                      </div>
+                      <div className="min-w-0">
+                          <h4 className="font-bold text-base leading-none">{c.name}</h4>
+                          <p className={cn("text-[10px] uppercase font-black tracking-widest mt-2", store.activeId === c.id ? "text-white/40" : "text-slate/60")}>
+                             {c.location} · {c.vibe.split('·')[1]}
+                          </p>
+                      </div>
+                  </button>
+              ))}
+          </div>
+
+          {/* Verification Callout */}
+          <div className="p-8 border-t border-slate/5">
+                <div className="p-6 bg-ocean text-white rounded-[30px] shadow-xl shadow-ocean/10 relative overflow-hidden">
+                    <div className="relative z-10 space-y-3">
+                        <Lock className="w-5 h-5 opacity-40" />
+                        <h5 className="text-xs font-black uppercase tracking-widest">Kin Protocol</h5>
+                        <p className="text-[10px] leading-relaxed opacity-60">Complete your ID check to unlock precise proximity pins.</p>
+                    </div>
+                </div>
+          </div>
       </div>
 
-      {/* ── Right: Chat Thread or Empty State ── */}
-      <div className={cn(
-        "flex-1 flex flex-col",
-        // Mobile: show only if a conv is selected
-        activeConv ? "flex" : "hidden md:flex"
-      )}>
-        <AnimatePresence mode="wait">
+      {/* Chat Thread (Main Content) */}
+      <div className="flex-1 flex flex-col">
           {activeConv ? (
-            <motion.div
-              key={activeConv.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="flex flex-col h-full"
-            >
-              <ChatThread conv={activeConv} onBack={() => setActiveId(null)} />
-            </motion.div>
+              <ChatThread conv={activeConv} onBack={() => store.setActiveId(null)} />
           ) : (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex-1 flex flex-col items-center justify-center p-12 text-center space-y-5"
-            >
-              <div className="w-20 h-20 bg-slate/5 rounded-full flex items-center justify-center">
-                <Send className="w-8 h-8 text-slate/20" />
+              <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-[#F9F8F6]/20">
+                  <div className="w-24 h-24 bg-white border border-slate/5 rounded-[40px] shadow-xl flex items-center justify-center mb-8">
+                     <Lock className="w-8 h-8 text-slate/20" />
+                  </div>
+                  <h3 className="text-3xl font-serif font-black text-slate">Secure Line</h3>
+                  <p className="text-xs text-slate/60 max-w-sm mt-4 font-medium italic leading-relaxed">
+                      Select a Kin to start coordinating. Every conversation in the Ring is end-to-end shielded by the Traveler Protocol.
+                  </p>
               </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-serif font-bold text-slate">Pick a conversation</h3>
-                <p className="text-sm text-slate/50 max-w-xs">
-                  Select a kin from the list, or click <strong>Chat</strong> on a profile to start planning your next adventure.
-                </p>
-              </div>
-            </motion.div>
           )}
-        </AnimatePresence>
       </div>
+
     </div>
   );
 }

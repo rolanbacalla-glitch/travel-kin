@@ -403,8 +403,8 @@ export default function LandingPage() {
           className="absolute bottom-28 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 animate-float"
           aria-hidden="true"
         >
-          <span className="text-white/40 text-xs tracking-widest uppercase">Scroll</span>
-          <div className="w-px h-12 bg-gradient-to-b from-white/40 to-transparent" />
+          <span className="text-white/70 text-xs tracking-widest uppercase">Scroll</span>
+          <div className="w-px h-12 bg-gradient-to-b from-white/70 to-transparent" />
         </div>
       </section>
 
@@ -606,7 +606,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <p className="text-white text-sm font-bold">100% Verified</p>
-                  <p className="text-white/40 text-xs">Identity &amp; Safety</p>
+                  <p className="text-white/70 text-xs">Identity &amp; Safety</p>
                 </div>
               </div>
               <div className="flex -space-x-2">
@@ -635,7 +635,7 @@ export default function LandingPage() {
               Safety is our{" "}
               <span className="italic text-sunset">North Star</span>
             </h2>
-            <p className="text-white/50 text-lg mb-12 leading-relaxed text-pretty">
+            <p className="text-white/70 text-lg mb-12 leading-relaxed text-pretty">
               Whether you&rsquo;re a first-time solo adventurer or a seasoned wanderer,
               every feature we build starts with one question: does it keep you safe{" "}
               <em>and</em> free?
@@ -656,7 +656,7 @@ export default function LandingPage() {
                     </div>
                     <div>
                       <h3 className="text-white font-bold text-lg mb-1">{f.title}</h3>
-                      <p className="text-white/50 text-sm leading-relaxed">{f.desc}</p>
+                      <p className="text-white/70 text-sm leading-relaxed">{f.desc}</p>
                     </div>
                   </div>
                 );

@@ -16,12 +16,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useMessagesStore } from "@/lib/stores/useMessages";
+import { useEffect } from "react";
 
 /* ─────────────────────────────────────────────────────────── */
 /* Components                                                    */
 /* ─────────────────────────────────────────────────────────── */
 
 export default function VerificationPage() {
+  const store = useMessagesStore();
   const [step, setStep] = useState<"intro" | "capture" | "review" | "processing" | "success">("intro");
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const webcamRef = useRef<Webcam>(null);
@@ -39,6 +42,7 @@ export default function VerificationPage() {
     // Simulate OCR/AI verification
     setTimeout(() => {
       setStep("success");
+      store.setVerified(true);
     }, 3500);
   };
 
