@@ -2,37 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design tokens ─────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F7F2E4;
+  --foreground: #1E2D35;
+  --font-inter: "Inter", system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base resets ───────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
+/* Skip link for keyboard navigation */
+.skip-link {
+  @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-ocean focus:text-white focus:rounded-lg focus:font-semibold;
+}
+
+/* ─── Glass utilities ───────────────────────────────────────── */
 @layer utilities {
   .glass {
     @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg;
   }
   .glass-dark {
-    @apply bg-black/40 backdrop-blur-md border border-white/10 shadow-xl;
+    @apply bg-slate/80 backdrop-blur-md border border-white/10 shadow-xl;
+  }
+  .glass-warm {
+    @apply bg-sand/80 backdrop-blur-lg border border-sunset/10 shadow-lg;
+  }
+
+  /* Focus ring utility - apply everywhere */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-2;
+  }
+  .focus-ring-white {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate;
+  }
+
+  /* Typography helpers */
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Destination card overlay gradient */
+  .card-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(30, 45, 53, 0.95) 0%,
+      rgba(30, 45, 53, 0.4) 50%,
+      transparent 100%
+    );
+  }
+
+  /* Ticker / marquee */
+  .ticker-track {
+    display: flex;
+    width: max-content;
   }
 }
 
-* {
-  scroll-behavior: smooth;
+/* ─── Reduced motion overrides ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-subtle-zoom,
+  .animate-fade-up,
+  .animate-slide-in,
+  .animate-float,
+  .animate-ticker {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
 
-.text-balance {
-  text-wrap: balance;
+/* ─── Custom scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #0077B6;
+  border-radius: 99px;
+}
+
+/* ─── Selection color ──────────────────────────────────────── */
+::selection {
+  background: rgba(255, 140, 66, 0.3);
+  color: #1E2D35;
 }

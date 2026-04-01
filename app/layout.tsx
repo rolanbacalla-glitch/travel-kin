@@ -2,13 +2,33 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Travel Kin - Wander Together, Safely",
-  description: "Social travel companion for modern Southeast Asian explorers. Connect with verified travel crew and expert guides.",
-  keywords: ["travel", "travel companion", "Southeast Asia", "social travel", "El Nido", "Boracay", "Siargao"],
+  title: "Travel Kin — Solo Travel, Better Together",
+  description:
+    "The modern platform for solo travellers. Discover Southeast Asia with verified companions, expert local guides, and a safety-first community of like-minded wanderers.",
+  keywords: [
+    "solo travel",
+    "travel companion",
+    "Southeast Asia",
+    "solo traveller",
+    "El Nido",
+    "Boracay",
+    "Siargao",
+    "safe travel",
+    "travel community",
+  ],
 };
 
 export default function RootLayout({
@@ -18,7 +38,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <meta name="theme-color" content="#F7F2E4" />
+      </head>
+      <body
+        className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
+      >
         {children}
       </body>
     </html>
