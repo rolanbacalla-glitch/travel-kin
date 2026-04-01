@@ -315,11 +315,13 @@ export default function LandingPage() {
               alt="Southeast Asia Background" 
               fill 
               priority 
-              className="object-cover opacity-15 scale-110 pointer-events-none animate-subtle-zoom" 
+              className="object-cover scale-110 pointer-events-none animate-subtle-zoom" 
             />
+            {/* Dark gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-slate/60 to-slate/20 transition-opacity duration-700" aria-hidden="true" />
           </div>
           {/* Bottom wave fade */}
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-sand to-transparent z-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent z-10" />
         </div>
 
         {/* Hero content */}

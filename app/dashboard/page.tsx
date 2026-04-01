@@ -48,10 +48,10 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"hub" | "safety" | "messages">("hub");
 
   return (
-    <div className="min-h-screen bg-mist flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#F9F8F6] flex flex-col md:flex-row">
       
       {/* ── Desktop Sidebar ── */}
-      <aside className="hidden md:flex w-72 bg-white border-r border-slate/5 flex-col p-8 space-y-12">
+      <aside className="hidden md:flex w-72 bg-white border-r border-slate/5 flex-col p-8 space-y-12 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         <Link href="/" className="text-2xl font-serif font-bold text-slate">
           Travel <span className="text-sunset italic">Kin</span>
         </Link>
