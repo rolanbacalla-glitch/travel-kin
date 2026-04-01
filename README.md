@@ -19,10 +19,12 @@ Inspired by the calm, premium aesthetics of Apple’s product interfaces, but in
 - **State**: Server Components & Modern React Hooks
 
 ## 🚀 Features
-- **Wander Together Hero**: Dynamic, visually stunning entry point.
-- **Popular Places**: Curated destination cards (El Nido, Boracay, Siargao).
-- **Integrated Search**: Minimalist booking and discovery filters.
-- **Safety Centre**: Trusted companion matching and guide verification.
+- **AI Travel Kin (Intelligence)**: Context-aware chat with travel companions powered by the Pollinations/Gemini engine.
+- **Kin Radar Scan (Spatial Discovery)**: Real-time discovery of nearby explorers within a 5km radius using high-fidelity tactical animations.
+- **SOS Emergency Ring (Safety)**: Global broadcast system with hold-to-alert functionality to notify local responders and your trusted circle.
+- **Passport Verification (Trust)**: Biometric ID verification terminal that grants the 'Verified' badge to users.
+- **Interactive Itineraries**: Social upvoting and task management for shared travel plans.
+- **PWA Mobile Native**: Full Progressive Web App support with offline persistence and home-screen installation.
 
 ## 📂 Project Structure
 ```text
