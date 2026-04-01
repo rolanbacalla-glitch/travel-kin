@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, MapPin, Users, ShieldCheck, ChevronRight, Menu, X, Instagram, Facebook } from "lucide-react";
+import { Search, MapPin, Users, ShieldCheck, ChevronRight, Menu, X, Camera, Globe } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -201,8 +201,8 @@ export default function LandingPage() {
             ))}
           </div>
           <div className="flex gap-4">
-            <div className="p-3 bg-sand rounded-full text-slate hover:bg-sunset hover:text-white transition-colors cursor-pointer"><Instagram className="w-5 h-5" /></div>
-            <div className="p-3 bg-sand rounded-full text-slate hover:bg-sunset hover:text-white transition-colors cursor-pointer"><Facebook className="w-5 h-5" /></div>
+            <div className="p-3 bg-sand rounded-full text-slate hover:bg-sunset hover:text-white transition-colors cursor-pointer"><Camera className="w-5 h-5" /></div>
+            <div className="p-3 bg-sand rounded-full text-slate hover:bg-sunset hover:text-white transition-colors cursor-pointer"><Globe className="w-5 h-5" /></div>
           </div>
         </div>
         <div className="mt-20 pt-10 border-t border-slate/5 text-center text-slate/30 text-xs">
