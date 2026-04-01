@@ -48,7 +48,7 @@ const destinations = [
     subtitle: "Aklan, Philippines",
     tagline: "White sands & world-class sunsets",
     image:
-      "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=1280",
+      "https://www.rappler.com/tachyon/2022/07/boracay.jpg",
     price: "From $320",
     rating: 4.8,
     reviews: 980,
@@ -61,7 +61,7 @@ const destinations = [
     subtitle: "Surigao del Norte, PH",
     tagline: "The surf capital of Asia",
     image:
-      "https://images.unsplash.com/photo-1544526226-d4568090ffb8?auto=format&fit=crop&q=80&w=1280",
+      "https://di262mgurvkjm.cloudfront.net/e443f533-c595-4c02-8f38-246fccfd14e2/M45386_uxga.jpg",
     price: "From $280",
     rating: 4.9,
     reviews: 765,
@@ -232,7 +232,7 @@ export default function LandingPage() {
           {/* Mobile menu toggle */}
           <button
             aria-label="Open navigation menu"
-            aria-expanded={mobileMenuOpen ? "true" : "false"}
+            aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
             className="md:hidden text-white p-2 focus-ring rounded-lg"
             onClick={() => setMobileMenuOpen(true)}
@@ -750,7 +750,7 @@ export default function LandingPage() {
               <button
                 key={i}
                 role="tab"
-                aria-selected={i === activeTestimonial ? "true" : "false"}
+                aria-selected={i === activeTestimonial}
                 aria-label={`View testimonial by ${t.name}`}
                 onClick={() => setActiveTestimonial(i)}
                 className={cn(
