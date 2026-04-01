@@ -471,8 +471,8 @@ export default function LandingPage() {
                   key={dest.id}
                   className={cn(
                     "group relative rounded-3xl overflow-hidden cursor-pointer shadow-xl",
-                    "hover:-translate-y-3 transition-transform duration-500",
-                    idx === 0 ? "md:row-span-1 h-[520px]" : "h-[420px]"
+                    "hover:clip-[ellipse(90%_85%_at_50%_50%)] transition-[clip-path] duration-700",
+                    "h-[520px] md:row-span-1"  // ← All cards now 520px, left one spans 1 row on desktop
                   )}
                   aria-label={`${dest.title} — ${dest.subtitle}`}
                 >
@@ -482,7 +482,7 @@ export default function LandingPage() {
                     width={1280}
                     height={960}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                   />
 
                   {/* Gradient overlay */}
