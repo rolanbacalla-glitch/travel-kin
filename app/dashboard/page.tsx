@@ -18,6 +18,7 @@ import {
   Heart
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -47,7 +48,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"hub" | "safety" | "messages">("hub");
 
   return (
-    <div className="min-h-screen bg-sand/30 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-mist flex flex-col md:flex-row">
       
       {/* ── Desktop Sidebar ── */}
       <aside className="hidden md:flex w-72 bg-white border-r border-slate/5 flex-col p-8 space-y-12">
@@ -89,17 +90,20 @@ export default function DashboardPage() {
         <header className="px-6 md:px-12 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/50 backdrop-blur-xl border-b border-slate/5 sticky top-0 z-20">
           <div className="space-y-1">
             <h1 className="text-3xl font-serif text-slate font-bold">Welcome back, Mia</h1>
-            <p className="text-slate/40 text-sm font-medium">You have 12 matches in Chiang Mai today.</p>
+            <p className="text-slate/60 text-sm font-medium">You have 12 matches in Chiang Mai today.</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/30" />
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/50" />
                <input 
                  placeholder="Search travellers..." 
                  className="p-4 pl-12 bg-white border border-slate/5 rounded-2xl shadow-sm text-sm focus:outline-sunset focus:ring-4 focus:ring-sunset/5 transition-all"
                />
             </div>
-            <button className="p-4 bg-white border border-slate/5 rounded-2xl shadow-sm hover:bg-slate/5 transition-all">
+            <button 
+              aria-label="Notifications"
+              className="p-4 bg-white border border-slate/5 rounded-2xl shadow-sm hover:bg-slate/5 transition-all"
+            >
               <Bell className="w-5 h-5 text-slate/40" />
             </button>
           </div>
@@ -183,28 +187,36 @@ function SafetyDashboard() {
            <InteractiveMap />
         </div>
 
-        <div className="bg-white p-8 rounded-[2rem] border border-slate/5 shadow-xl shadow-slate/5 space-y-6">
+        <div className="bg-white p-8 rounded-[2rem] border border-slate/10 shadow-xl shadow-slate/10 space-y-6">
           <div className="flex items-center justify-between">
              <h3 className="font-bold text-slate text-lg uppercase tracking-tight">Active SafeZone</h3>
-             <span className="px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-full border border-green-100 uppercase">Secure</span>
+             <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 uppercase">Secure</span>
           </div>
-          <div className="p-4 bg-sand/30 rounded-2xl flex items-center gap-4">
+          <div className="p-4 bg-mist rounded-2xl flex items-center gap-4">
              <div className="p-3 bg-ocean text-white rounded-xl shadow-md"><MapPin className="w-5 h-5" /></div>
              <div>
                 <p className="text-sm font-bold text-slate">Old Town, Chiang Mai</p>
-                <p className="text-xs text-slate/40">Verified Safe by 45 Kins</p>
+                <p className="text-xs text-slate/60">Verified Safe by 45 Kins</p>
              </div>
           </div>
-          <button className="w-full py-4 text-sunset font-bold text-sm bg-sunset/5 rounded-xl hover:bg-sunset hover:text-white transition-all uppercase tracking-widest">Update Location</button>
+          <div className="hidden md:flex items-center gap-4 p-5 bg-white border border-slate/10 rounded-3xl shadow-sm">
+            <div className="p-4 bg-sunset/20 rounded-2xl">
+               <Users className="w-6 h-6 text-sunset" />
+            </div>
+            <div>
+              <p className="text-slate/70 text-[10px] font-black uppercase tracking-wider">Tribe Activity</p>
+              <p className="text-slate font-bold">High in Chiang Mai</p>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-white p-8 rounded-[2rem] border border-slate/5 shadow-xl shadow-slate/5 space-y-6">
+        <div className="bg-white p-8 rounded-[2rem] border border-slate/10 shadow-xl shadow-slate/10 space-y-6">
           <h3 className="font-bold text-slate text-lg uppercase tracking-tight">Emergency Contacts</h3>
           <div className="space-y-3">
              <ContactItem name="Sarah Reyes" role="Partner" active />
              <ContactItem name="Elena Kin" role="Emergency Desk" />
           </div>
-          <button className="w-full py-4 text-slate font-bold text-sm bg-slate/5 rounded-xl hover:bg-slate/10 transition-all uppercase tracking-widest">+ Add Contact</button>
+          <button className="w-full py-4 text-slate font-bold text-sm bg-slate/10 rounded-xl hover:bg-slate/20 transition-all uppercase tracking-widest">+ Add Contact</button>
         </div>
       </div>
     </div>
@@ -213,13 +225,13 @@ function SafetyDashboard() {
 
 function MessagesPlaceholder() {
   return (
-    <div className="bg-white h-[600px] rounded-[2.5rem] border border-slate/5 flex flex-col items-center justify-center p-12 text-center space-y-6 shadow-2xl">
-      <div className="w-24 h-24 bg-sand rounded-full flex items-center justify-center text-slate/30">
+    <div className="bg-white h-[600px] rounded-[2.5rem] border border-slate/10 flex flex-col items-center justify-center p-12 text-center space-y-6 shadow-2xl">
+      <div className="w-24 h-24 bg-mist rounded-full flex items-center justify-center text-slate/40">
         <MessageSquare className="w-10 h-10" />
       </div>
       <div className="space-y-2">
         <h3 className="text-2xl font-serif font-bold text-slate">Select a Conversation</h3>
-        <p className="text-slate/40 max-w-xs mx-auto">Click on a solo kin to start planning your next journey together.</p>
+        <p className="text-slate/60 max-w-xs mx-auto">Click on a solo kin to start planning your next journey together.</p>
       </div>
     </div>
   );
@@ -233,7 +245,7 @@ function SidebarItem({ icon: Icon, label, active, onClick, className, badge }: a
       onClick={onClick}
       className={cn(
         "w-full px-4 py-4 rounded-2xl flex items-center justify-between gap-4 font-bold transition-all group",
-        active ? "bg-slate text-white shadow-xl shadow-slate/10" : "text-slate/40 hover:bg-slate/5 hover:text-slate",
+        active ? "bg-slate text-white shadow-xl shadow-slate/20" : "text-slate/60 hover:bg-slate/10 hover:text-slate",
         className
       )}
     >
@@ -254,7 +266,7 @@ function MobileNavItem({ icon: Icon, label, active, onClick }: any) {
       onClick={onClick}
       className={cn(
         "flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all",
-        active ? "text-sunset" : "text-slate/30"
+        active ? "text-sunset" : "text-slate/50"
       )}
     >
       <Icon className="w-6 h-6" />
@@ -267,18 +279,28 @@ function KinCard({ kin }: { kin: any }) {
   return (
     <motion.div 
       whileHover={{ y: -5 }}
-      className="bg-white rounded-[2rem] p-6 shadow-xl shadow-slate/5 border border-slate/5 flex flex-col items-center text-center space-y-4 group relative overflow-hidden"
+      className="bg-white rounded-[2rem] p-6 shadow-xl shadow-slate/10 border border-slate/10 flex flex-col items-center text-center space-y-4 group relative overflow-hidden"
     >
       <div className="absolute top-4 right-4 z-10">
-        <button className="p-2 text-slate/20 hover:text-sunset transition-colors"><Heart className="w-4 h-4" /></button>
+        <button 
+          aria-label={`Add ${kin.name} to favorites`}
+          className="p-2 text-slate/40 hover:text-sunset transition-colors"
+        >
+          <Heart className="w-4 h-4" />
+        </button>
       </div>
       
       <div className="relative">
         <div className={cn(
-          "w-24 h-24 rounded-full p-1 border-2 border-white shadow-xl relative z-10",
-          kin.status === "online" ? "border-green-400" : "border-slate/10"
+          "w-24 h-24 rounded-full p-1 border-2 border-white shadow-xl relative z-10 overflow-hidden",
+          kin.status === "online" ? "border-green-400" : "border-slate/20"
         )}>
-          <img src={kin.image} alt={kin.name} className="w-full h-full object-cover rounded-full" />
+          <Image 
+            src={kin.image} 
+            alt={kin.name} 
+            fill 
+            className="object-cover rounded-full" 
+          />
         </div>
         {kin.status === "online" && (
           <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-4 border-white z-20" />
@@ -287,13 +309,13 @@ function KinCard({ kin }: { kin: any }) {
 
       <div className="space-y-1">
         <h4 className="text-xl font-serif font-bold text-slate">{kin.name}</h4>
-        <div className="flex items-center justify-center gap-1.5 text-slate/40 text-xs font-bold uppercase tracking-tight">
+        <div className="flex items-center justify-center gap-1.5 text-slate/70 text-xs font-bold uppercase tracking-tight">
           <MapPin className="w-3 h-3" />
           {kin.location}
         </div>
       </div>
 
-      <div className="p-2 bg-sand/30 rounded-full text-[10px] font-bold text-slate/40 uppercase tracking-widest w-full">
+      <div className="p-2 bg-mist rounded-full text-[10px] font-bold text-slate/70 uppercase tracking-widest w-full">
         {kin.vibe}
       </div>
 
@@ -302,7 +324,7 @@ function KinCard({ kin }: { kin: any }) {
            <MessageSquare className="w-3 h-3" />
            Chat
          </button>
-         <button className="py-3 px-4 bg-sunset/5 text-sunset text-xs font-bold rounded-xl hover:bg-sunset/10 transition-all flex items-center justify-center gap-2">
+         <button className="py-3 px-4 bg-sunset/10 text-sunset text-xs font-bold rounded-xl hover:bg-sunset/20 transition-all flex items-center justify-center gap-2">
            <Navigation className="w-3 h-3" />
            View
          </button>
@@ -313,17 +335,17 @@ function KinCard({ kin }: { kin: any }) {
 
 function ContactItem({ name, role, active }: any) {
   return (
-    <div className="p-4 rounded-xl border border-slate/5 bg-slate/[0.02] flex items-center justify-between group hover:border-sunset/20 transition-all">
-       <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-slate/10 flex items-center justify-center text-slate/40 font-black uppercase text-xs">
+    <div className="p-4 rounded-xl border border-slate/10 bg-slate/[0.05] flex items-center justify-between group hover:border-sunset/30 transition-all">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-slate/20 flex items-center justify-center text-slate/60 font-black uppercase text-xs">
             {name.charAt(0)}
           </div>
           <div>
             <p className="text-sm font-bold text-slate">{name}</p>
-            <p className="text-[10px] font-bold text-slate/30 uppercase tracking-wider">{role}</p>
+            <p className="text-[10px] font-bold text-slate/50 uppercase tracking-wider">{role}</p>
           </div>
        </div>
-       <MoreVertical className="w-4 h-4 text-slate/20" />
+       <MoreVertical className="w-4 h-4 text-slate/40" />
     </div>
   );
 }

@@ -215,18 +215,24 @@ export default function LandingPage() {
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
-            <button className="px-5 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-full">
+            <Link 
+              href="/verify"
+              className="px-5 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
+            >
               Sign In
-            </button>
-            <button className="px-6 py-2.5 bg-sunset text-white text-sm font-semibold rounded-full shadow-lg hover:bg-sunset-dark transition-colors duration-200 focus-ring active:scale-95">
+            </Link>
+            <Link 
+              href="/verify"
+              className="px-6 py-2.5 bg-sunset text-white text-sm font-semibold rounded-full shadow-lg hover:bg-sunset-dark transition-all duration-200 focus-ring active:scale-95 cursor-pointer"
+            >
               Start Exploring
-            </button>
+            </Link>
           </div>
 
           {/* Mobile menu toggle */}
           <button
             aria-label="Open navigation menu"
-            aria-expanded={mobileMenuOpen}
+            aria-expanded={mobileMenuOpen ? "true" : "false"}
             aria-controls="mobile-menu"
             className="md:hidden text-white p-2 focus-ring rounded-lg"
             onClick={() => setMobileMenuOpen(true)}
@@ -245,7 +251,7 @@ export default function LandingPage() {
           role="dialog"
           aria-modal="true"
           aria-label="Navigation menu"
-          className="fixed inset-0 z-50 bg-slate text-white flex flex-col overscroll-contain"
+          className="fixed inset-0 z-[100] bg-slate text-white flex flex-col overscroll-contain"
         >
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
             <span className="text-2xl font-serif font-bold">
@@ -273,13 +279,21 @@ export default function LandingPage() {
             ))}
           </nav>
 
-          <div className="px-8 pb-12 space-y-3">
-            <button className="w-full py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white">
+          <div className="px-8 pb-12 space-y-3 flex flex-col">
+            <Link 
+              href="/verify"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
+            >
               Sign In
-            </button>
-            <button className="w-full py-4 bg-sunset rounded-2xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white">
+            </Link>
+            <Link 
+              href="/verify"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-4 bg-sunset rounded-2xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
+            >
               Start Exploring
-            </button>
+            </Link>
           </div>
         </div>
       )}
@@ -295,18 +309,17 @@ export default function LandingPage() {
       >
         {/* Background image */}
         <div className="absolute inset-0 z-0" aria-hidden="true">
-          <img
-            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=85&w=2560"
-            alt=""
-            width={2560}
-            height={1440}
-            fetchPriority="high"
-            className="w-full h-full object-cover animate-subtle-zoom"
-          />
-          {/* Dark gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate/60 via-slate/30 to-slate/80" />
+          <div className="relative w-full h-full overflow-hidden">
+            <Image 
+              src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=1200&h=800&auto=format&fit=crop" 
+              alt="Southeast Asia Background" 
+              fill 
+              priority 
+              className="object-cover opacity-15 scale-110 pointer-events-none animate-subtle-zoom" 
+            />
+          </div>
           {/* Bottom wave fade */}
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-sand to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-sand to-transparent z-10" />
         </div>
 
         {/* Hero content */}
@@ -371,13 +384,14 @@ export default function LandingPage() {
               </div>
 
               {/* CTA button */}
-              <button
+              <Link
+                href="/dashboard"
                 aria-label="Search destinations"
                 className="sm:ml-auto bg-ocean hover:bg-ocean-dark text-white font-semibold px-7 py-3.5 rounded-[1.5rem] transition-colors duration-200 focus-ring flex items-center gap-2 justify-center active:scale-95 whitespace-nowrap"
               >
                 <Search className="w-4 h-4" aria-hidden="true" />
                 <span>Find My Trip</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -451,7 +465,7 @@ export default function LandingPage() {
               </h2>
             </div>
             <Link
-              href="#all-destinations"
+              href="/dashboard"
               className="inline-flex items-center gap-2 text-ocean font-semibold group focus-ring rounded-sm self-start md:self-auto"
             >
               All Destinations
@@ -476,12 +490,11 @@ export default function LandingPage() {
                   )}
                   aria-label={`${dest.title} — ${dest.subtitle}`}
                 >
-                  <img
+                  <Image
                     src={dest.image}
                     alt={`${dest.title} — ${dest.tagline}`}
-                    width={1280}
-                    height={960}
-                    loading="lazy"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                   />
 
@@ -529,7 +542,8 @@ export default function LandingPage() {
                         <span className="text-white/60 text-xs">({dest.reviews.toLocaleString()})</span>
                       </div>
                       {/* CTA */}
-                      <button
+                      <Link
+                        href="/dashboard"
                         aria-label={`Explore ${dest.title}`}
                         className="flex items-center gap-1.5 text-white text-sm font-semibold group/btn focus-ring-white rounded-full"
                       >
@@ -538,7 +552,7 @@ export default function LandingPage() {
                           className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200"
                           aria-hidden="true"
                         />
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </article>
@@ -570,13 +584,11 @@ export default function LandingPage() {
           {/* Left — image stack */}
           <div className="relative h-[580px] hidden lg:block">
             <div className="absolute inset-0 rounded-3xl overflow-hidden rotate-2 shadow-2xl hover:rotate-0 transition-transform duration-700">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1544526226-d4568090ffb8?auto=format&fit=crop&q=80&w=1280"
                 alt="Solo traveller watching the sunset in Siargao"
-                width={1280}
-                height={960}
-                loading="lazy"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-ocean/20 mix-blend-overlay" aria-hidden="true" />
             </div>
@@ -649,13 +661,16 @@ export default function LandingPage() {
               })}
             </div>
 
-            <button className="mt-12 px-8 py-4 bg-white text-slate font-bold rounded-full hover:bg-sand transition-colors duration-200 shadow-xl focus-ring flex items-center gap-2 group">
+            <Link 
+              href="/verify"
+              className="mt-12 px-8 py-4 bg-white text-slate font-bold rounded-full hover:bg-sand transition-colors duration-200 shadow-xl focus-ring inline-flex items-center gap-2 group"
+            >
               Learn About Safety
               <ArrowRight
                 className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200"
                 aria-hidden="true"
               />
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -702,14 +717,14 @@ export default function LandingPage() {
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   <footer className="flex items-center gap-4">
-                    <img
-                      src={t.avatar}
-                      alt={t.name}
-                      width={48}
-                      height={48}
-                      loading="lazy"
-                      className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                    />
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0">
+                      <Image 
+                        src={t.avatar} 
+                        alt={t.name} 
+                        fill 
+                        className="object-cover" 
+                      />
+                    </div>
                     <div className="text-left">
                       <cite className="text-slate font-bold not-italic">{t.name}</cite>
                       <p className="text-slate/50 text-sm flex items-center gap-1.5">
@@ -733,7 +748,7 @@ export default function LandingPage() {
               <button
                 key={i}
                 role="tab"
-                aria-selected={i === activeTestimonial}
+                aria-selected={i === activeTestimonial ? "true" : "false"}
                 aria-label={`View testimonial by ${t.name}`}
                 onClick={() => setActiveTestimonial(i)}
                 className={cn(
@@ -754,13 +769,11 @@ export default function LandingPage() {
         className="relative py-28 px-6 overflow-hidden"
       >
         <div className="absolute inset-0 z-0" aria-hidden="true">
-          <img
-            src="https://images.unsplash.com/photo-1494783367193-149034c05e8f?auto=format&fit=crop&q=80&w=2560"
-            alt=""
-            width={2560}
-            height={1440}
-            loading="lazy"
-            className="w-full h-full object-cover"
+          <Image 
+            src="https://images.unsplash.com/photo-1494783367193-149034c05e8f?auto=format&fit=crop&q=80&w=2560" 
+            alt="Adventure CTA background" 
+            fill 
+            className="object-cover opacity-30" 
           />
           <div className="absolute inset-0 bg-slate/80" />
         </div>
@@ -778,13 +791,19 @@ export default function LandingPage() {
             and their most memorable journey.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-10 py-4 bg-sunset hover:bg-sunset-dark text-white font-bold rounded-full transition-colors duration-200 shadow-xl focus-ring active:scale-95 flex items-center gap-2 justify-center group">
+            <Link 
+              href="/verify"
+              className="px-10 py-4 bg-sunset hover:bg-sunset-dark text-white font-bold rounded-full transition-colors duration-200 shadow-xl focus-ring active:scale-95 flex items-center gap-2 justify-center group"
+            >
               Start for Free
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" aria-hidden="true" />
-            </button>
-            <button className="px-10 py-4 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-colors duration-200 focus-ring-white">
+            </Link>
+            <Link 
+              href="/dashboard"
+              className="px-10 py-4 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-colors duration-200 focus-ring-white flex items-center justify-center"
+            >
               See Destinations
-            </button>
+            </Link>
           </div>
           <p className="text-white/30 text-sm mt-6">No credit card required &middot; Free forever for solo explorers</p>
         </div>
@@ -863,13 +882,13 @@ export default function LandingPage() {
             <nav aria-label="Company links">
               <h3 className="text-xs font-bold tracking-widest uppercase text-white/30 mb-5">Company</h3>
               <ul className="space-y-3">
-                {["About Us", "Safety Center", "Blog", "Careers"].map((item) => (
+                {["About Us", "Safety", "Blog", "Careers"].map((item) => (
                   <li key={item}>
                     <Link
-                      href={`#${item.toLowerCase().replace(" ", "-")}`}
+                      href={`#${item.toLowerCase()}`}
                       className="text-white/60 hover:text-white transition-colors duration-200 text-sm focus-ring-white rounded-sm"
                     >
-                      {item}
+                      {item === "Safety" ? "Safety Center" : item}
                     </Link>
                   </li>
                 ))}

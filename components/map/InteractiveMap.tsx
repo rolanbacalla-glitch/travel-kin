@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { 
   APIProvider, 
   Map, 
@@ -25,9 +26,18 @@ export default function InteractiveMap() {
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
   
   const selectedPin = pinData.find(p => p.id === selectedPinId);
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
+  React.useEffect(() => {
+    if (!apiKey) {
+      console.error("🚨 TRAVEL KIN: Maps API key is missing! Please configure NEXT_PUBLIC_GOOGLE_MAPS_API_KEY in your deployment environment.");
+    } else {
+      console.log("✅ TRAVEL KIN: Remote Maps Engine initialising with key starting with:", apiKey.substring(0, 8) + "...");
+    }
+  }, [apiKey]);
 
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
+    <APIProvider apiKey={apiKey || ""}>
       <div className="w-full h-[600px] rounded-[2.5rem] overflow-hidden shadow-2xl relative border border-slate/5 bg-slate/90">
         <Map
           defaultCenter={{ lat: 18.7883, lng: 98.9853 }}
@@ -99,9 +109,14 @@ export default function InteractiveMap() {
           <div className="p-4 bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl pointer-events-auto flex items-center gap-4">
              <div className="flex -space-x-3">
                {[1,2,3].map(i => (
-                 <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate shadow-sm overflow-hidden">
-                   <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="Active Kin" />
-                 </div>
+                  <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate shadow-sm overflow-hidden relative">
+                    <Image 
+                      src={`https://i.pravatar.cc/100?img=${i+10}`} 
+                      alt="Active Kin" 
+                      fill 
+                      className="object-cover" 
+                    />
+                  </div>
                ))}
              </div>
              <div className="text-xs">

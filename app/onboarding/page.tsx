@@ -333,13 +333,19 @@ function SafetyForm() {
             Join 12,000+ verified solo travellers. We use secure identity checks to ensure everyone in our community is who they say they are.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="px-8 py-4 bg-ocean text-white font-bold rounded-2xl shadow-xl shadow-ocean/20 hover:bg-ocean-dark transition-all active:scale-95 flex items-center justify-center gap-2">
+            <Link 
+              href="/verify"
+              className="px-8 py-4 bg-ocean text-white font-bold rounded-2xl shadow-xl shadow-ocean/20 hover:bg-ocean-dark transition-all active:scale-95 flex items-center justify-center gap-2"
+            >
               Verify with Passport
               <ChevronRight className="w-4 h-4" />
-            </button>
-            <button className="px-8 py-4 bg-white text-ocean border border-ocean/10 font-bold rounded-2xl shadow-md hover:bg-ocean/5 transition-all text-center">
+            </Link>
+            <Link 
+              href="/dashboard"
+              className="px-8 py-4 bg-white text-ocean border border-ocean/10 font-bold rounded-2xl shadow-md hover:bg-ocean/5 transition-all text-center flex items-center justify-center"
+            >
               Skip for Now
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -367,7 +373,7 @@ function OnboardingSuccess() {
         Welcome to your tribe. Your profile is being prepared—your Southeast Asia journey starts here.
       </p>
       <Link 
-        href="/" 
+        href="/dashboard" 
         className="px-10 py-5 bg-slate text-white font-bold rounded-2xl shadow-2xl hover:bg-slate-dark transition-all active:scale-95"
       >
         Enter the Hub

@@ -13,6 +13,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -134,8 +135,16 @@ export default function VerificationPage() {
               className="bg-white rounded-[2.5rem] p-8 shadow-2xl space-y-8"
             >
               <h2 className="text-2xl font-serif text-slate font-bold text-center">Is the text clear?</h2>
-              <div className="aspect-[3/4] md:aspect-video rounded-2xl overflow-hidden shadow-inner border border-slate/5 bg-sand">
-                {capturedImage && <img src={capturedImage} alt="Captured ID" className="w-full h-full object-cover" />}
+              <div className="aspect-[3/4] md:aspect-video rounded-2xl overflow-hidden shadow-inner border border-slate/5 bg-sand relative">
+                {capturedImage && (
+                  <Image 
+                    src={capturedImage} 
+                    alt="Captured ID" 
+                    fill 
+                    unoptimized 
+                    className="object-cover" 
+                  />
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <button 
@@ -201,7 +210,7 @@ export default function VerificationPage() {
                 <p className="text-slate/50">Your identity check was successful. You now have full access to our global travellers network.</p>
               </div>
               <Link 
-                href="/" 
+                href="/dashboard" 
                 className="block w-full py-5 bg-slate text-white font-bold rounded-2xl shadow-xl hover:bg-slate-dark transition-all active:scale-95"
               >
                 Go to Dashboard
