@@ -12,7 +12,6 @@ import {
   Search,
   Filter,
   CheckCircle2,
-  AlertCircle,
   MoreVertical,
   Navigation,
   Heart
@@ -21,31 +20,57 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+import MessagesView from "@/components/messages/MessagesView";
+
+/* ─────────────────────────────────────────────────────────── */
+/* Types                                                         */
+/* ─────────────────────────────────────────────────────────── */
+
+interface Kin {
+  id: string;
+  name: string;
+  location: string;
+  vibe: string;
+  status: "online" | "away" | "offline";
+  image: string;
+}
 
 /* ─────────────────────────────────────────────────────────── */
 /* Data Mockups                                                 */
 /* ─────────────────────────────────────────────────────────── */
 
-const kins = [
-  { id: 1, name: "Suki", location: "Chiang Mai", vibe: "Introvert, Foodie", status: "online", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&h=200&auto=format&fit=crop" },
-  { id: 2, name: "Liam", location: "Bangkok", vibe: "Night Owl, Action", status: "away", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&auto=format&fit=crop" },
-  { id: 3, name: "Nara", location: "Phuket", vibe: "Early Bird, Zen", status: "online", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&h=200&auto=format&fit=crop" },
-  { id: 4, name: "Kevin", location: "Bali", vibe: "Remote Pro, Surf", status: "offline", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&h=200&auto=format&fit=crop" },
+const kins: Kin[] = [
+  { id: "1", name: "Suki",  location: "Chiang Mai", vibe: "Introvert, Foodie",  status: "online",  image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&h=200&auto=format&fit=crop" },
+  { id: "2", name: "Liam",  location: "Bangkok",    vibe: "Night Owl, Action",  status: "away",    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&auto=format&fit=crop" },
+  { id: "3", name: "Nara",  location: "Phuket",     vibe: "Early Bird, Zen",    status: "online",  image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&h=200&auto=format&fit=crop" },
+  { id: "4", name: "Kevin", location: "Bali",       vibe: "Remote Pro, Surf",   status: "offline", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&h=200&auto=format&fit=crop" },
 ];
 
 /* ─────────────────────────────────────────────────────────── */
-/* Components                                                    */
+/* Lazy-loaded components                                       */
 /* ─────────────────────────────────────────────────────────── */
-
-import dynamic from "next/dynamic";
 
 const InteractiveMap = dynamic(() => import("@/components/map/InteractiveMap"), { 
   ssr: false,
   loading: () => <div className="w-full h-[600px] bg-slate/5 animate-pulse rounded-[2.5rem] flex items-center justify-center text-slate/20 font-black uppercase tracking-widest italic">Initialising Maps Engine...</div>
 });
 
+/* ─────────────────────────────────────────────────────────── */
+/* Page                                                         */
+/* ─────────────────────────────────────────────────────────── */
+
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"hub" | "safety" | "messages">("hub");
+  // Stores the conversation id to open when jumping from a Kin card → Messages
+  const [openConvId, setOpenConvId] = useState<string | null>(null);
+
+  const goToChat = (kinId: string) => {
+    setOpenConvId(kinId);
+    setActiveTab("messages");
+  };
+
+  const totalUnread = 3;
 
   return (
     <div className="min-h-screen bg-[#F9F8F6] flex flex-col md:flex-row">
@@ -71,10 +96,10 @@ export default function DashboardPage() {
           />
           <SidebarItem 
             active={activeTab === "messages"} 
-            onClick={() => setActiveTab("messages")} 
+            onClick={() => { setOpenConvId(null); setActiveTab("messages"); }} 
             icon={MessageSquare} 
-            label="Messages" 
-            badge="3"
+            label="Messages"
+            badge={totalUnread > 0 ? String(totalUnread) : undefined}
           />
         </nav>
 
@@ -97,7 +122,7 @@ export default function DashboardPage() {
                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/50" />
                <input 
                  placeholder="Search travellers..." 
-                 className="p-4 pl-12 bg-white border border-slate/5 rounded-2xl shadow-sm text-sm focus:outline-sunset focus:ring-4 focus:ring-sunset/5 transition-all"
+                 className="p-4 pl-12 bg-white border border-slate/5 rounded-2xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all"
                />
             </div>
             <button 
@@ -110,22 +135,52 @@ export default function DashboardPage() {
         </header>
 
         {/* Dynamic Content */}
-        <div className="p-6 md:p-12 h-content">
-          {activeTab === "hub" && <TravelCrewHub />}
-          
-          <div className={cn(activeTab === "safety" ? "block" : "hidden")}>
-            <SafetyDashboard />
-          </div>
+        <div className="p-6 md:p-12">
+          <AnimatePresence mode="wait">
+            {activeTab === "hub" && (
+              <motion.div
+                key="hub"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <TravelCrewHub kins={kins} onChat={goToChat} />
+              </motion.div>
+            )}
 
-          {activeTab === "messages" && <MessagesPlaceholder />}
+            {activeTab === "safety" && (
+              <motion.div
+                key="safety"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <SafetyDashboard />
+              </motion.div>
+            )}
+
+            {activeTab === "messages" && (
+              <motion.div
+                key="messages"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <MessagesView openConvId={openConvId} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
 
       {/* ── Mobile Navigation ── */}
       <nav className="md:hidden sticky bottom-0 left-0 right-0 h-20 bg-white border-t border-slate/5 flex items-center justify-around px-2 z-30">
-        <MobileNavItem active={activeTab === "hub"} onClick={() => setActiveTab("hub")} icon={Users} label="Hub" />
-        <MobileNavItem active={activeTab === "safety"} onClick={() => setActiveTab("safety")} icon={Shield} label="Safety" />
-        <MobileNavItem active={activeTab === "messages"} onClick={() => setActiveTab("messages")} icon={MessageSquare} label="Chat" />
+        <MobileNavItem active={activeTab === "hub"}      onClick={() => setActiveTab("hub")}                                      icon={Users}         label="Hub" />
+        <MobileNavItem active={activeTab === "safety"}   onClick={() => setActiveTab("safety")}                                   icon={Shield}        label="Safety" />
+        <MobileNavItem active={activeTab === "messages"} onClick={() => { setOpenConvId(null); setActiveTab("messages"); }}        icon={MessageSquare} label="Chat" badge={totalUnread} />
         <MobileNavItem icon={Settings} label="Settings" />
       </nav>
     </div>
@@ -134,7 +189,7 @@ export default function DashboardPage() {
 
 /* ── UI Components ── */
 
-function TravelCrewHub() {
+function TravelCrewHub({ kins, onChat }: { kins: Kin[]; onChat: (id: string) => void }) {
   return (
     <div className="space-y-10">
       <div className="flex items-center justify-between">
@@ -147,7 +202,7 @@ function TravelCrewHub() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {kins.map(kin => (
-          <KinCard key={kin.id} kin={kin} />
+          <KinCard key={kin.id} kin={kin} onChat={() => onChat(kin.id)} />
         ))}
       </div>
     </div>
@@ -192,7 +247,7 @@ function SafetyDashboard() {
              <h3 className="font-bold text-slate text-lg uppercase tracking-tight">Active SafeZone</h3>
              <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 uppercase">Secure</span>
           </div>
-          <div className="p-4 bg-mist rounded-2xl flex items-center gap-4">
+          <div className="p-4 bg-[#F9F8F6] rounded-2xl flex items-center gap-4">
              <div className="p-3 bg-ocean text-white rounded-xl shadow-md"><MapPin className="w-5 h-5" /></div>
              <div>
                 <p className="text-sm font-bold text-slate">Old Town, Chiang Mai</p>
@@ -214,7 +269,7 @@ function SafetyDashboard() {
           <h3 className="font-bold text-slate text-lg uppercase tracking-tight">Emergency Contacts</h3>
           <div className="space-y-3">
              <ContactItem name="Sarah Reyes" role="Partner" active />
-             <ContactItem name="Elena Kin" role="Emergency Desk" />
+             <ContactItem name="Elena Kin"   role="Emergency Desk" />
           </div>
           <button className="w-full py-4 text-slate font-bold text-sm bg-slate/10 rounded-xl hover:bg-slate/20 transition-all uppercase tracking-widest">+ Add Contact</button>
         </div>
@@ -223,23 +278,12 @@ function SafetyDashboard() {
   );
 }
 
-function MessagesPlaceholder() {
-  return (
-    <div className="bg-white h-[600px] rounded-[2.5rem] border border-slate/10 flex flex-col items-center justify-center p-12 text-center space-y-6 shadow-2xl">
-      <div className="w-24 h-24 bg-mist rounded-full flex items-center justify-center text-slate/40">
-        <MessageSquare className="w-10 h-10" />
-      </div>
-      <div className="space-y-2">
-        <h3 className="text-2xl font-serif font-bold text-slate">Select a Conversation</h3>
-        <p className="text-slate/60 max-w-xs mx-auto">Click on a solo kin to start planning your next journey together.</p>
-      </div>
-    </div>
-  );
-}
-
 /* ── HELPER COMPONENTS ── */
 
-function SidebarItem({ icon: Icon, label, active, onClick, className, badge }: any) {
+function SidebarItem({ icon: Icon, label, active, onClick, className, badge }: {
+  icon: React.ElementType; label: string; active?: boolean;
+  onClick?: () => void; className?: string; badge?: string;
+}) {
   return (
     <button 
       onClick={onClick}
@@ -260,22 +304,31 @@ function SidebarItem({ icon: Icon, label, active, onClick, className, badge }: a
   );
 }
 
-function MobileNavItem({ icon: Icon, label, active, onClick }: any) {
+function MobileNavItem({ icon: Icon, label, active, onClick, badge }: {
+  icon: React.ElementType; label: string; active?: boolean; onClick?: () => void; badge?: number;
+}) {
   return (
     <button 
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all",
+        "flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all relative",
         active ? "text-sunset" : "text-slate/50"
       )}
     >
-      <Icon className="w-6 h-6" />
+      <div className="relative">
+        <Icon className="w-6 h-6" />
+        {badge && badge > 0 && (
+          <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-sunset text-white text-[9px] font-black flex items-center justify-center">
+            {badge}
+          </span>
+        )}
+      </div>
       <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
     </button>
   );
 }
 
-function KinCard({ kin }: { kin: any }) {
+function KinCard({ kin, onChat }: { kin: Kin; onChat: () => void }) {
   return (
     <motion.div 
       whileHover={{ y: -5 }}
@@ -295,12 +348,7 @@ function KinCard({ kin }: { kin: any }) {
           "w-24 h-24 rounded-full p-1 border-2 border-white shadow-xl relative z-10 overflow-hidden",
           kin.status === "online" ? "border-green-400" : "border-slate/20"
         )}>
-          <Image 
-            src={kin.image} 
-            alt={kin.name} 
-            fill 
-            className="object-cover rounded-full" 
-          />
+          <Image src={kin.image} alt={kin.name} fill className="object-cover rounded-full" />
         </div>
         {kin.status === "online" && (
           <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-4 border-white z-20" />
@@ -315,12 +363,15 @@ function KinCard({ kin }: { kin: any }) {
         </div>
       </div>
 
-      <div className="p-2 bg-mist rounded-full text-[10px] font-bold text-slate/70 uppercase tracking-widest w-full">
+      <div className="p-2 bg-[#F9F8F6] rounded-full text-[10px] font-bold text-slate/70 uppercase tracking-widest w-full">
         {kin.vibe}
       </div>
 
       <div className="pt-4 grid grid-cols-2 gap-3 w-full">
-         <button className="py-3 px-4 bg-slate text-white text-xs font-bold rounded-xl hover:bg-slate-dark transition-all flex items-center justify-center gap-2">
+         <button
+           onClick={onChat}
+           className="py-3 px-4 bg-slate text-white text-xs font-bold rounded-xl hover:bg-ocean transition-all flex items-center justify-center gap-2"
+         >
            <MessageSquare className="w-3 h-3" />
            Chat
          </button>
@@ -333,7 +384,7 @@ function KinCard({ kin }: { kin: any }) {
   );
 }
 
-function ContactItem({ name, role, active }: any) {
+function ContactItem({ name, role, active }: { name: string; role: string; active?: boolean }) {
   return (
     <div className="p-4 rounded-xl border border-slate/10 bg-slate/[0.05] flex items-center justify-between group hover:border-sunset/30 transition-all">
         <div className="flex items-center gap-4">
