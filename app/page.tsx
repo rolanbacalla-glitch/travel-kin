@@ -186,7 +186,7 @@ export default function LandingPage() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter,padding] duration-300",
           isScrolled
-            ? "mx-4 mt-4 rounded-2xl glass shadow-xl px-5 py-3"
+            ? "mx-4 mt-4 rounded-2xl bg-slate-900/80 backdrop-blur-md shadow-xl px-5 py-3 border border-white/10"
             : "px-6 py-5 bg-transparent"
         )}
       >
