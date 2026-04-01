@@ -165,7 +165,7 @@ export default function LandingPage() {
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+    }, 7000);
     return () => clearInterval(timer);
   }, []);
 
