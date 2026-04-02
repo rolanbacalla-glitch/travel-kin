@@ -281,7 +281,7 @@ function ChatThread({ conv, onBack }: { conv: Conversation; onBack: () => void }
 
           <div className="flex items-center gap-3">
               <button 
-                onClick={() => store.archiveChat(conv.id)}
+                onClick={() => store.archiveChat(conv.id, conv.name, conv.location, conv.vibe)}
                 className="flex items-center gap-2 text-slate/50 hover:text-ocean transition-all cursor-pointer"
                 title="Archive to Memories"
                 aria-label={`Archive chat with ${conv.name}`}

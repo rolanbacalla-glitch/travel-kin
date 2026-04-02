@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Camera, 
@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from "@/lib/utils";
+import { useMessagesStore } from '@/lib/stores/useMessages';
 
 interface Memory {
   id: string;
@@ -74,10 +75,26 @@ const SAMPLE_MEMORIES: Memory[] = [
 ];
 
 export function MemoriesView() {
+  const store = useMessagesStore();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
-  const selectedMemory = SAMPLE_MEMORIES.find(m => m.id === selectedId);
+  const allMemories = useMemo(() => {
+    const chatMemories = store.archivedMemories.map(m => ({
+        id: m.id,
+        url: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=800&h=1200&auto=format&fit=crop', // A different travel placeholder
+        location: m.location,
+        caption: `Session with ${m.kinName}: ${m.preview}`,
+        taggedKins: [m.kinName],
+        vibe: m.vibe,
+        likes: 0,
+        date: new Date(m.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    }));
+    // Sort to show newest first
+    return [...chatMemories, ...SAMPLE_MEMORIES];
+  }, [store.archivedMemories]);
+
+  const selectedMemory = allMemories.find(m => m.id === selectedId);
 
   return (
     <div className="max-w-6xl mx-auto space-y-12 pb-32">
@@ -152,7 +169,7 @@ export function MemoriesView() {
 
       {/* Masonry Grid */}
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8">
-        {SAMPLE_MEMORIES.map((memory) => (
+        {allMemories.map((memory) => (
           <motion.div
             key={memory.id}
             layoutId={memory.id}

@@ -15,9 +15,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Radar, Sparkles, Navigation } from "lucide-react";
+import { Radar, Sparkles, Navigation, ShieldCheck, Heart, Share2, MoreHorizontal } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useMessagesStore } from "@/lib/stores/useMessages";
+import { VibeConsensus } from "./VibeConsensus";
 
 interface Kin {
   id: string;
@@ -174,72 +175,67 @@ export function TravelCrewHub({ kins, onChat }: { kins: Kin[]; onChat: (id: stri
         {kins.map((kin, i) => (
           <motion.div 
             key={kin.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.1, duration: 0.8 }}
+            className="group relative"
           >
-            <div className="group relative bg-white border border-slate/5 rounded-[50px] shadow-lg shadow-slate/5 hover:shadow-2xl hover:shadow-slate/10 transition-all duration-700 overflow-hidden cursor-pointer" onClick={() => onChat(kin.id)}>
-                
-                {/* Image Section */}
-                <div className="relative aspect-[3/4]">
-                    <Image 
-                        src={kin.image} 
-                        alt={kin.name} 
-                        fill 
-                        className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-                    
-                    {/* Floating Badges */}
-                    <div className="absolute top-6 left-6 flex flex-col gap-2">
-                        <div className="px-4 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-slate shadow-xl border border-white/20">
-                            98% Vibe Match
-                        </div>
-                    </div>
+            <div className="relative aspect-[4/5] rounded-[48px] overflow-hidden bg-slate/5 shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:shadow-3xl">
+              <Image 
+                src={kin.image} 
+                alt={kin.name} 
+                fill 
+                className="object-cover transition-transform duration-1000 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              
+              {/* Vibe Badge */}
+              <div className="absolute top-6 left-6 flex flex-col gap-2">
+                <div className="px-4 py-1.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 text-[10px] font-black uppercase tracking-[0.2em] text-white">
+                  {kin.vibe} Match
+                </div>
+              </div>
+
+              {/* Verified Ring */}
+              {kin.status === 'online' && (
+                <div className="absolute top-6 right-6 p-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50" />
+              )}
+
+              {/* Detail Overlay */}
+              <div className="absolute inset-x-0 bottom-0 p-8 space-y-6 translate-y-12 group-hover:translate-y-0 transition-transform duration-500">
+                <div className="space-y-1">
+                   <div className="flex items-center gap-2">
+                      <h3 className="text-3xl font-serif text-white font-bold tracking-tight">{kin.name}</h3>
+                      <ShieldCheck className="w-5 h-5 text-ocean" />
+                   </div>
+                   <div className="text-white/60 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-sunset" />
+                      {kin.location}
+                   </div>
                 </div>
 
-                {/* Info Section */}
-                <div className="p-8 pt-0 -mt-12 relative z-10">
-                    <div className="w-16 h-16 rounded-[25px] bg-white shadow-2xl flex items-center justify-center mb-6 ring-8 ring-[#F9F8F6]">
-                        <div className={`w-3 h-3 rounded-full ${kin.status === 'online' ? 'bg-green-500 animate-pulse' : 'bg-slate/20'}`} />
-                    </div>
-
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <h3 className="text-2xl font-serif font-black text-slate">{kin.name}</h3>
-                            <div className="inline-flex items-center gap-1.5 text-ocean">
-                                <CheckCircle2 className="w-4 h-4 fill-ocean/10" />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Verified</span>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                            {kin.vibe.split(',').map((v, it) => (
-                                <span key={it} className="px-4 py-1.5 bg-slate/5 rounded-full text-[10px] font-bold text-slate/50 uppercase tracking-widest">
-                                    {v.trim()}
-                                </span>
-                            ))}
-                        </div>
-
-                        <div className="pt-6 border-t border-slate/5 flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-slate/40">
-                                <MapPin className="w-4 h-4" />
-                                <p className="text-xs font-bold">{kin.location}</p>
-                            </div>
-                            <div className="flex items-center gap-1 text-sunset">
-                                <Users className="w-4 h-4" />
-                                <span className="text-xs font-black">2 Mutuals</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="mt-8 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                        <button className="w-full flex items-center justify-center gap-3 py-5 bg-ocean text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-ocean/30 active:scale-95">
-                            <MessageSquare className="w-4 h-4" />
-                            Open Conversation
-                        </button>
-                    </div>
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity delay-100">
+                   <VibeConsensus stats={{
+                      id: kin.id,
+                      rating: 4.8 + (Math.random() * 0.2),
+                      reviews: 12 + Math.floor(Math.random() * 30),
+                      tags: ['Zen', 'Verified', 'Remote'],
+                      lastDiscovery: '2m ago'
+                   }} />
                 </div>
+
+                <div className="flex gap-3 pt-2 opacity-0 group-hover:opacity-100 transition-all delay-200 translate-y-4 group-hover:translate-y-0">
+                  <button 
+                    onClick={() => onChat(kin.id)}
+                    className="flex-1 py-4 bg-white text-slate text-xs font-black uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-sunset hover:text-white transition-all active:scale-95"
+                  >
+                    Open Ring
+                  </button>
+                  <button className="p-4 bg-white/10 backdrop-blur-xl text-white rounded-2xl border border-white/20 hover:bg-white/20 transition-all">
+                    <Heart className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
             </div>
           </motion.div>
         ))}
