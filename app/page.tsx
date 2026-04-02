@@ -75,7 +75,7 @@ const destinations = [
     subtitle: "Palawan, Philippines",
     tagline: "World-class shipwrecks & lagoons",
     image:
-      "https://images.unsplash.com/photo-1544085311-11a028465b03?q=80&w=1280&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1584640161267-869f0aa03af6?q=80&w=928&auto=format&fit=crop",
     price: "From £450",
     rating: 4.9,
     reviews: 865,
@@ -88,7 +88,7 @@ const destinations = [
     subtitle: "Central Visayas, PH",
     tagline: "Canyoneering & sardine runs",
     image:
-      "https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?q=80&w=1280&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1495443942462-81f29560f7e0?q=80&w=1746&auto=format&fit=crop",
     price: "From £380",
     rating: 4.7,
     reviews: 1540,
