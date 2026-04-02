@@ -73,6 +73,15 @@ body {
     display: flex;
     width: max-content;
   }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
 
 /* ─── Reduced motion overrides ──────────────────────────────── */
@@ -108,7 +117,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0077B6;
+  background: #0077B633; /* More subtle default */
   border-radius: 99px;
 }
 
