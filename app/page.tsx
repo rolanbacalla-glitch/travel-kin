@@ -554,23 +554,23 @@ export default function LandingPage() {
                 onClick={scrollPrev}
                 disabled={activeCard === 0}
                 className={cn(
-                  "pointer-events-auto p-4 bg-slate-900/60 backdrop-blur-2xl rounded-2xl border border-white/10 text-white shadow-2xl transition-all duration-500 hover:bg-sunset hover:border-sunset group/arrow active:scale-90",
+                  "pointer-events-auto p-5 bg-slate-900/60 backdrop-blur-2xl rounded-full border border-white/10 text-white shadow-2xl transition-all duration-500 hover:scale-110 hover:bg-slate-900/80 hover:border-white/20 group/arrow active:scale-95",
                   activeCard === 0 ? "opacity-0 scale-75 cursor-default" : "opacity-100 scale-100"
                 )}
                 aria-label="Previous destination"
               >
-                <ChevronLeft className="w-6 h-6 transition-transform group-hover/arrow:-translate-x-0.5" />
+                <ChevronLeft className="w-7 h-7 transition-transform group-hover/arrow:-translate-x-0.5" />
               </button>
               <button
                 onClick={scrollNext}
                 disabled={activeCard === destinations.length - 1}
                 className={cn(
-                  "pointer-events-auto p-4 bg-slate-900/60 backdrop-blur-2xl rounded-2xl border border-white/10 text-white shadow-2xl transition-all duration-500 hover:bg-sunset hover:border-sunset group/arrow active:scale-90",
+                  "pointer-events-auto p-5 bg-slate-900/60 backdrop-blur-2xl rounded-full border border-white/10 text-white shadow-2xl transition-all duration-500 hover:scale-110 hover:bg-slate-900/80 hover:border-white/20 group/arrow active:scale-95",
                   activeCard === destinations.length - 1 ? "opacity-0 scale-75 cursor-default" : "opacity-100 scale-100"
                 )}
                 aria-label="Next destination"
               >
-                <ChevronRight className="w-6 h-6 transition-transform group-hover/arrow:translate-x-0.5" />
+                <ChevronRight className="w-7 h-7 transition-transform group-hover/arrow:translate-x-0.5" />
               </button>
             </div>
 
