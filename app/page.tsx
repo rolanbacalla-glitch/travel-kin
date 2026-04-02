@@ -6,6 +6,7 @@ import {
   MapPin,
   Users,
   ShieldCheck,
+  ChevronLeft,
   ChevronRight,
   Menu,
   X,
@@ -67,6 +68,45 @@ const destinations = [
     reviews: 765,
     icon: Mountain,
     tag: "SURF",
+  },
+  {
+    id: "coron",
+    title: "Coron",
+    subtitle: "Palawan, Philippines",
+    tagline: "World-class shipwrecks & lagoons",
+    image:
+      "https://images.unsplash.com/photo-1544085311-11a028465b03?q=80&w=1280&auto=format&fit=crop",
+    price: "From £450",
+    rating: 4.9,
+    reviews: 865,
+    icon: Mountain,
+    tag: "ADVENTURE",
+  },
+  {
+    id: "cebu",
+    title: "Cebu",
+    subtitle: "Central Visayas, PH",
+    tagline: "Canyoneering & sardine runs",
+    image:
+      "https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?q=80&w=1280&auto=format&fit=crop",
+    price: "From £380",
+    rating: 4.7,
+    reviews: 1540,
+    icon: Waves,
+    tag: "FALLS",
+  },
+  {
+    id: "bohol",
+    title: "Bohol",
+    subtitle: "Central Visayas, PH",
+    tagline: "Chocolate Hills & slow rivers",
+    image:
+      "https://images.unsplash.com/photo-1728042743743-e2a2abf35c47?q=80&w=1550&auto=format&fit=crop",
+    price: "From £290",
+    rating: 4.8,
+    reviews: 620,
+    icon: TreePine,
+    tag: "NATURE",
   },
 ];
 
@@ -152,8 +192,10 @@ const tickerItems = [
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeCard, setActiveCard] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef<HTMLElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 60);
@@ -161,10 +203,44 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /* Carousel scroll spy */
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const handleCarouselScroll = () => {
+      const scrollPos = carousel.scrollLeft;
+      const firstChild = carousel.firstElementChild as HTMLElement;
+      const cardWidth = firstChild?.clientWidth || 400;
+      const gap = 32; // gap-8 = 2rem = 32px
+      const index = Math.round(scrollPos / (cardWidth + gap));
+      setActiveCard(index);
+    };
+
+    carousel.addEventListener("scroll", handleCarouselScroll, { passive: true });
+    return () => carousel.removeEventListener("scroll", handleCarouselScroll);
+  }, []);
+
+  const scrollNext = () => {
+    if (!carouselRef.current) return;
+    const carousel = carouselRef.current;
+    const cardWidth = carousel.firstElementChild?.clientWidth || 400;
+    const gap = 32;
+    carousel.scrollBy({ left: cardWidth + gap, behavior: "smooth" });
+  };
+
+  const scrollPrev = () => {
+    if (!carouselRef.current) return;
+    const carousel = carouselRef.current;
+    const cardWidth = carousel.firstElementChild?.clientWidth || 400;
+    const gap = 32;
+    carousel.scrollBy({ left: -(cardWidth + gap), behavior: "smooth" });
+  };
+
   /* Auto-rotate testimonials */
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+      setActiveTestimonial((prev: number) => (prev + 1) % testimonials.length);
     }, 7000);
     return () => clearInterval(timer);
   }, []);
@@ -232,7 +308,7 @@ export default function LandingPage() {
           {/* Mobile menu toggle */}
           <button
             aria-label="Open navigation menu"
-            aria-expanded={mobileMenuOpen ? "true" : "false"}
+            aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
             className="md:hidden text-white p-2 focus-ring rounded-lg"
             onClick={() => setMobileMenuOpen(true)}
@@ -398,14 +474,6 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Scroll cue */}
-        <div
-          className="absolute bottom-28 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 animate-float"
-          aria-hidden="true"
-        >
-          <span className="text-white/70 text-xs tracking-widest uppercase">Scroll</span>
-          <div className="w-px h-12 bg-gradient-to-b from-white/70 to-transparent" />
-        </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════
@@ -444,7 +512,7 @@ export default function LandingPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          FEATURED DESTINATIONS
+          FEATURED DESTINATIONS (Carousel)
       ══════════════════════════════════════════════════════════ */}
       <section
         id="destinations"
@@ -478,88 +546,117 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Destination cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {destinations.map((dest, idx) => {
-              const Icon = dest.icon;
-              return (
-                <article
-                  key={dest.id}
-                  className={cn(
-                    "group relative rounded-3xl overflow-hidden cursor-pointer shadow-xl",
-                    "hover:clip-[ellipse(90%_85%_at_50%_50%)] transition-[clip-path] duration-700",
-                    "h-[520px] md:row-span-1"  // ← All cards now 520px, left one spans 1 row on desktop
-                  )}
-                  aria-label={`${dest.title} — ${dest.subtitle}`}
-                >
-                  <Image
-                    src={dest.image}
-                    alt={`${dest.title} — ${dest.tagline}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-                  />
+          {/* Destination cards Carousel */}
+          <div className="relative group/carousel">
+            {/* Arrow Navigation */}
+            <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 z-40 flex justify-between pointer-events-none px-2 sm:-mx-6">
+              <button
+                onClick={scrollPrev}
+                disabled={activeCard === 0}
+                className={cn(
+                  "pointer-events-auto p-4 bg-white/10 backdrop-blur-3xl rounded-full border border-white/20 text-white shadow-2xl transition-all duration-300 hover:bg-sunset hover:border-sunset active:scale-90",
+                  activeCard === 0 ? "opacity-0 scale-75 cursor-default" : "opacity-100 scale-100"
+                )}
+                aria-label="Previous destination"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={scrollNext}
+                disabled={activeCard === destinations.length - 1}
+                className={cn(
+                  "pointer-events-auto p-4 bg-white/10 backdrop-blur-3xl rounded-full border border-white/20 text-white shadow-2xl transition-all duration-300 hover:bg-sunset hover:border-sunset active:scale-90",
+                  activeCard === destinations.length - 1 ? "opacity-0 scale-75 cursor-default" : "opacity-100 scale-100"
+                )}
+                aria-label="Next destination"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
 
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 card-overlay" aria-hidden="true" />
+            <div
+              ref={carouselRef}
+              className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-12 scrollbar-hide -mx-6 px-6 md:mx-0 md:px-0 cursor-grab active:cursor-grabbing"
+            >
+              {destinations.map((dest) => {
+                const Icon = dest.icon;
+                return (
+                  <article
+                    key={dest.id}
+                    className={cn(
+                      "group relative rounded-[2.5rem] overflow-hidden cursor-pointer shadow-2xl snap-start flex-none w-[85vw] md:w-[420px] h-[600px]",
+                      "transition-all duration-700 hover:shadow-sunset/20"
+                    )}
+                    aria-label={`${dest.title} — ${dest.subtitle}`}
+                  >
+                    <Image
+                      src={dest.image}
+                      alt={`${dest.title} — ${dest.tagline}`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 420px"
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    />
 
-                  {/* Tag chip */}
-                  <div className="absolute top-5 left-5">
-                    <span className="flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase rounded-full border border-white/20">
-                      <Icon className="w-3 h-3" aria-hidden="true" />
-                      {dest.tag}
-                    </span>
-                  </div>
+                    {/* Premium Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700" aria-hidden="true" />
 
-                  {/* Price chip */}
-                  <div className="absolute top-6 right-6 z-20">
-                    <span className="px-6 py-3 bg-slate-900/40 backdrop-blur-md text-white text-base font-serif font-bold tracking-tight rounded-2xl border border-white/10 shadow-2xl transition-all duration-500 group-hover:bg-sunset group-hover:border-sunset group-hover:scale-110 group-hover:shadow-sunset/40">
-                      {dest.price}
-                    </span>
-                  </div>
-
-                  {/* Card footer */}
-                  <div className="absolute bottom-0 left-0 right-0 p-7">
-                    <p className="text-sunset text-xs font-bold tracking-wider uppercase mb-1">
-                      {dest.subtitle}
-                    </p>
-                    <h3 className="text-3xl font-serif text-white mb-1">{dest.title}</h3>
-                    <p className="text-white/60 text-sm mb-4">{dest.tagline}</p>
-
-                    <div className="flex items-center justify-between">
-                      {/* Rating */}
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex" aria-label={`Rating: ${dest.rating} out of 5`}>
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star
-                              key={i}
-                              className={cn(
-                                "w-3.5 h-3.5",
-                                i < Math.floor(dest.rating) ? "text-sunset fill-sunset" : "text-white/30"
-                              )}
-                              aria-hidden="true"
-                            />
-                          ))}
-                        </div>
-                        <span className="text-white/60 text-xs">({dest.reviews.toLocaleString()})</span>
-                      </div>
-                      {/* CTA */}
-                      <Link
-                        href="/dashboard"
-                        aria-label={`Explore ${dest.title}`}
-                        className="flex items-center gap-1.5 text-white text-sm font-semibold group/btn focus-ring-white rounded-full"
-                      >
-                        Explore
-                        <ArrowRight
-                          className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200"
-                          aria-hidden="true"
-                        />
-                      </Link>
+                    {/* Tag chip */}
+                    <div className="absolute top-8 left-8 transition-transform duration-500 group-hover:-translate-y-1">
+                      <span className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl text-white text-[10px] font-black tracking-[0.2em] uppercase rounded-full border border-white/20">
+                        <Icon className="w-3.5 h-3.5 text-sunset" aria-hidden="true" />
+                        {dest.tag}
+                      </span>
                     </div>
-                  </div>
-                </article>
-              );
-            })}
+
+                    {/* Price chip */}
+                    <div className="absolute top-8 right-8 z-20 transition-transform duration-500 group-hover:scale-110">
+                      <span className="px-6 py-3 bg-slate-900/60 backdrop-blur-2xl text-white text-base font-serif font-bold tracking-tight rounded-2xl border border-white/10 shadow-2xl transition-all duration-500 group-hover:bg-sunset group-hover:border-sunset group-hover:shadow-sunset/40">
+                        {dest.price}
+                      </span>
+                    </div>
+
+                    {/* Card content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-10 transform transition-transform duration-700 group-hover:-translate-y-2">
+                      <p className="text-sunset text-xs font-black tracking-[0.3em] uppercase mb-3 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-4 group-hover:translate-y-0">
+                        {dest.subtitle}
+                      </p>
+                      <h3 className="text-4xl font-serif text-white mb-2 leading-tight">{dest.title}</h3>
+                      <p className="text-white/70 text-base mb-8 line-clamp-2 max-w-[90%]">{dest.tagline}</p>
+
+                      <div className="flex items-center justify-between">
+                        {/* Rating */}
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
+                          <div className="flex" aria-label={`Rating: ${dest.rating} out of 5`}>
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star
+                                key={i}
+                                className={cn(
+                                  "w-3.5 h-3.5",
+                                  i < Math.floor(dest.rating) ? "text-sunset fill-sunset" : "text-white/20"
+                                )}
+                                aria-hidden="true"
+                              />
+                            ))}
+                          </div>
+                          <span className="text-white font-bold text-xs">{dest.rating}</span>
+                        </div>
+
+                        {/* CTA */}
+                        <div
+                          className="flex items-center gap-3 text-white text-sm font-black uppercase tracking-widest hover:text-sunset transition-colors group/btn"
+                        >
+                          Explore
+                          <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:border-sunset group-hover/btn:bg-sunset transition-all">
+                            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
           </div>
         </div>
       </section>
@@ -740,26 +837,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Testimonial nav dots */}
-          <div
-            className="flex justify-center gap-2 mt-6"
-            role="tablist"
-            aria-label="Select testimonial"
-          >
-            {testimonials.map((t, i) => (
-              <button
-                key={i}
-                role="tab"
-                aria-selected={i === activeTestimonial ? "true" : "false"}
-                aria-label={`View testimonial by ${t.name}`}
-                onClick={() => setActiveTestimonial(i)}
-                className={cn(
-                  "w-2 h-2 rounded-full transition-[width,background-color] duration-300 focus-ring",
-                  i === activeTestimonial ? "bg-ocean w-8" : "bg-slate/20 hover:bg-slate/40"
-                )}
-              />
-            ))}
-          </div>
+          {/* Testimonial nav dots - REMOVED for minimalist design */}
         </div>
       </section>
 
