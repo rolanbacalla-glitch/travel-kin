@@ -36,7 +36,7 @@ const destinations = [
     tagline: "Limestone karsts & hidden lagoons",
     image:
       "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&q=80&w=1280",
-    price: "From $499",
+    price: "From £499",
     rating: 4.9,
     reviews: 1240,
     icon: Waves,
@@ -49,7 +49,7 @@ const destinations = [
     tagline: "White sands & world-class sunsets",
     image:
       "https://www.rappler.com/tachyon/2022/07/boracay.jpg",
-    price: "From $320",
+    price: "From £320",
     rating: 4.8,
     reviews: 980,
     icon: TreePine,
@@ -62,7 +62,7 @@ const destinations = [
     tagline: "The surf capital of Asia",
     image:
       "https://di262mgurvkjm.cloudfront.net/e443f533-c595-4c02-8f38-246fccfd14e2/M45386_uxga.jpg",
-    price: "From $280",
+    price: "From £280",
     rating: 4.9,
     reviews: 765,
     icon: Mountain,
