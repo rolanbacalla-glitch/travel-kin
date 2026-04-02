@@ -215,13 +215,13 @@ export default function LandingPage() {
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
-            <Link 
+            <Link
               href="/verify"
               className="px-5 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
             >
               Sign In
             </Link>
-            <Link 
+            <Link
               href="/verify"
               className="px-6 py-2.5 bg-sunset text-white text-sm font-semibold rounded-full shadow-lg hover:bg-sunset-dark transition-all duration-200 focus-ring active:scale-95 cursor-pointer"
             >
@@ -232,7 +232,7 @@ export default function LandingPage() {
           {/* Mobile menu toggle */}
           <button
             aria-label="Open navigation menu"
-            aria-expanded={mobileMenuOpen}
+            aria-expanded={mobileMenuOpen ? "true" : "false"}
             aria-controls="mobile-menu"
             className="md:hidden text-white p-2 focus-ring rounded-lg"
             onClick={() => setMobileMenuOpen(true)}
@@ -280,14 +280,14 @@ export default function LandingPage() {
           </nav>
 
           <div className="px-8 pb-12 space-y-3 flex flex-col">
-            <Link 
+            <Link
               href="/verify"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
             >
               Sign In
             </Link>
-            <Link 
+            <Link
               href="/verify"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full py-4 bg-sunset rounded-2xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
@@ -310,12 +310,12 @@ export default function LandingPage() {
         {/* Background image */}
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <div className="relative w-full h-full overflow-hidden">
-            <Image 
-              src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=1200&h=800&auto=format&fit=crop" 
-              alt="Southeast Asia Background" 
-              fill 
-              priority 
-              className="object-cover scale-110 pointer-events-none animate-subtle-zoom" 
+            <Image
+              src="https://images.unsplash.com/photo-1542533382-b42a59d8bd39?q=80&w=1074&auto=format&fit=crop"
+              alt="Southeast Asia Background"
+              fill
+              priority
+              className="object-cover scale-110 pointer-events-none animate-subtle-zoom"
             />
             {/* Dark gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-slate/60 to-slate/20 transition-opacity duration-700" aria-hidden="true" />
@@ -512,8 +512,8 @@ export default function LandingPage() {
                   </div>
 
                   {/* Price chip */}
-                  <div className="absolute top-5 right-5">
-                    <span className="px-3 py-1 bg-sunset text-white text-xs font-bold rounded-full">
+                  <div className="absolute top-6 right-6 z-20">
+                    <span className="px-6 py-3 bg-slate-900/40 backdrop-blur-md text-white text-base font-serif font-bold tracking-tight rounded-2xl border border-white/10 shadow-2xl transition-all duration-500 group-hover:bg-sunset group-hover:border-sunset group-hover:scale-110 group-hover:shadow-sunset/40">
                       {dest.price}
                     </span>
                   </div>
@@ -587,7 +587,7 @@ export default function LandingPage() {
           <div className="relative h-[580px] hidden lg:block">
             <div className="absolute inset-0 rounded-3xl overflow-hidden rotate-2 shadow-2xl hover:rotate-0 transition-transform duration-700">
               <Image
-                src="https://images.unsplash.com/photo-1544526226-d4568090ffb8?auto=format&fit=crop&q=80&w=1280"
+                src="https://images.unsplash.com/photo-1529686342540-1b43aec0df75?q=80&w=1170&auto=format&fit=crop"
                 alt="Solo traveller watching the sunset in Siargao"
                 fill
                 className="object-cover"
@@ -663,7 +663,7 @@ export default function LandingPage() {
               })}
             </div>
 
-            <Link 
+            <Link
               href="/verify"
               className="mt-12 px-8 py-4 bg-white text-slate font-bold rounded-full hover:bg-sand transition-colors duration-200 shadow-xl focus-ring inline-flex items-center gap-2 group"
             >
@@ -720,11 +720,11 @@ export default function LandingPage() {
                   </p>
                   <footer className="flex items-center gap-4">
                     <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0">
-                      <Image 
-                        src={t.avatar} 
-                        alt={t.name} 
-                        fill 
-                        className="object-cover" 
+                      <Image
+                        src={t.avatar}
+                        alt={t.name}
+                        fill
+                        className="object-cover"
                       />
                     </div>
                     <div className="text-left">
@@ -750,7 +750,7 @@ export default function LandingPage() {
               <button
                 key={i}
                 role="tab"
-                aria-selected={i === activeTestimonial}
+                aria-selected={i === activeTestimonial ? "true" : "false"}
                 aria-label={`View testimonial by ${t.name}`}
                 onClick={() => setActiveTestimonial(i)}
                 className={cn(
@@ -771,11 +771,11 @@ export default function LandingPage() {
         className="relative py-28 px-6 overflow-hidden"
       >
         <div className="absolute inset-0 z-0" aria-hidden="true">
-          <Image 
-            src="https://images.unsplash.com/photo-1494783367193-149034c05e8f?auto=format&fit=crop&q=80&w=2560" 
-            alt="Adventure CTA background" 
-            fill 
-            className="object-cover opacity-30" 
+          <Image
+            src="https://images.unsplash.com/photo-1494783367193-149034c05e8f?auto=format&fit=crop&q=80&w=2560"
+            alt="Adventure CTA background"
+            fill
+            className="object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-slate/80" />
         </div>
@@ -793,14 +793,14 @@ export default function LandingPage() {
             and their most memorable journey.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
+            <Link
               href="/verify"
               className="px-10 py-4 bg-sunset hover:bg-sunset-dark text-white font-bold rounded-full transition-colors duration-200 shadow-xl focus-ring active:scale-95 flex items-center gap-2 justify-center group"
             >
               Start for Free
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" aria-hidden="true" />
             </Link>
-            <Link 
+            <Link
               href="/dashboard"
               className="px-10 py-4 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-colors duration-200 focus-ring-white flex items-center justify-center"
             >
