@@ -16,7 +16,8 @@ import {
   Navigation,
   Heart,
   Calendar,
-  Camera
+  Camera,
+  Zap
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -29,6 +30,7 @@ import { TravelCrewHub } from "@/components/dashboard/TravelCrewHub";
 import { SafetyDashboard } from "@/components/safety/SafetyDashboard";
 import { ItineraryView } from "@/components/dashboard/ItineraryView";
 import { MemoriesView } from "@/components/dashboard/MemoriesView";
+import { CommunityFeed } from "@/components/dashboard/CommunityFeed";
 import MessagesView from "@/components/messages/MessagesView";
 
 /* ─────────────────────────────────────────────────────────── */
@@ -60,7 +62,7 @@ const kins: Kin[] = [
 /* ─────────────────────────────────────────────────────────── */
 
 export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState<"hub" | "safety" | "messages" | "itinerary" | "memories">("hub");
+  const [activeTab, setActiveTab] = useState<"hub" | "safety" | "messages" | "itinerary" | "memories" | "pulse">("hub");
   // Stores the conversation id to open when jumping from a Kin card → Messages
   const [openConvId, setOpenConvId] = useState<string | null>(null);
 
@@ -106,6 +108,13 @@ export default function DashboardPage() {
             icon={MessageSquare} 
             label="Messages"
             badge={totalUnread > 0 ? String(totalUnread) : undefined}
+          />
+          <SidebarItem 
+            active={activeTab === "pulse"} 
+            onClick={() => setActiveTab("pulse")} 
+            icon={Zap} 
+            label="Pulse" 
+            badge="Live"
           />
 
           {/* Separator for "Your Story" section */}
@@ -204,7 +213,7 @@ export default function DashboardPage() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <MessagesView openConvId={openConvId} />
+                <MessagesView onVerify={() => setActiveTab("safety")} />
               </motion.div>
             )}
 
@@ -219,6 +228,18 @@ export default function DashboardPage() {
                 <MemoriesView />
               </motion.div>
             )}
+
+            {activeTab === "pulse" && (
+              <motion.div
+                key="pulse"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <CommunityFeed />
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </main>
@@ -226,6 +247,7 @@ export default function DashboardPage() {
       {/* ── Mobile Navigation ── */}
       <nav className="md:hidden sticky bottom-0 left-0 right-0 h-20 bg-white border-t border-slate/5 flex items-center justify-around px-2 z-30 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
         <MobileNavItem active={activeTab === "hub"}       onClick={() => setActiveTab("hub")}                                      icon={Users}         label="Hub" />
+        <MobileNavItem active={activeTab === "pulse"}     onClick={() => setActiveTab("pulse")}                                    icon={Zap}           label="Pulse" />
         <MobileNavItem active={activeTab === "itinerary"} onClick={() => setActiveTab("itinerary")}                                 icon={Calendar}      label="Plan" />
         <MobileNavItem active={activeTab === "safety"}    onClick={() => setActiveTab("safety")}                                   icon={Shield}        label="Safety" />
         <MobileNavItem active={activeTab === "messages"}  onClick={() => { setOpenConvId(null); setActiveTab("messages"); }}        icon={MessageSquare} label="Chat" badge={totalUnread} />

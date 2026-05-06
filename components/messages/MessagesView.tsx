@@ -372,7 +372,7 @@ function ChatThread({ conv, onBack }: { conv: Conversation; onBack: () => void }
 
 /* ── Main Export (Conversations Navigator) ─────────────────────────────────── */
 
-export default function MessagesView() {
+export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
   const store = useMessagesStore();
   const activeConv = CONVERSATIONS.find(c => c.id === store.activeId) || null;
 
@@ -423,13 +423,17 @@ export default function MessagesView() {
 
           {/* Verification Callout */}
           <div className="p-8 border-t border-slate/5">
-                <div className="p-6 bg-ocean text-white rounded-[30px] shadow-xl shadow-ocean/10 relative overflow-hidden">
+                <button
+                  onClick={onVerify}
+                  className="w-full text-left group p-6 bg-ocean text-white rounded-[30px] shadow-xl shadow-ocean/10 relative overflow-hidden hover:bg-ocean/90 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+                >
                     <div className="relative z-10 space-y-3">
                         <Lock className="w-5 h-5 opacity-40" />
                         <h5 className="text-xs font-black uppercase tracking-widest">Kin Protocol</h5>
                         <p className="text-[10px] leading-relaxed opacity-60">Complete your ID check to unlock precise proximity pins.</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity text-white/80">Verify Now →</p>
                     </div>
-                </div>
+                </button>
           </div>
       </div>
 

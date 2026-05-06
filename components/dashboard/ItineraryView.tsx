@@ -14,8 +14,11 @@ import {
   Palmtree, 
   MoreHorizontal,
   ThumbsUp,
-  Heart
+  Heart,
+  X,
+  Send
 } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 
 interface ItineraryItem {
   id: string;
@@ -73,6 +76,13 @@ const SAMPLE_ITEMS: ItineraryItem[] = [
 
 export function ItineraryView() {
   const [items, setItems] = useState(SAMPLE_ITEMS);
+  const [isAdding, setIsAdding] = useState(false);
+  const [newItem, setNewItem] = useState({
+    title: '',
+    location: '',
+    time: '',
+    category: 'activity' as 'food' | 'activity' | 'nature' | 'photos'
+  });
 
   const toggleVote = (id: string) => {
     setItems(prev => prev.map(item => 
@@ -84,6 +94,23 @@ export function ItineraryView() {
     setItems(prev => prev.map(item => 
       item.id === id ? { ...item, isDone: !item.isDone } : item
     ));
+  };
+
+  const handleAddActivity = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newItem.title || !newItem.location || !newItem.time) return;
+
+    const activity: ItineraryItem = {
+      id: Math.random().toString(36).substr(2, 9),
+      ...newItem,
+      suggestedBy: 'Mia', // Current user
+      votes: 1,
+      isDone: false,
+    };
+
+    setItems(prev => [...prev, activity]);
+    setIsAdding(false);
+    setNewItem({ title: '', location: '', time: '', category: 'activity' });
   };
 
   const getIcon = (cat: string) => {
@@ -100,14 +127,17 @@ export function ItineraryView() {
     switch(cat) {
       case 'food': return 'bg-sunset/10 text-sunset';
       case 'activity': return 'bg-ocean/10 text-ocean';
-      case 'nature': return 'bg-green-100 text-green-600';
-      case 'photos': return 'bg-purple-100 text-purple-600';
+      case 'nature': return 'bg-terra/10 text-terra';
+      case 'photos': return 'bg-slate/10 text-slate';
       default: return 'bg-slate/10 text-slate';
     }
   };
 
+  const completedCount = items.filter(i => i.isDone).length;
+  const completionPercentage = Math.round((completedCount / items.length) * 100) || 0;
+
   return (
-    <div className="max-w-4xl mx-auto space-y-12">
+    <div className="max-w-4xl mx-auto space-y-12 pb-20">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-2">
@@ -119,6 +149,7 @@ export function ItineraryView() {
           <p className="text-slate/60 font-medium">Coordinate with your crew for a perfect day.</p>
         </div>
         <button 
+          onClick={() => setIsAdding(true)}
           title="Suggest an activity for the crew"
           className="flex items-center gap-2 px-6 py-3.5 bg-slate text-white rounded-2xl shadow-xl shadow-slate/10 hover:bg-slate/90 transition-all active:scale-95 group"
         >
@@ -127,16 +158,101 @@ export function ItineraryView() {
         </button>
       </div>
 
+      <AnimatePresence>
+        {isAdding && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setIsAdding(false)}
+                    className="absolute inset-0 bg-slate/40 backdrop-blur-md"
+                />
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                    className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl overflow-hidden"
+                >
+                    <div className="p-8 space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-2xl font-serif font-bold text-slate">Suggest Activity</h3>
+                            <button onClick={() => setIsAdding(false)} className="p-2 hover:bg-slate/5 rounded-full transition-colors">
+                                <X className="w-6 h-6 text-slate/40" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleAddActivity} className="space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-black uppercase tracking-widest text-slate/40 ml-1">Activity Name</label>
+                                <input 
+                                    autoFocus
+                                    placeholder="e.g. Secret Sunset Spot"
+                                    className="w-full px-6 py-4 bg-slate/5 rounded-2xl border border-transparent focus:border-ocean/20 focus:bg-white transition-all outline-none text-slate font-medium"
+                                    value={newItem.title}
+                                    onChange={e => setNewItem({...newItem, title: e.target.value})}
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-slate/40 ml-1">Location</label>
+                                    <input 
+                                        placeholder="Where?"
+                                        className="w-full px-6 py-4 bg-slate/5 rounded-2xl border border-transparent focus:border-ocean/20 focus:bg-white transition-all outline-none text-slate font-medium"
+                                        value={newItem.location}
+                                        onChange={e => setNewItem({...newItem, location: e.target.value})}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-slate/40 ml-1">Time</label>
+                                    <input 
+                                        placeholder="00:00 AM"
+                                        className="w-full px-6 py-4 bg-slate/5 rounded-2xl border border-transparent focus:border-ocean/20 focus:bg-white transition-all outline-none text-slate font-medium"
+                                        value={newItem.time}
+                                        onChange={e => setNewItem({...newItem, time: e.target.value})}
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-black uppercase tracking-widest text-slate/40 ml-1">Category</label>
+                                <div className="grid grid-cols-4 gap-2">
+                                    {(['activity', 'food', 'nature', 'photos'] as const).map(cat => (
+                                        <button
+                                            key={cat}
+                                            type="button"
+                                            onClick={() => setNewItem({...newItem, category: cat})}
+                                            className={`py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${newItem.category === cat ? 'bg-ocean text-white border-ocean shadow-lg shadow-ocean/20' : 'bg-slate/5 text-slate/40 border-transparent hover:border-slate/10'}`}
+                                        >
+                                            {cat}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <button 
+                                type="submit"
+                                className="w-full mt-4 flex items-center justify-center gap-2 px-8 py-4 bg-slate text-white rounded-2xl font-bold hover:bg-ocean transition-all shadow-xl shadow-slate/10"
+                            >
+                                <Send className="w-5 h-5" />
+                                Submit to Crew
+                            </button>
+                        </form>
+                    </div>
+                </motion.div>
+            </div>
+        )}
+      </AnimatePresence>
+
       {/* Progress Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
             { label: 'Time Spent', val: '4.5 hrs', icon: Clock },
             { label: 'Crew Attending', val: '12 people', icon: Users },
-            { label: 'Completion', val: '25%', icon: CheckCircle2 }
+            { label: 'Completion', val: `${completionPercentage}%`, icon: CheckCircle2 }
         ].map((stat, i) => (
             <div key={i} className="p-6 bg-white/60 backdrop-blur-xl border border-slate/5 rounded-3xl shadow-sm flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-slate/5 flex items-center justify-center">
-                    <stat.icon className="w-6 h-6 text-slate/60" />
+                    <stat.icon className={`w-6 h-6 ${stat.label === 'Completion' && completionPercentage === 100 ? 'text-green-500' : 'text-slate/60'}`} />
                 </div>
                 <div>
                     <p className="text-xs font-bold text-slate/60 uppercase tracking-wider">{stat.label}</p>
@@ -194,18 +310,27 @@ export function ItineraryView() {
                             <p className="text-xs font-semibold text-slate/60">Suggested by <span className="text-slate font-bold">{item.suggestedBy}</span></p>
                         </div>
                         <div className="flex items-center gap-4">
-                            <button 
+                            <motion.button 
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => toggleVote(item.id)}
-                                className="flex items-center gap-1.5 text-slate/60 hover:text-ocean bg-slate/5 px-2.5 py-1 rounded-xl transition-all cursor-pointer active:scale-95"
+                                className="flex items-center gap-1.5 text-slate/60 hover:text-ocean bg-slate/5 px-3 py-1.5 rounded-xl transition-all cursor-pointer group"
                                 title="Upvote this activity"
                             >
-                                <ThumbsUp className="w-4 h-4" />
-                                <span className="text-xs font-bold">{item.votes}</span>
-                            </button>
+                                <motion.div
+                                    key={item.votes}
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    className="flex items-center gap-1.5"
+                                >
+                                    <ThumbsUp className="w-4 h-4 group-hover:fill-ocean/20 transition-all" />
+                                    <span className="text-xs font-bold">{item.votes}</span>
+                                </motion.div>
+                            </motion.button>
                             <button 
                                 onClick={() => toggleDone(item.id)}
                                 title={item.isDone ? "Mark as active" : "Mark as completed"}
-                                className="p-2 text-slate/30 hover:text-green-500 transition-colors cursor-pointer active:scale-90"
+                                className={`p-2 transition-all cursor-pointer active:scale-90 ${item.isDone ? 'text-green-500' : 'text-slate/20 hover:text-green-500'}`}
                             >
                                 <CheckCircle2 className="w-5 h-5" />
                             </button>
@@ -225,8 +350,8 @@ export function ItineraryView() {
             </div>
 
             {/* Timeline Dot (Desktop only) */}
-            <div className="hidden md:flex relative z-10 w-12 h-12 rounded-full bg-white border-4 border-slate/5 items-center justify-center shadow-xl">
-                 <div className={`w-3 h-3 rounded-full ${item.isDone ? 'bg-slate/20' : 'bg-ocean animate-pulse'}`} />
+            <div className="hidden md:flex relative z-10 w-12 h-12 rounded-full bg-white border-4 border-slate/5 items-center justify-center shadow-xl group-hover:border-ocean/20 transition-colors">
+                 <div className={`w-3 h-3 rounded-full transition-all duration-500 ${item.isDone ? 'bg-slate/20' : 'bg-ocean shadow-[0_0_12px_rgba(0,119,182,0.4)] animate-pulse'}`} />
                  {/* Connection lines for mobile feel */}
                  <div className="md:hidden absolute top-full left-1/2 -translate-x-1/2 w-0.5 h-full bg-ocean/10" />
             </div>
