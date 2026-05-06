@@ -24,6 +24,16 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+
+const HERO_IMAGES = [
+  "https://images.unsplash.com/photo-1542533382-b42a59d8bd39?q=80&w=1074&auto=format&fit=crop",
+  "https://images.pexels.com/photos/573850/pexels-photo-573850.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "https://images.pexels.com/photos/36240312/pexels-photo-36240312.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "https://images.pexels.com/photos/16141092/pexels-photo-16141092.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "https://images.pexels.com/photos/4982560/pexels-photo-4982560.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "https://images.pexels.com/photos/1006360/pexels-photo-1006360.jpeg?auto=compress&cs=tinysrgb&w=1920",
+];
 
 /* ─────────────────────────────────────────────────────────── */
 /* Data                                                          */
@@ -192,6 +202,15 @@ const tickerItems = [
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Background image cycling effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
   const [activeCard, setActiveCard] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef<HTMLElement>(null);
@@ -386,18 +405,32 @@ export default function LandingPage() {
         {/* Background image */}
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <div className="relative w-full h-full overflow-hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1542533382-b42a59d8bd39?q=80&w=1074&auto=format&fit=crop"
-              alt="Southeast Asia Background"
-              fill
-              priority
-              className="object-cover scale-110 pointer-events-none animate-subtle-zoom"
-            />
+            <AnimatePresence>
+              <motion.div
+                key={HERO_IMAGES[currentImageIndex]}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1.2 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  opacity: { duration: 4, ease: "easeInOut" },
+                  scale: { duration: 8, ease: "linear" },
+                }}
+                className="absolute inset-0 w-full h-full"
+              >
+                <Image
+                  src={HERO_IMAGES[currentImageIndex]}
+                  alt="Southeast Asia Background"
+                  fill
+                  priority
+                  className="object-cover pointer-events-none"
+                />
+              </motion.div>
+            </AnimatePresence>
             {/* Dark gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-slate/60 to-slate/20 transition-opacity duration-700" aria-hidden="true" />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate/60 to-slate/20 z-10 transition-opacity duration-700" aria-hidden="true" />
           </div>
           {/* Bottom wave fade */}
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent z-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent z-20" />
         </div>
 
         {/* Hero content */}
