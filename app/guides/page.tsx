@@ -31,7 +31,7 @@ import { CheckCircle2, Circle, HelpCircle, Zap, Shield, Heart, Umbrella, Coffee 
 /* ─────────────────────────────────────────────────────────── */
 
 const GUIDE_HERO_IMAGES = [
-  "https://images.pexels.com/photos/31340332/pexels-photo-31340332.jpeg?auto=compress&cs=tinysrgb&w=1920", // El Nido
+  "https://images.pexels.com/photos/13874296/pexels-photo-13874296.jpeg?auto=compress&cs=tinysrgb&w=1920", // El Nido
   "https://images.pexels.com/photos/3533659/pexels-photo-3533659.jpeg?auto=compress&cs=tinysrgb&w=1920", // Siargao
   "https://images.pexels.com/photos/13518466/pexels-photo-13518466.jpeg?auto=compress&cs=tinysrgb&w=1920", // Coron
   "https://images.pexels.com/photos/3214989/pexels-photo-3214989.jpeg?auto=compress&cs=tinysrgb&w=1920", // Manila/BGC
@@ -57,7 +57,7 @@ const philippinesDestinations = [
     title: "El Nido, Palawan",
     tagline: "The Archipelago King",
     desc: "A solo traveler's dream for meeting people through multi-day 'Social Boat Expeditions.' These off-the-grid trips naturally foster deep friendships while exploring remote lagoons.",
-    image: "https://images.pexels.com/photos/31340332/pexels-photo-31340332.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "https://images.pexels.com/photos/13874296/pexels-photo-13874296.jpeg?auto=compress&cs=tinysrgb&w=1200",
     safetyScore: "8.9/10",
     rating: 4.8,
     region: "Palawan",
@@ -183,10 +183,10 @@ const PACKING_LIST = [
 ];
 
 const BUDDIES = [
-  { id: 1, name: "Maria", bio: "Diver & Coffee lover. In El Nido for 2 weeks.", img: "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=200", interest: "Diving" },
-  { id: 2, name: "Liam", bio: "Digital nomad. Working from Siargao's best cafes.", img: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=200", interest: "Work" },
-  { id: 3, name: "Yuki", bio: "Photographer exploring Siquijor's mysticism.", img: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200", interest: "Photos" },
-  { id: 4, name: "Carlos", bio: "Surfer from Spain. Searching for the best swells.", img: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200", interest: "Surfing" },
+  { id: 1, name: "Maria", bio: "Diver & Coffee lover. In El Nido for 2 weeks.", img: "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=800", interest: "Diving" },
+  { id: 2, name: "Liam", bio: "Digital nomad. Working from Siargao's best cafes.", img: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=800", interest: "Work" },
+  { id: 3, name: "Yuki", bio: "Photographer exploring Siquijor's mysticism.", img: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=800", interest: "Photos" },
+  { id: 4, name: "Carlos", bio: "Surfer from Spain. Searching for the best swells.", img: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=800", interest: "Surfing" },
 ];
 
 const VIBES = ["All", "Electric", "Majestic", "Raw", "Vibrant", "Ethereal", "Pristine", "Volcanic"];
@@ -195,6 +195,7 @@ export default function GuidesPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const [prevHeroIndex, setPrevHeroIndex] = useState(0);
   const [filterVibe, setFilterVibe] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [checkedItems, setCheckedItems] = useState<number[]>([]);
@@ -224,8 +225,11 @@ export default function GuidesPage() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     
     const heroTimer = setInterval(() => {
-      setCurrentHeroIndex((prev) => (prev + 1) % GUIDE_HERO_IMAGES.length);
-    }, 8000);
+      setCurrentHeroIndex((prev) => {
+        setPrevHeroIndex(prev);
+        return (prev + 1) % GUIDE_HERO_IMAGES.length;
+      });
+    }, 8000); // 8s cycle as requested
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -392,7 +396,19 @@ export default function GuidesPage() {
       {/* ══════════════════════════════════════════════════════════
           HERO SECTION
       ══════════════════════════════════════════════════════════ */}
-      <header className="relative h-[80vh] w-full overflow-hidden flex items-center justify-center">
+      <header className="relative h-[80vh] w-full overflow-hidden flex items-center justify-center bg-slate">
+        {/* Base layer to prevent blank background during transitions */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={GUIDE_HERO_IMAGES[prevHeroIndex]}
+            alt=""
+            fill
+            className="object-cover opacity-100"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate/95 to-slate/20 z-10 transition-opacity duration-700" aria-hidden="true" />
+        </div>
+
         <AnimatePresence>
           <motion.div
             key={GUIDE_HERO_IMAGES[currentHeroIndex]}
@@ -403,7 +419,7 @@ export default function GuidesPage() {
               opacity: { duration: 4, ease: "easeInOut" },
               scale: { duration: 8, ease: "linear" },
             }}
-            className="absolute inset-0 z-0"
+            className="absolute inset-0 z-20"
           >
             <Image
               src={GUIDE_HERO_IMAGES[currentHeroIndex]}
@@ -528,7 +544,7 @@ export default function GuidesPage() {
                   transition={{ delay: idx * 0.05 }}
                 >
                   <Link 
-                    href={`/guides/${dest.id}`}
+                    href={`/destinations/${dest.id}`}
                     className="group relative aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl focus-ring block"
                   >
                     <Image
@@ -679,12 +695,12 @@ export default function GuidesPage() {
         
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
           {[
-            { name: "Sarah", loc: "Siargao", img: "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=200" },
-            { name: "Marcus", loc: "El Nido", img: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=200" },
-            { name: "Elena", loc: "Cebu", img: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200" },
-            { name: "Kenji", loc: "Siquijor", img: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200" },
-            { name: "Sofia", loc: "Coron", img: "https://images.pexels.com/photos/712513/pexels-photo-712513.jpeg?auto=compress&cs=tinysrgb&w=200" },
-            { name: "Alex", loc: "BGC", img: "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=200" }
+            { name: "Sarah", loc: "Siargao", img: "https://images.pexels.com/photos/1181682/pexels-photo-1181682.jpeg?auto=compress&cs=tinysrgb&w=800" },
+            { name: "Marcus", loc: "El Nido", img: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=800" },
+            { name: "Elena", loc: "Cebu", img: "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=800" },
+            { name: "Kenji", loc: "Siquijor", img: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=800" },
+            { name: "Sofia", loc: "Coron", img: "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=800" },
+            { name: "Alex", loc: "BGC", img: "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=800" }
           ].map((kin, i) => (
             <motion.div 
               key={i}
@@ -694,8 +710,8 @@ export default function GuidesPage() {
               viewport={{ once: true }}
               className="flex flex-col items-center gap-4"
             >
-              <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-xl hover:scale-110 transition-transform cursor-pointer">
-                <Image src={kin.img} alt={kin.name} fill className="object-cover" />
+              <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-xl hover:scale-110 transition-transform cursor-pointer ring-4 ring-sunset/10">
+                <Image src={kin.img} alt={kin.name} fill className="object-cover object-top" />
                 <div className="absolute inset-0 bg-sunset/20 opacity-0 hover:opacity-100 transition-opacity" />
               </div>
               <div>
@@ -765,7 +781,7 @@ export default function GuidesPage() {
                       Match Found!
                     </div>
                     <div className="relative w-40 h-40 mx-auto mb-6 rounded-3xl overflow-hidden border-4 border-white shadow-2xl rotate-3 hover:rotate-0 transition-transform">
-                      <Image src={matchedBuddy.img} alt={matchedBuddy.name} fill className="object-cover" />
+                      <Image src={matchedBuddy.img} alt={matchedBuddy.name} fill className="object-cover object-top" />
                     </div>
                     <h3 className="text-3xl font-serif text-slate mb-2">{matchedBuddy.name}</h3>
                     <p className="text-sunset font-bold text-xs uppercase tracking-widest mb-4">Interest: {matchedBuddy.interest}</p>

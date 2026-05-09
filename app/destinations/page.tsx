@@ -79,29 +79,26 @@ export default function DestinationsPage() {
       
       <main>
         {/* Hero Section */}
-        <section className="relative min-h-[70vh] w-full flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-[70vh] w-full flex items-center justify-center overflow-hidden bg-slate">
           {/* Background image slider */}
           <div className="absolute inset-0 z-0" aria-hidden="true">
             <div className="relative w-full h-full overflow-hidden">
-              <AnimatePresence mode="wait">
+              <AnimatePresence initial={false}>
                 <motion.div
                   key={HERO_IMAGES[currentImageIndex]}
                   initial={{ opacity: 0, scale: 1.1 }}
-                  animate={{ opacity: 1, scale: 1.2 }}
-                  exit={{ opacity: 0 }}
-                  transition={{
-                    opacity: { duration: 4, ease: "easeInOut" },
-                    scale: { duration: 8, ease: "linear" },
-                  }}
-                  className="absolute inset-0 w-full h-full"
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.05 }}
+                  transition={{ duration: 1.5, ease: "easeInOut" }}
+                  className="absolute inset-0"
                 >
                   <Image
                     src={HERO_IMAGES[currentImageIndex]}
-                    alt="Southeast Asia Background"
+                    alt="Destination"
                     fill
                     priority
                     sizes="100vw"
-                    className="object-cover pointer-events-none"
+                    className="object-cover brightness-[0.7]"
                   />
                 </motion.div>
               </AnimatePresence>

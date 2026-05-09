@@ -20,7 +20,8 @@ import {
   Navigation
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useMessagesStore, TrustStatus } from "@/lib/stores/useMessages";
+import { useMessagesStore, TrustStatus, Message } from "@/lib/stores/useMessages";
+import { KINS, Kin } from "@/lib/data/kins";
 
 // Dynamic Import for Leaflet to fix SSR
 const RadarMiniMap = dynamic(() => import("./RadarMiniMap"), { 
@@ -30,62 +31,9 @@ const RadarMiniMap = dynamic(() => import("./RadarMiniMap"), {
 
 /* ─── Types & Mock Data (Extended) ─────────────────────────────────────────── */
 
-interface Message {
-  id: string;
-  fromMe: boolean;
-  text: string;
-  time: string;
-  type?: 'text' | 'handshake_request';
-  handshakeStatus?: 'pending' | 'accepted' | 'declined';
-  read?: boolean;
-}
+// Types moved to @/lib/data/kins and @/lib/stores/useMessages
 
-interface Conversation {
-  id: string;
-  name: string;
-  location: string;
-  status: "online" | "away" | "offline";
-  image: string;
-  vibe: string;
-  lat: number;
-  lng: number;
-  verified: boolean;
-  messages: Message[];
-}
-
-const CONVERSATIONS: Conversation[] = [
-  {
-    id: "1",
-    name: "Suki",
-    location: "Chiang Mai",
-    status: "online",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&h=200&auto=format&fit=crop",
-    vibe: "Introvert · Foodie",
-    lat: 18.7950,
-    lng: 98.9950,
-    verified: true,
-    messages: [
-      { id: "m1", fromMe: false, text: "Hey! Saw your profile — you're into food too?", time: "10:12 AM" },
-      { id: "m2", fromMe: true,  text: "Yes! Been hunting for the best khao soi in Chiang Mai 😄", time: "10:14 AM" },
-      { id: "m5", fromMe: false, text: "There's an amazing ramen spot near the moat 🍜", time: "10:20 AM" },
-    ],
-  },
-  {
-    id: "2",
-    name: "Liam",
-    location: "Bangkok",
-    status: "away",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&auto=format&fit=crop",
-    vibe: "Night Owl · Action",
-    lat: 13.7563,
-    lng: 100.5018,
-    verified: false,
-    messages: [
-      { id: "m1", fromMe: true,  text: "Hey Liam! Any night market recs in Bangkok?", time: "Yesterday" },
-      { id: "m2", fromMe: false, text: "Rod Fai is the move. Way cooler than the tourist ones", time: "Yesterday" },
-    ],
-  }
-];
+// Seed data logic added to MessagesView component
 
 /* ─── Handshake Card ───────────────────────────────────────────────────────── */
 
@@ -140,14 +88,15 @@ function HandshakeCard({ kinName, status, onAccept, onDecline }: {
 
 /* ─── Main Chat Thread Container ───────────────────────────────────────────── */
 
-function ChatThread({ conv, onBack }: { conv: Conversation; onBack: () => void }) {
+function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
   const store = useMessagesStore();
   const session = store.sessions[conv.id] || {
     trustStatus: 'BLURRED',
     handshakeExpiry: null,
     isSOSActive: false,
     proximityLevel: 1,
-    messages: conv.messages,
+    proximityLevel: 1,
+    messages: [],
   };
 
   const [input, setInput] = useState("");
@@ -374,7 +323,22 @@ function ChatThread({ conv, onBack }: { conv: Conversation; onBack: () => void }
 
 export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
   const store = useMessagesStore();
-  const activeConv = CONVERSATIONS.find(c => c.id === store.activeId) || null;
+  
+  // Seed the store with initial messages if it's completely empty
+  useEffect(() => {
+    if (Object.keys(store.sessions).length === 0) {
+      // Initial messages for Suki
+      store.addMessage("1", { fromMe: false, text: "Hey! Saw your profile — you're into food too?" });
+      store.addMessage("1", { fromMe: true,  text: "Yes! Been hunting for the best khao soi in Chiang Mai 😄" });
+      store.addMessage("1", { fromMe: false, text: "There's an amazing ramen spot near the moat 🍜" });
+      
+      // Initial messages for Liam
+      store.addMessage("2", { fromMe: true,  text: "Hey Liam! Any night market recs in Bangkok?" });
+      store.addMessage("2", { fromMe: false, text: "Rod Fai is the move. Way cooler than the tourist ones" });
+    }
+  }, [store]);
+
+  const activeConv = KINS.find(c => c.id === store.activeId) || null;
 
   return (
     <div className="flex h-[calc(100vh-140px)] bg-white rounded-[3rem] border border-slate/10 shadow-2xl overflow-hidden">
@@ -399,26 +363,43 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
           </div>
 
           <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3">
-              {CONVERSATIONS.map(c => (
-                  <button 
-                    key={c.id} 
-                    onClick={() => store.setActiveId(c.id)}
-                    className={cn(
-                        "w-full p-6 text-left rounded-[35px] transition-all flex items-center gap-5 cursor-pointer",
-                        store.activeId === c.id ? "bg-slate text-white shadow-2xl shadow-slate/30" : "hover:bg-white"
-                    )}
-                  >
-                      <div className="relative w-14 h-14 rounded-[22px] overflow-hidden shadow-md flex-shrink-0">
-                          <Image src={c.image} alt={c.name} fill className="object-cover" />
-                      </div>
-                      <div className="min-w-0">
-                          <h4 className="font-bold text-base leading-none">{c.name}</h4>
-                          <p className={cn("text-[10px] uppercase font-black tracking-widest mt-2", store.activeId === c.id ? "text-white/40" : "text-slate/60")}>
-                             {c.location} · {c.vibe.split('·')[1]}
-                          </p>
-                      </div>
-                  </button>
-              ))}
+              {KINS.map(c => {
+                  const session = store.sessions[c.id];
+                  const lastMsg = session?.messages[session.messages.length - 1];
+                  
+                  return (
+                      <button 
+                        key={c.id} 
+                        onClick={() => store.setActiveId(c.id)}
+                        className={cn(
+                            "w-full p-6 text-left rounded-[35px] transition-all flex items-center gap-5 cursor-pointer",
+                            store.activeId === c.id ? "bg-slate text-white shadow-2xl shadow-slate/30" : "hover:bg-white"
+                        )}
+                      >
+                          <div className="relative w-14 h-14 rounded-[22px] overflow-hidden shadow-md flex-shrink-0">
+                              <Image src={c.image} alt={c.name} fill className="object-cover" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between">
+                                  <h4 className="font-bold text-base leading-none">{c.name}</h4>
+                                  {lastMsg && (
+                                      <span className={cn("text-[8px] font-bold opacity-40 uppercase tracking-widest", store.activeId === c.id ? "text-white" : "text-slate")}>
+                                          {lastMsg.time}
+                                      </span>
+                                  )}
+                              </div>
+                              <p className={cn("text-[10px] uppercase font-black tracking-widest mt-2", store.activeId === c.id ? "text-white/40" : "text-slate/60")}>
+                                 {c.location} · {c.vibe.split(',')[0]}
+                              </p>
+                              {lastMsg && (
+                                  <p className={cn("text-[11px] font-medium mt-2 truncate opacity-80", store.activeId === c.id ? "text-white" : "text-slate")}>
+                                      {lastMsg.text}
+                                  </p>
+                              )}
+                          </div>
+                      </button>
+                  );
+              })}
           </div>
 
           {/* Verification Callout */}

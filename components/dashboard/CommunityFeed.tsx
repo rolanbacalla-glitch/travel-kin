@@ -44,7 +44,7 @@ const SAMPLE_FEED: FeedItem[] = [
     {
         id: '1',
         type: 'ping',
-        user: { name: 'Leo', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop', vibe: 'Zen' },
+        user: { name: 'Leo', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop', vibe: 'Zen' },
         content: 'Just found the most incredible coworking spot in the Old City. High ceilings, actual quiet zones, and the matcha is 10/10.',
         location: 'Old City, Chiang Mai',
         timestamp: '12m ago',
@@ -55,7 +55,7 @@ const SAMPLE_FEED: FeedItem[] = [
     {
         id: '2',
         type: 'drop',
-        user: { name: 'Elena', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop', vibe: 'Active' },
+        user: { name: 'Elena', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=256&h=256&auto=format&fit=crop', vibe: 'Active' },
         content: 'Sunset hike to Wat Pha Lat starting in 30 mins! Meeting at the trailhead. Who is in?',
         location: 'Monk\'s Trail Trailhead',
         timestamp: '25m ago',
@@ -67,7 +67,7 @@ const SAMPLE_FEED: FeedItem[] = [
     {
         id: '3',
         type: 'intel',
-        user: { name: 'Marco', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop', vibe: 'Foodie' },
+        user: { name: 'Marco', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&h=256&auto=format&fit=crop', vibe: 'Foodie' },
         content: 'PRO TIP: The night market at the North Gate has the best Khao Kha Moo (braised pork leg) in the city. Look for the lady in the cowboy hat. 🤠',
         location: 'Chang Phueak Gate',
         timestamp: '1h ago',
@@ -104,7 +104,7 @@ export function CommunityFeed() {
             type: postType,
             user: {
                 name: 'Mia', // Current user
-                image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop',
+                image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=256&h=256&auto=format&fit=crop',
                 vibe: 'Explorer'
             },
             content: newPostContent,
@@ -201,13 +201,24 @@ export function CommunityFeed() {
                                 </div>
 
                                 <div className="flex gap-6">
-                                    {/* User Avatar */}
-                                    <div className="relative flex-shrink-0">
-                                        <div className="w-16 h-16 rounded-[28px] overflow-hidden border-2 border-slate/5 shadow-inner">
-                                            <Image src={item.user.image} alt={item.user.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                                        </div>
-                                        <div className="absolute -bottom-1 -right-1 px-2 py-0.5 bg-white shadow-lg rounded-md text-[8px] font-black uppercase text-ocean border border-slate/5">
-                                            {item.user.vibe}
+                                    {/* User Avatar - Redesigned for better framing */}
+                                    <div className="flex-shrink-0">
+                                        <div className="relative group/avatar">
+                                            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-xl group-hover/avatar:scale-110 transition-transform duration-500">
+                                                <Image 
+                                                    src={item.user.image} 
+                                                    alt={item.user.name} 
+                                                    width={64}
+                                                    height={64}
+                                                    quality={100}
+                                                    className="object-cover w-full h-full transform scale-110"
+                                                />
+                                            </div>
+
+                                            {/* Integrated Vibe Badge */}
+                                            <div className="absolute -bottom-1 -right-1 px-3 py-1 bg-slate text-white rounded-full text-[8px] font-black uppercase tracking-tighter shadow-lg border-2 border-white z-10 group-hover:bg-ocean transition-colors">
+                                                {item.user.vibe}
+                                            </div>
                                         </div>
                                     </div>
 

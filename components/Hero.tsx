@@ -2,131 +2,124 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { MapPin, Users, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Users, Search, ChevronRight, MapPin } from "lucide-react";
 import { HERO_IMAGES } from "@/lib/data";
 
 export function Hero() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const timer = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 8000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section
-      id="main-content"
-      aria-label="Hero — Solo travel, better together"
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
+    <section 
+      id="hero"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-slate"
     >
-      {/* Background image */}
-      <div className="absolute inset-0 z-0" aria-hidden="true">
-        <div className="relative w-full h-full overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={HERO_IMAGES[currentImageIndex]}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1.2 }}
-              exit={{ opacity: 0 }}
-              transition={{
-                opacity: { duration: 4, ease: "easeInOut" },
-                scale: { duration: 8, ease: "linear" },
-              }}
-              className="absolute inset-0 w-full h-full"
-            >
-              <Image
-                src={HERO_IMAGES[currentImageIndex]}
-                alt="Southeast Asia Background"
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover pointer-events-none"
-              />
-            </motion.div>
-          </AnimatePresence>
-          {/* Dark gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate/95 to-slate/20 z-10 transition-opacity duration-700" aria-hidden="true" />
-        </div>
-        {/* Bottom wave fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent z-20" />
+      {/* 1. Persistent Static Background (Loads first, avoids flash) */}
+      <div 
+        className="absolute inset-0 z-0 transition-opacity duration-1000" 
+        style={{ 
+          opacity: currentImageIndex === 0 ? 1 : 0.4 
+        }}
+      >
+        <Image
+          src={HERO_IMAGES[0]}
+          alt="Main Background"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
       </div>
 
-      {/* Hero content */}
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-24">
-        {/* Pill badge */}
-        <span className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 text-xs font-bold tracking-widest uppercase bg-sunset/20 backdrop-blur-md rounded-full text-sunset border border-sunset/30">
-          <span className="w-1.5 h-1.5 bg-sunset rounded-full animate-pulse" aria-hidden="true" />
-          47,000+ solo travellers already wandering
-        </span>
-
-        {/* Headline */}
-        <h1 className="text-6xl sm:text-8xl md:text-[10rem] font-serif font-bold text-white leading-[0.9] mb-8 drop-shadow-[0_8px_24px_rgba(0,0,0,0.5)] text-balance">
-          Solo.{" "}
-          <span className="italic text-sunset">Bold.</span>{" "}
-          <br />
-          <span className="text-sand/90">Free.</span>
-        </h1>
-
-        <p className="text-lg md:text-xl text-white/70 max-w-xl mx-auto mb-12 leading-relaxed text-pretty">
-          Southeast Asia&rsquo;s first safety-first platform built exclusively
-          for solo travellers. Find your crew, your guide, your adventure.
-        </p>
-
-        {/* Search bar */}
-        <div
-          className="glass max-w-2xl mx-auto rounded-[2rem] p-2 shadow-2xl"
-          role="search"
-          aria-label="Find your next destination"
-        >
-          <div className="flex flex-col sm:flex-row items-stretch gap-2">
-            {/* Destination input */}
-            <div className="flex-1 flex items-center gap-3 px-5 py-3.5 border-b sm:border-b-0 sm:border-r border-slate/10">
-              <MapPin className="w-4 h-4 text-ocean flex-shrink-0" aria-hidden="true" />
-              <div className="flex flex-col min-w-0 w-full text-left">
-                <label
-                  htmlFor="destination-input"
-                  className="text-[10px] uppercase tracking-wider text-slate/50 font-bold mb-0.5"
-                >
-                  Where to next
-                </label>
-                <input
-                  id="destination-input"
-                  type="text"
-                  name="destination"
-                  placeholder="El Nido, Siargao…"
-                  autoComplete="off"
-                  className="bg-transparent border-none outline-none text-slate font-medium placeholder:text-slate/30 text-sm w-full focus-ring rounded-sm"
-                  aria-label="Enter your destination"
+      {/* 2. Animated Slider (Takes over after mount) */}
+      {isMounted && (
+        <div className="absolute inset-0 z-0">
+          <AnimatePresence mode="popLayout">
+            {currentImageIndex !== 0 && (
+              <motion.div
+                key={HERO_IMAGES[currentImageIndex]}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={HERO_IMAGES[currentImageIndex]}
+                  alt="Destination"
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover"
                 />
-              </div>
-            </div>
-
-            {/* Traveller type */}
-            <div className="flex-1 flex items-center gap-3 px-5 py-3.5 text-left">
-              <Users className="w-4 h-4 text-sunset flex-shrink-0" aria-hidden="true" />
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-wider text-slate/50 font-bold mb-0.5">
-                  Trip style
-                </span>
-                <span className="text-slate font-medium text-sm">Solo Explorer</span>
-              </div>
-            </div>
-
-            {/* CTA button */}
-            <Link
-              href="/dashboard"
-              aria-label="Search destinations"
-              className="sm:ml-auto bg-ocean hover:bg-ocean-dark text-white font-semibold px-7 py-3.5 rounded-[1.5rem] transition-colors duration-200 focus-ring flex items-center gap-2 justify-center active:scale-95 whitespace-nowrap"
-            >
-              <Search className="w-4 h-4" aria-hidden="true" />
-              <span>Find My Trip</span>
-            </Link>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
+      )}
+
+      {/* 3. Overlays */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate/80 via-slate/40 to-slate/90 z-10" />
+      <div className="absolute inset-0 bg-black/20 z-10" />
+
+      {/* 4. Content */}
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 pt-20">
+        <div className="max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sunset/20 border border-sunset/30 text-sunset text-sm font-bold tracking-widest uppercase mb-8 backdrop-blur-md">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sunset opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-sunset"></span>
+              </span>
+              47,000+ Verified Solo Travellers
+            </span>
+
+            <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[0.9] tracking-tighter">
+              Solo travel, <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient italic">
+                better together.
+              </span>
+            </h1>
+
+            <p className="text-xl md:text-2xl text-white/80 max-w-2xl mb-12 leading-relaxed font-medium">
+              Ditch the stress of planning alone. Connect with verified companions, 
+              find expert local guides, and explore Southeast Asia&apos;s hidden gems.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+              <button className="group relative px-10 py-5 bg-sunset text-white font-bold rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95">
+                <span className="relative z-10 flex items-center gap-2 text-lg">
+                  Find Your Crew <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-terra to-sunset opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </button>
+              
+              <button className="flex items-center gap-4 px-10 py-5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl backdrop-blur-md border border-white/20 transition-all duration-300">
+                <Search className="w-5 h-5 text-sunset" />
+                <span>Explore Destinations</span>
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3">
+        <span className="text-white/30 text-[10px] uppercase tracking-[0.3em] font-bold">Scroll</span>
+        <div className="w-[1px] h-12 bg-gradient-to-b from-sunset to-transparent" />
       </div>
     </section>
   );

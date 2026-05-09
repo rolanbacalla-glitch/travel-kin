@@ -18,6 +18,7 @@ import {
   Download,
   Phone
 } from "lucide-react";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMessagesStore } from "@/lib/stores/useMessages";
@@ -354,9 +355,23 @@ export function SafetyDashboard() {
                 <Plus className="w-4 h-4 text-ocean cursor-pointer" />
               </div>
               <div className="space-y-4">
-                <CircleMember name="David (Dad)" role="Emergency" verified />
-                <CircleMember name="Sarah Miller" role="Adventure" verified />
-                <CircleMember name="Front Desk" role="Local" />
+                <CircleMember 
+                  name="David (Dad)" 
+                  role="Emergency" 
+                  image="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&h=300&auto=format&fit=crop&crop=faces&facepad=2"
+                  verified 
+                />
+                <CircleMember 
+                  name="Sarah Miller" 
+                  role="Adventure" 
+                  image="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=300&h=300&auto=format&fit=crop&crop=faces&facepad=2"
+                  verified 
+                />
+                <CircleMember 
+                  name="Front Desk" 
+                  role="Local" 
+                  image="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&h=300&auto=format&fit=crop&crop=faces&facepad=2"
+                />
               </div>
             </div>
 
@@ -408,12 +423,19 @@ export function SafetyDashboard() {
 }
 
 /* ── HELPER: Circle Member ── */
-function CircleMember({ name, role, verified }: { name: string; role: string; verified?: boolean }) {
+function CircleMember({ name, role, image, verified }: { name: string; role: string; image: string; verified?: boolean }) {
   return (
     <div className="flex items-center justify-between group">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl bg-white border border-slate/5 flex items-center justify-center text-xs font-black text-slate shadow-sm group-hover:border-ocean transition-all">
-          {name[0]}
+        <div className="w-12 h-12 rounded-2xl bg-white border border-slate/5 overflow-hidden flex items-center justify-center text-xs font-black text-slate shadow-sm group-hover:border-ocean transition-all">
+          <Image 
+            src={image} 
+            alt={name} 
+            width={96} 
+            height={96} 
+            className="object-cover w-full h-full"
+            priority={false}
+          />
         </div>
         <div>
           <p className="text-xs font-bold text-slate">{name}</p>

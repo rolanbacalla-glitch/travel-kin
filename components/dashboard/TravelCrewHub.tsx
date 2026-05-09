@@ -20,14 +20,7 @@ import { useState, useEffect } from "react";
 import { useMessagesStore } from "@/lib/stores/useMessages";
 
 
-interface Kin {
-  id: string;
-  name: string;
-  location: string;
-  vibe: string;
-  status: "online" | "away" | "offline";
-  image: string;
-}
+import { Kin } from "@/lib/data/kins";
 
 export function TravelCrewHub({ kins, onChat }: { kins: Kin[]; onChat: (id: string) => void }) {
   const store = useMessagesStore();
@@ -173,21 +166,20 @@ export function TravelCrewHub({ kins, onChat }: { kins: Kin[]; onChat: (id: stri
           {/* Grid of Kins */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {kins.map((kin, i) => (
-              <motion.div
+              <motion.div 
                 key={kin.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
+                layoutId={`card-${kin.id}`}
                 className="group relative aspect-[3/4] rounded-[2.5rem] overflow-hidden bg-slate/5 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
               >
-                {/* Photo */}
                 <Image
-                  src={kin.image}
-                  alt={kin.name}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-
+                    src={kin.image}
+                    alt={kin.name}
+                    fill
+                    priority
+                    quality={100}
+                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                />    
                 {/* Gradient overlay — stronger at bottom */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 

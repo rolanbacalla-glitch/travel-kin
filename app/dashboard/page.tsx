@@ -24,6 +24,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
+import { useMessagesStore } from "@/lib/stores/useMessages";
 
 // Components
 import { TravelCrewHub } from "@/components/dashboard/TravelCrewHub";
@@ -32,30 +33,13 @@ import { ItineraryView } from "@/components/dashboard/ItineraryView";
 import { MemoriesView } from "@/components/dashboard/MemoriesView";
 import { CommunityFeed } from "@/components/dashboard/CommunityFeed";
 import MessagesView from "@/components/messages/MessagesView";
+import { KINS, Kin } from "@/lib/data/kins";
 
 /* ─────────────────────────────────────────────────────────── */
 /* Types                                                         */
 /* ─────────────────────────────────────────────────────────── */
 
-interface Kin {
-  id: string;
-  name: string;
-  location: string;
-  vibe: string;
-  status: "online" | "away" | "offline";
-  image: string;
-}
-
-/* ─────────────────────────────────────────────────────────── */
-/* Data Mockups                                                 */
-/* ─────────────────────────────────────────────────────────── */
-
-const kins: Kin[] = [
-  { id: "1", name: "Suki",  location: "Chiang Mai", vibe: "Introvert, Foodie",  status: "online",  image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=600&auto=format&fit=crop" },
-  { id: "2", name: "Liam",  location: "Bangkok",    vibe: "Night Owl, Action",  status: "away",    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=600&auto=format&fit=crop" },
-  { id: "3", name: "Nara",  location: "Phuket",     vibe: "Early Bird, Zen",    status: "online",  image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&h=600&auto=format&fit=crop" },
-  { id: "4", name: "Kevin", location: "Bali",       vibe: "Remote Pro, Surf",   status: "offline", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=600&auto=format&fit=crop" },
-];
+// KINS imported from @/lib/data/kins
 
 /* ─────────────────────────────────────────────────────────── */
 /* Page                                                         */
@@ -66,8 +50,10 @@ export default function DashboardPage() {
   // Stores the conversation id to open when jumping from a Kin card → Messages
   const [openConvId, setOpenConvId] = useState<string | null>(null);
 
+  const store = useMessagesStore();
+
   const goToChat = (kinId: string) => {
-    setOpenConvId(kinId);
+    store.setActiveId(kinId);
     setActiveTab("messages");
   };
 
@@ -177,7 +163,7 @@ export default function DashboardPage() {
                 exit={{ opacity: 0, scale: 1.02 }}
                 transition={{ duration: 0.3 }}
               >
-                <TravelCrewHub kins={kins} onChat={goToChat} />
+                <TravelCrewHub kins={KINS} onChat={goToChat} />
               </motion.div>
             )}
 

@@ -37,7 +37,7 @@ export function DestinationsSection() {
             {destinations.map((place) => (
               <Link
                 key={place.id}
-                href={`/destinations/${place.id}`}
+                href="/guides"
                 className="group relative w-[320px] md:w-[400px] aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl focus-ring"
               >
                 <Image
