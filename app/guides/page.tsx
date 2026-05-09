@@ -23,7 +23,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Circle, HelpCircle, Zap, Shield, Heart, Umbrella, Coffee as CoffeeIcon, Plane, Camera, CreditCard, Briefcase, Plus, Filter } from "lucide-react";
 
 /* ─────────────────────────────────────────────────────────── */
@@ -531,81 +531,84 @@ export default function GuidesPage() {
           </div>
         </div>
 
-        <LayoutGroup>
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence mode="popLayout">
-              {filteredDestinations.map((dest, idx) => (
-                <motion.div
-                  key={dest.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ delay: idx * 0.05 }}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`${filterVibe}-${searchQuery}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {filteredDestinations.map((dest, idx) => (
+              <motion.div
+                key={dest.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.06, duration: 0.35, ease: "easeOut" }}
+              >
+                <Link 
+                  href={`/destinations/${dest.id}`}
+                  className="group relative aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl focus-ring block"
                 >
-                  <Link 
-                    href={`/destinations/${dest.id}`}
-                    className="group relative aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl focus-ring block"
-                  >
-                    <Image
-                      src={dest.image}
-                      alt={dest.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-110 transition-transform duration-1000"
-                    />
-                    
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-                    
-                    {/* Top Right: Rating Badge */}
-                    <div className="absolute top-6 right-6">
-                      <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-                        <Star className="w-3 h-3 text-sunset fill-sunset" />
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">
-                          {dest.rating}
-                        </span>
+                  <Image
+                    src={dest.image}
+                    alt={dest.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                  />
+                  
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                  
+                  {/* Top Right: Rating Badge */}
+                  <div className="absolute top-6 right-6">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
+                      <Star className="w-3 h-3 text-sunset fill-sunset" />
+                      <span className="text-[10px] font-black text-white uppercase tracking-widest">
+                        {dest.rating}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Top Left: Verified Badge (if applicable) */}
+                  {dest.verified && (
+                    <div className="absolute top-6 left-6">
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-sunset/90 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
+                        <ShieldCheck className="w-3 h-3 text-white" />
+                        <span className="text-[9px] font-black text-white uppercase tracking-widest">Verified</span>
                       </div>
                     </div>
+                  )}
 
-                    {/* Top Left: Verified Badge (if applicable) */}
-                    {dest.verified && (
-                      <div className="absolute top-6 left-6">
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-sunset/90 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
-                          <ShieldCheck className="w-3 h-3 text-white" />
-                          <span className="text-[9px] font-black text-white uppercase tracking-widest">Verified</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Bottom Content */}
-                    <div className="absolute bottom-8 left-8 right-8 text-left">
-                      <div className="flex items-center gap-2 mb-3">
-                        <MapPin className="w-3.5 h-3.5 text-sunset" />
-                        <span className="text-[10px] font-black text-white/80 uppercase tracking-widest">
-                          {dest.region}
-                        </span>
-                        <span className="w-1 h-1 bg-white/30 rounded-full" />
-                        <span className="text-[10px] font-black text-white/80 uppercase tracking-widest">
-                          {dest.vibe}
-                        </span>
-                      </div>
-                      <h3 className="text-3xl font-serif font-bold text-white mb-2 leading-none">
-                        {dest.title}
-                      </h3>
-                      <p className="text-white/70 text-sm font-medium line-clamp-1 group-hover:text-white/90 transition-colors">
-                        {dest.tagline}
-                      </p>
-                      
-                      {/* Hover-only description */}
-                      <p className="text-white/60 text-[11px] leading-relaxed mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 line-clamp-2">
-                        {dest.desc}
-                      </p>
+                  {/* Bottom Content */}
+                  <div className="absolute bottom-8 left-8 right-8 text-left">
+                    <div className="flex items-center gap-2 mb-3">
+                      <MapPin className="w-3.5 h-3.5 text-sunset" />
+                      <span className="text-[10px] font-black text-white/80 uppercase tracking-widest">
+                        {dest.region}
+                      </span>
+                      <span className="w-1 h-1 bg-white/30 rounded-full" />
+                      <span className="text-[10px] font-black text-white/80 uppercase tracking-widest">
+                        {dest.vibe}
+                      </span>
                     </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+                    <h3 className="text-3xl font-serif font-bold text-white mb-2 leading-none">
+                      {dest.title}
+                    </h3>
+                    <p className="text-white/70 text-sm font-medium line-clamp-1 group-hover:text-white/90 transition-colors">
+                      {dest.tagline}
+                    </p>
+                    
+                    {/* Hover-only description */}
+                    <p className="text-white/60 text-[11px] leading-relaxed mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 line-clamp-2">
+                      {dest.desc}
+                    </p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
             {filteredDestinations.length === 0 && (
               <motion.div 
                 initial={{ opacity: 0 }} 
@@ -620,7 +623,7 @@ export default function GuidesPage() {
               </motion.div>
             )}
           </motion.div>
-        </LayoutGroup>
+        </AnimatePresence>
       </section>
 
       {/* ══════════════════════════════════════════════════════════
