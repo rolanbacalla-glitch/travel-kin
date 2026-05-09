@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect as useEffectRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { 
@@ -38,8 +38,21 @@ export default function DestinationsPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [sortBy, setSortBy] = useState("popularity");
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
 
   const navLinks = ["Destinations", "Crew", "Guides", "Safety"];
+
+  const SORT_OPTIONS = [
+    { id: "popularity", label: "Popularity" },
+    { id: "top-rated",  label: "Top Rated" },
+    { id: "price-asc",  label: "Price: Low to High" },
+    { id: "price-desc", label: "Price: High to Low" },
+    { id: "name-az",    label: "A – Z" },
+  ];
+
+  const activeSortLabel = SORT_OPTIONS.find(o => o.id === sortBy)?.label ?? "Popularity";
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -56,12 +69,35 @@ export default function DestinationsPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const filteredDestinations = destinations.filter((dest) => {
-    const matchesSearch = dest.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         dest.tagline.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === "all" || dest.tag.toLowerCase() === activeCategory.toLowerCase();
-    return matchesSearch && matchesCategory;
-  });
+  // Close sort dropdown on outside click
+  useEffectRef(() => {
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
+
+  const filteredDestinations = destinations
+    .filter((dest) => {
+      const matchesSearch = dest.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                           dest.tagline.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = activeCategory === "all" || dest.tag.toLowerCase() === activeCategory.toLowerCase();
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "top-rated":  return b.rating - a.rating;
+        case "price-asc":  return parsePrice(a.price) - parsePrice(b.price);
+        case "price-desc": return parsePrice(b.price) - parsePrice(a.price);
+        case "name-az":    return a.title.localeCompare(b.title);
+        default:           return b.reviews - a.reviews; // popularity
+      }
+    });
 
   return (
     <div className="min-h-screen bg-background">
@@ -165,26 +201,52 @@ export default function DestinationsPage() {
               ))}
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="relative flex items-center gap-4" ref={sortRef}>
               <span className="text-[10px] font-black uppercase tracking-widest text-slate/40">Sort by:</span>
-              <button className="flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-slate/5 text-xs font-bold text-slate shadow-sm hover:border-slate/20 transition-all">
-                Popularity
-                <ChevronDown className="w-4 h-4 text-ocean" />
+              <button
+                onClick={() => setSortOpen((v) => !v)}
+                className="flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-slate/5 text-xs font-bold text-slate shadow-sm hover:border-slate/20 transition-all"
+              >
+                {activeSortLabel}
+                <ChevronDown className={`w-4 h-4 text-ocean transition-transform duration-200 ${sortOpen ? "rotate-180" : ""}`} />
               </button>
+
+              {sortOpen && (
+                <div className="absolute top-full right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-slate/10 overflow-hidden z-50">
+                  {SORT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => { setSortBy(opt.id); setSortOpen(false); }}
+                      className={`w-full text-left px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors ${
+                        sortBy === opt.id
+                          ? "bg-slate text-white"
+                          : "text-slate/60 hover:bg-slate/5 hover:text-slate"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${sortBy}-${activeCategory}-${searchQuery}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
               {filteredDestinations.map((dest, i) => (
                 <motion.div
                   key={dest.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: i * 0.06, duration: 0.35, ease: "easeOut" }}
                   className="relative aspect-[4/5] w-full rounded-[3rem] overflow-hidden shadow-2xl"
                 >
                   <Link 
@@ -239,8 +301,8 @@ export default function DestinationsPage() {
                   </Link>
                 </motion.div>
               ))}
-            </AnimatePresence>
-          </div>
+            </motion.div>
+          </AnimatePresence>
           
           {filteredDestinations.length === 0 && (
             <motion.div 
