@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { Users, Search, ChevronRight, MapPin } from "lucide-react";
 import { HERO_IMAGES } from "@/lib/data";
 
@@ -73,7 +74,7 @@ export function Hero() {
 
       {/* 4. Content */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-6 pt-20">
-        <div className="max-w-4xl">
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,18 +100,18 @@ export function Hero() {
               find expert local guides, and explore Southeast Asia&apos;s hidden gems.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-              <button className="group relative px-10 py-5 bg-sunset text-white font-bold rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95">
+            <div className="flex flex-col sm:flex-row gap-6 items-center justify-center">
+              <Link href="/dashboard" className="group relative px-10 py-5 bg-sunset text-white font-bold rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95">
                 <span className="relative z-10 flex items-center gap-2 text-lg">
                   Find Your Crew <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-terra to-sunset opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </button>
+              </Link>
               
-              <button className="flex items-center gap-4 px-10 py-5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl backdrop-blur-md border border-white/20 transition-all duration-300">
+              <Link href="/destinations" className="flex items-center gap-4 px-10 py-5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl backdrop-blur-md border border-white/20 transition-all duration-300">
                 <Search className="w-5 h-5 text-sunset" />
                 <span>Explore Destinations</span>
-              </button>
+              </Link>
             </div>
           </motion.div>
         </div>

@@ -12,7 +12,7 @@ export function StatCards() {
             key={i}
             className="glass-light p-8 rounded-[2.5rem] text-center border-white/40 shadow-xl group hover:bg-white/80 transition-all duration-300 flex flex-col justify-center"
           >
-            <div className="text-4xl md:text-5xl font-serif font-bold text-slate mb-1 group-hover:scale-110 transition-transform duration-300">
+            <div className="text-4xl md:text-5xl font-serif font-bold text-slate mb-3 group-hover:scale-110 transition-transform duration-300">
               {stat.value}
             </div>
             <div className="text-[10px] md:text-xs uppercase tracking-widest font-black text-ocean/60 mb-2">
