@@ -20,7 +20,7 @@
     "@vis.gl/react-google-maps": "^1.8.2",
     "clsx": "^2.1.1",
     "deck.gl": "^9.2.11",
-    "firebase": "^12.11.0",
+    "firebase": "^12.13.0",
     "framer-motion": "^12.38.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.7.0",

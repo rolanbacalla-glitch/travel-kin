@@ -73,7 +73,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-black/20 z-10" />
 
       {/* 4. Content */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 pt-20">
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 pt-20 pb-32">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -88,14 +88,14 @@ export function Hero() {
               47,000+ Verified Solo Travellers
             </span>
 
-            <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[0.9] tracking-tighter">
+            <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
               Solo travel, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient italic">
                 better together.
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-white/80 max-w-2xl mb-12 leading-relaxed font-medium">
+            <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
               Ditch the stress of planning alone. Connect with verified companions, 
               find expert local guides, and explore Southeast Asia&apos;s hidden gems.
             </p>
@@ -117,11 +117,7 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3">
-        <span className="text-white/30 text-[10px] uppercase tracking-[0.3em] font-bold">Scroll</span>
-        <div className="w-[1px] h-12 bg-gradient-to-b from-sunset to-transparent" />
-      </div>
+
     </section>
   );
 }

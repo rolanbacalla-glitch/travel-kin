@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { features } from "@/lib/data";
@@ -82,9 +83,12 @@ export function FeaturesSection() {
           </div>
 
           <div className="mt-16 pt-12 border-t border-white/10">
-            <button className="group flex items-center gap-4 text-sand font-serif italic text-2xl hover:text-white transition-colors duration-200">
+            <Link 
+              href="/safety-commitment"
+              className="group flex items-center gap-4 text-sand font-serif italic text-2xl hover:text-white transition-colors duration-200"
+            >
               Read our full Safety Commitment <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

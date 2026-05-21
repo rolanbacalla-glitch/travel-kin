@@ -46,16 +46,23 @@ export function Footer() {
               Explore
             </h4>
             <ul className="space-y-4">
-              {["Destinations", "Crew", "Guides", "Safety", "Blog"].map((item) => (
-                <li key={item}>
-                  <Link
-                    href={`/${item.toLowerCase()}`}
-                    className="text-white/60 hover:text-white transition-colors font-medium"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              {["Destinations", "Crew", "Guides", "Safety"].map((item) => {
+                let href = `/${item.toLowerCase()}`;
+                if (item === "Destinations") href = "/destinations";
+                else if (item === "Crew") href = "/#crew";
+                else if (item === "Safety") href = "/safety-commitment";
+                
+                return (
+                  <li key={item}>
+                    <Link
+                      href={href}
+                      className="text-white/60 hover:text-white transition-colors font-medium"
+                    >
+                      {item}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

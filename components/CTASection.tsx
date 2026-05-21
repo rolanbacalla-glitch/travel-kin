@@ -21,7 +21,7 @@ export function CTASection() {
       <div className="absolute inset-0 bg-gradient-to-br from-slate via-slate/90 to-ocean/40 z-10" />
 
       <div className="relative z-20 max-w-4xl mx-auto">
-        <h2 className="text-5xl md:text-8xl font-serif font-bold text-white mb-10 leading-[0.9] text-balance">
+        <h2 className="text-5xl md:text-8xl font-serif font-bold text-white mb-10 leading-[1.1] text-balance">
           The world is <span className="text-sunset">waiting</span>. Stop
           waiting for <span className="italic text-sand">them</span>.
         </h2>

@@ -7,6 +7,7 @@ import { Hero } from "@/components/Hero";
 import { StatCards } from "@/components/StatCards";
 import { DestinationsSection } from "@/components/DestinationsSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
+import { GuidesSection } from "@/components/GuidesSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
@@ -43,6 +44,7 @@ export default function TravelKinLanding() {
       <StatCards />
       <DestinationsSection />
       <FeaturesSection />
+      <GuidesSection />
       <TestimonialsSection />
       <CTASection />
       <Footer />

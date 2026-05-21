@@ -35,16 +35,24 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
       </div>
 
       <nav className="flex flex-col items-start px-8 py-12 space-y-8 flex-1">
-        {navLinks.map((item) => (
-          <Link
-            key={item}
-            href={item === "Guides" ? "/guides" : `#${item.toLowerCase()}`}
-            className="text-4xl font-serif text-white/80 hover:text-white transition-colors duration-200 focus-ring-white rounded-sm"
-            onClick={onClose}
-          >
-            {item}
-          </Link>
-        ))}
+        {navLinks.map((item) => {
+          let href = "/";
+          if (item === "Guides") href = "/guides";
+          else if (item === "Safety") href = "/safety-commitment";
+          else if (item === "Destinations") href = "/destinations";
+          else href = `/#${item.toLowerCase()}`;
+
+          return (
+            <Link
+              key={item}
+              href={href}
+              className="text-4xl font-serif text-white/80 hover:text-white transition-colors duration-200 focus-ring-white rounded-sm"
+              onClick={onClose}
+            >
+              {item}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="px-8 pb-12 space-y-3 flex flex-col">

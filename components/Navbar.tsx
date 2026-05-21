@@ -34,15 +34,23 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center space-x-8">
-          {navLinks.map((item) => (
-            <Link
-              key={item}
-              href={item === "Guides" ? "/guides" : `#${item.toLowerCase()}`}
-              className="text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-sm"
-            >
-              {item}
-            </Link>
-          ))}
+          {navLinks.map((item) => {
+            let href = "/";
+            if (item === "Guides") href = "/guides";
+            else if (item === "Safety") href = "/safety-commitment";
+            else if (item === "Destinations") href = "/destinations";
+            else href = `/#${item.toLowerCase()}`;
+            
+            return (
+              <Link
+                key={item}
+                href={href}
+                className="text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-sm"
+              >
+                {item}
+              </Link>
+            );
+          })}
         </div>
 
         <div className="hidden md:flex items-center space-x-3">

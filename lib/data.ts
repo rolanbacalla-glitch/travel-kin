@@ -1,12 +1,12 @@
 import { ShieldCheck, Users, Compass, Globe, Mountain, Waves, TreePine, MapPin } from "lucide-react";
 
 export const HERO_IMAGES = [
-  "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=1920&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?q=80&w=1920&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1920&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?q=80&w=1920&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1920&auto=format&fit=crop",
+  "https://images.pexels.com/photos/13874296/pexels-photo-13874296.jpeg?auto=compress&cs=tinysrgb&w=1920", // El Nido
+  "https://images.pexels.com/photos/3533659/pexels-photo-3533659.jpeg?auto=compress&cs=tinysrgb&w=1920",  // Siargao
+  "https://images.pexels.com/photos/17263722/pexels-photo-17263722.jpeg?auto=compress&cs=tinysrgb&w=1920", // Cebu
+  "https://images.pexels.com/photos/20788066/pexels-photo-20788066.jpeg?auto=compress&cs=tinysrgb&w=1920", // Batanes
+  "https://images.pexels.com/photos/33676228/pexels-photo-33676228.jpeg?auto=compress&cs=tinysrgb&w=1920", // Boracay
+  "https://images.pexels.com/photos/13518466/pexels-photo-13518466.jpeg?auto=compress&cs=tinysrgb&w=1920", // Coron
 ];
 
 export const destinations = [
@@ -262,7 +262,7 @@ export const testimonials = [
     origin: "Singapore → El Nido",
     quote:
       "The local guide recommendation was gold. Hidden lagoons, zero tourists. This is how solo travel should feel — free, safe, and epic.",
-    avatar: "https://images.unsplash.com/photo-1521119907111-a8317e05cdd2?q=80&w=1200&auto=format&fit=crop",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1200&auto=format&fit=crop",
     rating: 5,
   },
   {
@@ -279,22 +279,26 @@ export const stats = [
   { 
     value: "47K+", 
     label: "Solo Travellers",
-    description: "Verified solo explorers adventuring safely across Southeast Asia."
+    description: "Verified solo explorers adventuring safely across Southeast Asia.",
+    href: "/dashboard"
   },
   { 
     value: "87", 
     label: "Destinations",
-    description: "Curated islands, cities, and jungle escapes across the Philippines and beyond."
+    description: "Curated islands, cities, and jungle escapes across the Philippines and beyond.",
+    href: "/destinations"
   },
   { 
     value: "24/7", 
     label: "Emergency Support",
-    description: "Real-time monitoring and local rapid response in 12 SE Asian countries."
+    description: "Real-time monitoring and local rapid response in 12 SE Asian countries.",
+    href: "/safety-commitment"
   },
   { 
     value: "180+", 
     label: "Local Guides",
-    description: "Vetted, community-trusted guides who know every hidden trail and reef."
+    description: "Vetted, community-trusted guides who know every hidden trail and reef.",
+    href: "/guides"
   },
 ];
 

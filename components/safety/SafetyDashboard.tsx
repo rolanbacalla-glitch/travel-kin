@@ -279,7 +279,7 @@ export function SafetyDashboard() {
                       Try Practice Mode
                     </button>
                   )}
-                </div>>
+                </div>
               </div>
             </div>
           </div>

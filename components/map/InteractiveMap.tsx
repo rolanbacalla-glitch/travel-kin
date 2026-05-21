@@ -127,7 +127,7 @@ export default function InteractiveMap() {
       if (cancelled || !containerRef.current || mapRef.current) return;
 
       // 3. Fix default marker icon asset paths in webpack/Next.js
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconUrl:       "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
