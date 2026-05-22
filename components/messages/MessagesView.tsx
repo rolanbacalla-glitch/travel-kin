@@ -95,7 +95,6 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
     handshakeExpiry: null,
     isSOSActive: false,
     proximityLevel: 1,
-    proximityLevel: 1,
     messages: [],
   };
 

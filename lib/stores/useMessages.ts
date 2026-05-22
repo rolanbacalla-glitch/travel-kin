@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type TrustStatus = 'BLURRED' | 'PRECISE' | 'SOS_OVERRIDE';
 
-interface Message {
+export interface Message {
   id: string;
   fromMe: boolean;
   text: string;

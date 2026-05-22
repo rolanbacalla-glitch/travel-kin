@@ -124,7 +124,7 @@ export default function SafetyCommitmentPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sunset/20 border border-sunset/30 text-sunset text-sm font-bold tracking-widest uppercase mb-8 backdrop-blur-md">
               <span className="relative flex h-2 w-2">
@@ -135,8 +135,8 @@ export default function SafetyCommitmentPage() {
             </span>
 
             <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
-              Your Safety is Our <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
+              <span className="md:whitespace-nowrap">Your Safety is Our</span> <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient md:whitespace-nowrap">
                 Sacred Commitment.
               </span>
             </h1>
