@@ -54,7 +54,7 @@ export default function DestinationForm({ initialData = null, isEdit = false }: 
         reviews: Number(formData.reviews),
         image: formData.image,
         description: formData.description,
-        highlights: formData.highlights.split(",").map((s) => s.trim()).filter(Boolean),
+        highlights: formData.highlights.split(",").map((s: string) => s.trim()).filter(Boolean),
         gallery: [formData.gallery1, formData.gallery2, formData.gallery3].filter(Boolean),
         survivalGuide: {
           bestTime: formData.sgBestTime,
