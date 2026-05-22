@@ -96,13 +96,13 @@ export function Footer() {
             © {new Date().getFullYear()} TRAVEL KIN LTD. ALL RIGHTS RESERVED.
           </div>
           <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest text-white/30">
-            <Link href="#" className="hover:text-white">
+            <Link href="/privacy-policy" className="hover:text-white">
               Privacy Policy
             </Link>
-            <Link href="#" className="hover:text-white">
+            <Link href="/terms-of-service" className="hover:text-white">
               Terms of Service
             </Link>
-            <Link href="#" className="hover:text-white">
+            <Link href="/cookie-policy" className="hover:text-white">
               Cookie Policy
             </Link>
           </div>
