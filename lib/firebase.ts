@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported, logEvent } from "firebase/analytics";
@@ -25,6 +25,8 @@ let auth: any;
 let db: any;
 let storage: any;
 let analytics: any = null;
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 if (isFirebaseConfigValid) {
   app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
@@ -121,5 +123,5 @@ export const logFirebaseEvent = (eventName: string, params?: Record<string, any>
   }
 };
 
-export { app, auth, db, storage, analytics };
+export { app, auth, db, storage, analytics, googleProvider };
 

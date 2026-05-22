@@ -7,7 +7,7 @@ import {
   signInWithPopup, 
   GoogleAuthProvider 
 } from "firebase/auth";
-import { auth, logFirebaseEvent } from "@/lib/firebase";
+import { auth, logFirebaseEvent, googleProvider } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, Lock, ArrowRight } from "lucide-react";
@@ -76,7 +76,6 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
     logFirebaseEvent("google_login_click");
     
     // If Firebase config is invalid/absent, bypass SDK and use mock login
@@ -99,7 +98,7 @@ export default function LoginPage() {
     }
 
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithPopup(auth, googleProvider);
       logFirebaseEvent("google_login_success");
       router.push("/dashboard");
     } catch (err: any) {

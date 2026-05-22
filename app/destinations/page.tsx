@@ -20,8 +20,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
-import { destinations, DESTINATION_HERO_IMAGES } from "@/lib/data";
+import { destinations as fallbackDestinations, DESTINATION_HERO_IMAGES } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const CATEGORIES = [
   { id: "all", label: "All Destinations", icon: Globe },
@@ -41,6 +43,30 @@ export default function DestinationsPage() {
   const [sortOpen, setSortOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
+  const [dbDestinations, setDbDestinations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        if (!db || !db.collection) throw new Error("DB not ready");
+        const querySnapshot = await getDocs(collection(db, "destinations"));
+        const data: any[] = [];
+        querySnapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
+        });
+        setDbDestinations(data);
+      } catch (error) {
+        console.warn("Failed to fetch destinations from Firebase. Falling back to static data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDestinations();
+  }, []);
+
+  const activeDestinations = dbDestinations.length > 0 ? dbDestinations : fallbackDestinations;
+
   const navLinks = ["Destinations", "Crew", "Guides", "Safety"];
 
   const SORT_OPTIONS = [
@@ -51,7 +77,7 @@ export default function DestinationsPage() {
     { id: "name-az", label: "A – Z" },
   ];
 
-  const REGIONS = Array.from(new Set(destinations.map(d => d.region))).sort();
+  const REGIONS = Array.from(new Set(activeDestinations.map(d => d.region))).sort();
   const VIBES = ["Electric", "Tranquil", "Adventurous", "Urban", "Mystic", "Historic"];
 
   const [activeRegion, setActiveRegion] = useState("all");
@@ -92,11 +118,11 @@ export default function DestinationsPage() {
 
   const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
 
-  const filteredDestinations = destinations
+  const filteredDestinations = activeDestinations
     .filter((dest) => {
       const matchesSearch = dest.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         dest.tagline.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = activeCategory === "all" || dest.tag.toLowerCase() === activeCategory.toLowerCase();
+      const matchesCategory = activeCategory === "all" || (dest.tag && dest.tag.toLowerCase() === activeCategory.toLowerCase());
       const matchesRegion = activeRegion === "all" || dest.region === activeRegion;
       const matchesVibe = activeVibe === "all" || dest.vibe.toLowerCase().includes(activeVibe.toLowerCase());
       return matchesSearch && matchesCategory && matchesRegion && matchesVibe;

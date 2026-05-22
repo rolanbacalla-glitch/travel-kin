@@ -23,17 +23,50 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
-import { destinations } from "@/lib/data";
+import { destinations as fallbackDestinations } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function DestinationDetail() {
   const { id } = useParams();
-  const destination = destinations.find((d) => d.id === id);
+  
+  const [destination, setDestination] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = ["Destinations", "Crew", "Guides", "Safety"];
+
+  useEffect(() => {
+    const fetchDestination = async () => {
+      try {
+        if (!id) return;
+        if (!db || !db.doc) throw new Error("DB not ready");
+        
+        const docRef = doc(db, "destinations", id as string);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          setDestination({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          // Fallback
+          const fallback = fallbackDestinations.find((d) => d.id === id);
+          if (fallback) setDestination(fallback);
+          else notFound();
+        }
+      } catch (error) {
+        // Fallback on error
+        const fallback = fallbackDestinations.find((d) => d.id === id);
+        if (fallback) setDestination(fallback);
+        else notFound();
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDestination();
+  }, [id]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,6 +75,10 @@ export default function DestinationDetail() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (loading) {
+    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>;
+  }
 
   if (!destination) {
     notFound();
@@ -257,7 +294,7 @@ export default function DestinationDetail() {
           <div className="max-w-7xl mx-auto">
             <h2 className="text-xs font-black uppercase tracking-[0.4em] text-sunset mb-20">Similar Paradises</h2>
             <div className="grid md:grid-cols-3 gap-12">
-              {destinations.filter(d => d.id !== destination.id).slice(0, 3).map((dest) => (
+              {fallbackDestinations.filter(d => d.id !== destination.id).slice(0, 3).map((dest) => (
                 <Link key={dest.id} href={`/destinations/${dest.id}`} className="group">
                   <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6">
                     <Image src={dest.image} fill className="object-cover group-hover:scale-110 transition-transform duration-700" alt={dest.title} />

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   Users,
   Shield,
@@ -64,6 +65,18 @@ export default function DashboardPage() {
         setActiveTab("profile");
       }
     }
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        profile.updateProfile({
+          name: user.displayName || user.email?.split("@")[0] || "Traveler",
+          avatar: user.photoURL || `https://api.dicebear.com/7.x/notionists/svg?seed=${user.uid}`,
+          username: user.email?.split("@")[0] || "wanderer",
+        });
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const goToChat = (kinId: string) => {

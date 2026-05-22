@@ -1,5 +1,12 @@
 import { ShieldCheck, Users, Compass, Globe, Mountain, Waves, TreePine, MapPin } from "lucide-react";
 
+export const getIconComponent = (iconName: string) => {
+  const icons: Record<string, any> = {
+    Globe, Waves, Mountain, TreePine, MapPin, ShieldCheck, Users, Compass
+  };
+  return icons[iconName] || Globe;
+};
+
 export const HERO_IMAGES = [
 
   "https://images.pexels.com/photos/17263722/pexels-photo-17263722.jpeg?auto=compress&cs=tinysrgb&w=1920", // Cebu
