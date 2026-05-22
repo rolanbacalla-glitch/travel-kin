@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import { useMessagesStore } from "@/lib/stores/useMessages";
+import { useProfileStore } from "@/lib/stores/useProfile";
 
 // Components
 import { TravelCrewHub } from "@/components/dashboard/TravelCrewHub";
@@ -33,6 +34,7 @@ import { ItineraryView } from "@/components/dashboard/ItineraryView";
 import { MemoriesView } from "@/components/dashboard/MemoriesView";
 import { CommunityFeed } from "@/components/dashboard/CommunityFeed";
 import MessagesView from "@/components/messages/MessagesView";
+import { ProfileSettings } from "@/components/dashboard/ProfileSettings";
 import { KINS, Kin } from "@/lib/data/kins";
 
 /* ─────────────────────────────────────────────────────────── */
@@ -46,7 +48,8 @@ import { KINS, Kin } from "@/lib/data/kins";
 /* ─────────────────────────────────────────────────────────── */
 
 export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState<"hub" | "safety" | "messages" | "itinerary" | "memories" | "pulse">("hub");
+  const [activeTab, setActiveTab] = useState<"hub" | "safety" | "messages" | "itinerary" | "memories" | "pulse" | "profile">("hub");
+  const profile = useProfileStore();
   // Stores the conversation id to open when jumping from a Kin card → Messages
   const [openConvId, setOpenConvId] = useState<string | null>(null);
 
@@ -119,7 +122,12 @@ export default function DashboardPage() {
         </nav>
 
         <div className="pt-8 border-t border-slate/5 space-y-4">
-          <SidebarItem icon={Settings} label="Settings" />
+          <SidebarItem 
+            active={activeTab === "profile"} 
+            onClick={() => setActiveTab("profile")} 
+            icon={Settings} 
+            label="Settings" 
+          />
           <SidebarItem icon={LogOut} label="Log Out" className="text-red-400 hover:bg-red-50 hover:text-red-500" />
         </div>
       </aside>
@@ -132,7 +140,7 @@ export default function DashboardPage() {
         {/* Header */}
         <header className="px-6 md:px-12 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/50 backdrop-blur-xl border-b border-slate/5 sticky top-0 z-20">
           <div className="space-y-1">
-            <h1 className="text-3xl font-serif text-slate font-bold">Welcome back, Mia</h1>
+            <h1 className="text-3xl font-serif text-slate font-bold">Welcome back, {profile.name.split(" ")[0]}</h1>
             <p className="text-slate/60 text-sm font-medium">You have 12 matches in Chiang Mai today.</p>
           </div>
           <div className="flex items-center gap-4">
@@ -148,6 +156,21 @@ export default function DashboardPage() {
               className="p-4 bg-white border border-slate/5 rounded-2xl shadow-sm hover:bg-slate/5 transition-all"
             >
               <Bell className="w-5 h-5 text-slate/40" />
+            </button>
+            <button
+              onClick={() => setActiveTab("profile")}
+              aria-label="Profile Settings"
+              className={cn(
+                "w-12 h-12 relative rounded-2xl overflow-hidden border transition-all active:scale-95 shadow-sm flex-shrink-0",
+                activeTab === "profile" ? "border-sunset ring-2 ring-sunset/20" : "border-slate/5 hover:border-slate/20"
+              )}
+            >
+              <Image 
+                src={profile.avatar} 
+                alt="Profile" 
+                fill 
+                className="object-cover"
+              />
             </button>
           </div>
         </header>
@@ -224,6 +247,18 @@ export default function DashboardPage() {
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
                 <CommunityFeed />
+              </motion.div>
+            )}
+
+            {activeTab === "profile" && (
+              <motion.div
+                key="profile"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ProfileSettings />
               </motion.div>
             )}
           </AnimatePresence>
