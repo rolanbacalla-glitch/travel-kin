@@ -1,6 +1,28 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    
+    // Check if the user is an admin by email or role
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.email == "rolan.bacalla@gmail.com" ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin"
+      );
+    }
+
+    // Destinations: Publicly readable, but only admins can write
+    match /destinations/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users: Users can read/write their own profile, Admins can read/write all
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isAdmin();
+    }
+
+    // Default deny for anything else
     match /{document=**} {
       allow read, write: if false;
     }
