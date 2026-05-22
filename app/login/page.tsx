@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { auth, logFirebaseEvent, googleProvider } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import { useAuthContext } from "@/components/providers/AuthProvider";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -27,6 +28,13 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();

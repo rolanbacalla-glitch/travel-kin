@@ -16,10 +16,16 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Users: Users can read/write their own profile, Admins can read/write all
+    // Users: Users can read their own or others (public profile info), Admins can write all
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-      allow read, write: if isAdmin();
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+      
+      allow create: if request.auth != null && request.auth.uid == userId
+                    && !request.resource.data.keys().hasAny(['role', 'isVerified', 'status']);
+                    
+      allow update: if request.auth != null && request.auth.uid == userId
+                    && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isVerified', 'status']));
     }
 
     // Default deny for anything else
