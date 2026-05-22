@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { destinations } from "@/lib/data";
+import { logFirebaseEvent } from "@/lib/firebase";
 
 export function DestinationsSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -53,11 +54,14 @@ export function DestinationsSection() {
       const cardWidth = window.innerWidth < 768 ? 352 : 432; // 320+32 or 400+32
       const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      logFirebaseEvent("carousel_nav_click", { direction });
     }
   };
 
   const scrollToActive = (index: number) => {
     if (scrollRef.current) {
+      const targetDestination = destinations[index]?.title || `Destination ${index}`;
+      logFirebaseEvent("carousel_dot_click", { index, destination: targetDestination });
       if (index === destinations.length - 1) {
         const { scrollWidth, clientWidth } = scrollRef.current;
         scrollRef.current.scrollTo({

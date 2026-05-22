@@ -2,6 +2,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getAnalytics, isSupported, logEvent } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -23,12 +24,23 @@ let app: any;
 let auth: any;
 let db: any;
 let storage: any;
+let analytics: any = null;
 
 if (isFirebaseConfigValid) {
   app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
   storage = getStorage(app);
+  
+  if (typeof window !== "undefined") {
+    isSupported().then((supported) => {
+      if (supported) {
+        analytics = getAnalytics(app);
+      }
+    }).catch((err) => {
+      console.warn("Firebase Analytics is not supported in this environment:", err);
+    });
+  }
 } else {
   // Return dummy placeholder objects with safe methods to prevent runtime exceptions
   app = {
@@ -63,4 +75,15 @@ if (isFirebaseConfigValid) {
   storage = {} as any;
 }
 
-export { app, auth, db, storage };
+export const logFirebaseEvent = (eventName: string, params?: Record<string, any>) => {
+  if (typeof window !== "undefined" && analytics) {
+    try {
+      logEvent(analytics, eventName, params);
+    } catch (error) {
+      console.warn(`Firebase Analytics failed to log event "${eventName}":`, error);
+    }
+  }
+};
+
+export { app, auth, db, storage, analytics };
+

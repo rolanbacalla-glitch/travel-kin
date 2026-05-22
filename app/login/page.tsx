@@ -7,7 +7,7 @@ import {
   signInWithPopup, 
   GoogleAuthProvider 
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, logFirebaseEvent } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, Lock, ArrowRight } from "lucide-react";
@@ -31,25 +31,40 @@ export default function LoginPage() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    if (isSignUp) {
+      logFirebaseEvent("sign_up_start", { method: "email" });
+    } else {
+      logFirebaseEvent("login_start", { method: "email" });
+    }
     try {
       if (isSignUp) {
         await createUserWithEmailAndPassword(auth, email, password);
+        logFirebaseEvent("sign_up_success", { method: "email" });
       } else {
         await signInWithEmailAndPassword(auth, email, password);
+        logFirebaseEvent("login_success", { method: "email" });
       }
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
+      if (isSignUp) {
+        logFirebaseEvent("sign_up_failure", { method: "email", error: err.message });
+      } else {
+        logFirebaseEvent("login_failure", { method: "email", error: err.message });
+      }
     }
   };
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
+    logFirebaseEvent("google_login_click");
     try {
       await signInWithPopup(auth, provider);
+      logFirebaseEvent("google_login_success");
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
+      logFirebaseEvent("google_login_failure", { error: err.message });
     }
   };
 
