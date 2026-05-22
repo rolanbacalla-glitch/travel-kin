@@ -186,7 +186,7 @@ export default function DestinationDetail() {
                 </h3>
               </div>
               <p className="text-xl text-slate/60 leading-relaxed font-medium">
-                Experience {destination.title} like a local, not a tourist. Our curated exploration of this {destination.tag.toLowerCase()} is designed for solo travellers seeking both autonomy and connection. We handle the complex logistics—verified guides, safe transport, and vetted stays—so you can focus on the moment.
+                {destination.description || `Experience ${destination.title} like a local, not a tourist. Our curated exploration of this ${destination.tag?.toLowerCase()} is designed for solo travellers seeking both autonomy and connection. We handle the complex logistics—verified guides, safe transport, and vetted stays—so you can focus on the moment.`}
               </p>
 
               <div className="grid md:grid-cols-3 gap-8 pt-12">
@@ -203,31 +203,69 @@ export default function DestinationDetail() {
             </div>
 
             {/* Gallery Preview */}
-            <div className="space-y-12">
-              <div className="flex justify-between items-end">
-                <div className="space-y-4">
-                  <h2 className="text-xs font-black uppercase tracking-[0.4em] text-sunset">The Vibe</h2>
-                  <h3 className="text-4xl font-serif font-bold text-slate">Visual Narrative</h3>
+            {(destination.gallery && destination.gallery.length > 0) && (
+              <div className="space-y-12">
+                <div className="flex justify-between items-end">
+                  <div className="space-y-4">
+                    <h2 className="text-xs font-black uppercase tracking-[0.4em] text-sunset">The Vibe</h2>
+                    <h3 className="text-4xl font-serif font-bold text-slate">Visual Narrative</h3>
+                  </div>
+                  <button className="text-[10px] font-black uppercase tracking-widest text-slate hover:text-ocean transition-colors">
+                    View All Photos
+                  </button>
                 </div>
-                <button className="text-[10px] font-black uppercase tracking-widest text-slate hover:text-ocean transition-colors">
-                  View All Photos
-                </button>
-              </div>
 
-              <div className="grid grid-cols-2 gap-6">
-                <div className="relative aspect-[4/5] rounded-[3rem] overflow-hidden">
-                  <Image src="https://images.pexels.com/photos/16141092/pexels-photo-16141092.jpeg?auto=compress&cs=tinysrgb&w=800" fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 1" />
-                </div>
-                <div className="space-y-6 flex flex-col">
-                  <div className="relative flex-grow rounded-[3rem] overflow-hidden">
-                    <Image src="https://images.pexels.com/photos/573850/pexels-photo-573850.jpeg?auto=compress&cs=tinysrgb&w=800" fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 2" />
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="relative aspect-[4/5] rounded-[3rem] overflow-hidden">
+                    <Image src={destination.gallery[0] || "https://images.pexels.com/photos/16141092/pexels-photo-16141092.jpeg?auto=compress&cs=tinysrgb&w=800"} fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 1" />
                   </div>
-                  <div className="relative aspect-[3/2] rounded-[3rem] overflow-hidden">
-                    <Image src="https://images.pexels.com/photos/4982560/pexels-photo-4982560.jpeg?auto=compress&cs=tinysrgb&w=800" fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 3" />
+                  <div className="space-y-6 flex flex-col">
+                    <div className="relative flex-grow rounded-[3rem] overflow-hidden">
+                      <Image src={destination.gallery[1] || "https://images.pexels.com/photos/573850/pexels-photo-573850.jpeg?auto=compress&cs=tinysrgb&w=800"} fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 2" />
+                    </div>
+                    <div className="relative aspect-[3/2] rounded-[3rem] overflow-hidden">
+                      <Image src={destination.gallery[2] || "https://images.pexels.com/photos/4982560/pexels-photo-4982560.jpeg?auto=compress&cs=tinysrgb&w=800"} fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 3" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Survival Guide */}
+            {destination.survivalGuide && (
+              <div className="space-y-12 pt-12 border-t border-slate-100">
+                <div className="space-y-4">
+                  <h2 className="text-xs font-black uppercase tracking-[0.4em] text-ocean">Local Knowledge</h2>
+                  <h3 className="text-4xl font-serif font-bold text-slate">Survival Guide</h3>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-8">
+                  {destination.survivalGuide.bestTime && (
+                    <div className="p-6 bg-slate-50 rounded-3xl">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Best Time</h4>
+                      <p className="font-medium text-slate-700">{destination.survivalGuide.bestTime}</p>
+                    </div>
+                  )}
+                  {destination.survivalGuide.connectivity && (
+                    <div className="p-6 bg-slate-50 rounded-3xl">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Connectivity</h4>
+                      <p className="font-medium text-slate-700">{destination.survivalGuide.connectivity}</p>
+                    </div>
+                  )}
+                  {destination.survivalGuide.transport && (
+                    <div className="p-6 bg-slate-50 rounded-3xl">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Transport</h4>
+                      <p className="font-medium text-slate-700">{destination.survivalGuide.transport}</p>
+                    </div>
+                  )}
+                  {destination.survivalGuide.cash && (
+                    <div className="p-6 bg-slate-50 rounded-3xl">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Cash & ATMs</h4>
+                      <p className="font-medium text-slate-700">{destination.survivalGuide.cash}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Sidebar / Booking Card */}

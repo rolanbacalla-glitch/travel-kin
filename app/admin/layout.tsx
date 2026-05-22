@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { LayoutDashboard, Map, Settings, Users, Loader2, LogOut } from "lucide-react";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { cn } from "@/lib/utils";
 
 export default function AdminLayout({
   children,
@@ -14,6 +15,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
@@ -27,12 +29,17 @@ export default function AdminLayout({
       try {
         if (!db || !db.doc) {
           console.error("Firestore not initialized");
-          router.push("/");
+          if (user.email === "rolan.bacalla@gmail.com") {
+            setIsAuthorized(true);
+            setLoading(false);
+          } else {
+            router.push("/");
+          }
           return;
         }
 
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data()?.role === "admin") {
+        if (user.email === "rolan.bacalla@gmail.com" || (userDoc.exists() && userDoc.data()?.role === "admin")) {
           setIsAuthorized(true);
         } else {
           console.warn("User is not an admin.");
@@ -40,7 +47,12 @@ export default function AdminLayout({
         }
       } catch (error) {
         console.error("Error checking user role:", error);
-        router.push("/");
+        // Fallback for the super admin in case Firestore rules block the read
+        if (user.email === "rolan.bacalla@gmail.com") {
+          setIsAuthorized(true);
+        } else {
+          router.push("/");
+        }
       } finally {
         setLoading(false);
       }
@@ -74,27 +86,27 @@ export default function AdminLayout({
         <nav className="flex-1 overflow-y-auto py-6">
           <ul className="space-y-2 px-4">
             <li>
-              <Link href="/admin" className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-colors">
-                <LayoutDashboard className="w-5 h-5" />
-                <span className="font-bold text-sm tracking-wide">Dashboard</span>
+              <Link href="/admin" className={cn("flex items-center gap-3 px-4 py-3 rounded-xl transition-colors", pathname === "/admin" ? "bg-white/10 text-white font-bold" : "text-white/70 hover:bg-white/10 hover:text-white font-bold")}>
+                <LayoutDashboard className={cn("w-5 h-5", pathname === "/admin" && "text-sunset")} />
+                <span className="text-sm tracking-wide">Dashboard</span>
               </Link>
             </li>
             <li>
-              <Link href="/admin/destinations" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10 text-white font-bold transition-colors">
-                <Map className="w-5 h-5 text-sunset" />
-                <span className="font-bold text-sm tracking-wide">Destinations</span>
+              <Link href="/admin/destinations" className={cn("flex items-center gap-3 px-4 py-3 rounded-xl transition-colors", pathname === "/admin/destinations" ? "bg-white/10 text-white font-bold" : "text-white/70 hover:bg-white/10 hover:text-white font-bold")}>
+                <Map className={cn("w-5 h-5", pathname === "/admin/destinations" && "text-sunset")} />
+                <span className="text-sm tracking-wide">Destinations</span>
               </Link>
             </li>
             <li>
-              <Link href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-colors">
-                <Users className="w-5 h-5" />
-                <span className="font-bold text-sm tracking-wide">Users</span>
+              <Link href="/admin/users" className={cn("flex items-center gap-3 px-4 py-3 rounded-xl transition-colors", pathname === "/admin/users" ? "bg-white/10 text-white font-bold" : "text-white/70 hover:bg-white/10 hover:text-white font-bold")}>
+                <Users className={cn("w-5 h-5", pathname === "/admin/users" && "text-sunset")} />
+                <span className="text-sm tracking-wide">Users</span>
               </Link>
             </li>
             <li>
-              <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-colors">
-                <Settings className="w-5 h-5" />
-                <span className="font-bold text-sm tracking-wide">Settings</span>
+              <Link href="/admin/settings" className={cn("flex items-center gap-3 px-4 py-3 rounded-xl transition-colors", pathname === "/admin/settings" ? "bg-white/10 text-white font-bold" : "text-white/70 hover:bg-white/10 hover:text-white font-bold")}>
+                <Settings className={cn("w-5 h-5", pathname === "/admin/settings" && "text-sunset")} />
+                <span className="text-sm tracking-wide">Settings</span>
               </Link>
             </li>
           </ul>

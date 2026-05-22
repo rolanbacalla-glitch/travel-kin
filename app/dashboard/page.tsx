@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import {
   Users,
   Shield,
@@ -54,6 +55,7 @@ export default function DashboardPage() {
   const profile = useProfileStore();
   // Stores the conversation id to open when jumping from a Kin card → Messages
   const [openConvId, setOpenConvId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const store = useMessagesStore();
 
@@ -66,13 +68,29 @@ export default function DashboardPage() {
       }
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         profile.updateProfile({
           name: user.displayName || user.email?.split("@")[0] || "Traveler",
           avatar: user.photoURL || `https://api.dicebear.com/7.x/notionists/svg?seed=${user.uid}`,
           username: user.email?.split("@")[0] || "wanderer",
         });
+
+        // Check Admin Status
+        if (user.email === "rolan.bacalla@gmail.com") {
+          setIsAdmin(true);
+        } else if (db && db.doc) {
+          try {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists() && userDoc.data()?.role === "admin") {
+              setIsAdmin(true);
+            }
+          } catch (e) {
+            console.error("Failed to check admin status", e);
+          }
+        }
+      } else {
+        setIsAdmin(false);
       }
     });
 
@@ -167,6 +185,15 @@ export default function DashboardPage() {
         </nav>
 
         <div className="pt-8 border-t border-slate/5 space-y-4">
+          {isAdmin && (
+            <Link 
+              href="/admin/destinations" 
+              className="w-full px-6 py-4 rounded-2xl flex items-center gap-4 font-bold text-sunset hover:bg-sunset/10 transition-all group"
+            >
+              <Settings className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="text-sm tracking-tight">Admin Portal</span>
+            </Link>
+          )}
           <SidebarItem 
             active={activeTab === "profile"} 
             onClick={() => setActiveTab("profile")} 

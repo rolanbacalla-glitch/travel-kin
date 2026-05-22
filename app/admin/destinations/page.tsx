@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Edit, Trash2, Search, Map } from "lucide-react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Image from "next/image";
+import { destinations as fallbackDestinations } from "@/lib/data";
+import { Database } from "lucide-react";
 
 interface Destination {
   id: string;
@@ -32,7 +34,13 @@ export default function AdminDestinations() {
       querySnapshot.forEach((doc) => {
         data.push({ id: doc.id, ...doc.data() } as Destination);
       });
-      setDestinations(data);
+      
+      if (data.length === 0) {
+        // Fallback to static data if Firestore is empty
+        setDestinations(fallbackDestinations as unknown as Destination[]);
+      } else {
+        setDestinations(data);
+      }
     } catch (error) {
       console.error("Error fetching destinations:", error);
     } finally {
@@ -56,6 +64,37 @@ export default function AdminDestinations() {
     }
   };
 
+  const handleSeed = async () => {
+    if (!confirm("Are you sure you want to seed the database? This will overwrite existing defaults.")) return;
+    try {
+      setLoading(true);
+      let count = 0;
+      for (const dest of fallbackDestinations) {
+        const { id, icon, ...destData } = dest;
+        const payload = {
+          id,
+          ...destData,
+          highlights: (dest as any).highlights || [],
+          gallery: (dest as any).gallery || [],
+          survivalGuide: (dest as any).survivalGuide || {
+            bestTime: "",
+            connectivity: "",
+            transport: "",
+            cash: ""
+          }
+        };
+        await setDoc(doc(db, "destinations", id), payload);
+        count++;
+      }
+      alert(`Successfully seeded ${count} destinations!`);
+      fetchDestinations();
+    } catch (err) {
+      console.error(err);
+      alert("Error seeding database.");
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
@@ -64,12 +103,21 @@ export default function AdminDestinations() {
           <p className="text-slate-500 font-medium">Manage all available trips and destinations on the platform.</p>
         </div>
         
-        <Link 
-          href="/admin/destinations/create"
+        <div className="flex gap-4">
+          <button 
+            onClick={handleSeed}
+            className="inline-flex items-center gap-2 bg-slate-100 text-slate-600 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-sm"
+          >
+            <Database className="w-4 h-4" /> Seed Default Data
+          </button>
+          
+          <Link 
+            href="/admin/destinations/create"
           className="inline-flex items-center gap-2 bg-sunset text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-xl shadow-sunset/20"
         >
           <Plus className="w-4 h-4" /> Add Destination
         </Link>
+        </div>
       </div>
 
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
@@ -131,9 +179,9 @@ export default function AdminDestinations() {
                     </td>
                     <td className="py-4 px-6 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-2 text-slate-400 hover:text-ocean transition-colors hover:bg-ocean/10 rounded-lg">
+                        <Link href={`/admin/destinations/${dest.id}/edit`} className="p-2 text-slate-400 hover:text-ocean transition-colors hover:bg-ocean/10 rounded-lg">
                           <Edit className="w-4 h-4" />
-                        </button>
+                        </Link>
                         <button 
                           onClick={() => handleDelete(dest.id)}
                           className="p-2 text-slate-400 hover:text-red-500 transition-colors hover:bg-red-50 rounded-lg"
