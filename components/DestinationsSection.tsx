@@ -10,12 +10,24 @@ export function DestinationsSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const checkScroll = () => {
     if (scrollRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
       setShowLeftArrow(scrollLeft > 10);
       setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 10);
+
+      // Check if we are scrolled to the end (within 15px tolerance)
+      const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 15;
+
+      if (isAtEnd) {
+        setActiveIndex(destinations.length - 1);
+      } else {
+        const cardWidth = window.innerWidth < 768 ? 352 : 432;
+        const index = Math.round(scrollLeft / cardWidth);
+        setActiveIndex(Math.min(destinations.length - 1, Math.max(0, index)));
+      }
     }
   };
 
@@ -44,6 +56,24 @@ export function DestinationsSection() {
     }
   };
 
+  const scrollToActive = (index: number) => {
+    if (scrollRef.current) {
+      if (index === destinations.length - 1) {
+        const { scrollWidth, clientWidth } = scrollRef.current;
+        scrollRef.current.scrollTo({
+          left: scrollWidth - clientWidth,
+          behavior: "smooth"
+        });
+      } else {
+        const cardWidth = window.innerWidth < 768 ? 352 : 432;
+        scrollRef.current.scrollTo({
+          left: index * cardWidth,
+          behavior: "smooth"
+        });
+      }
+    }
+  };
+
   return (
     <section id="destinations" className="py-32 px-6 bg-background overflow-hidden scroll-mt-24">
       <div className="max-w-7xl mx-auto">
@@ -53,7 +83,7 @@ export function DestinationsSection() {
               Curated Destinations
             </span>
             <h2 className="text-5xl md:text-7xl font-serif font-bold text-slate leading-tight text-balance">
-              Where to <span className="text-terra italic">lose yourself</span>{" "}
+              Where to <span className="text-terra">lose yourself</span>{" "}
               & find your kin.
             </h2>
           </div>
@@ -94,7 +124,7 @@ export function DestinationsSection() {
 
           <div
             ref={scrollRef}
-            className="overflow-x-auto no-scrollbar scroll-smooth -mx-6 px-6"
+            className="overflow-x-auto scrollbar-hide scroll-smooth -mx-6 px-6"
           >
             <div className="flex gap-8 pb-12 w-max">
               {destinations.map((place) => (
@@ -151,6 +181,21 @@ export function DestinationsSection() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Pagination Dots */}
+        <div className="flex justify-center items-center gap-2 mt-8">
+          {destinations.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => scrollToActive(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 focus-ring cursor-pointer ${activeIndex === index
+                ? "w-8 bg-sunset"
+                : "w-2.5 bg-slate/20 hover:bg-slate/40"
+                }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

@@ -3,12 +3,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { 
-  Search, 
-  MapPin, 
-  Star, 
-  ArrowRight, 
-  Filter, 
+import {
+  Search,
+  MapPin,
+  Star,
+  ArrowRight,
+  Filter,
   ChevronDown,
   Globe,
   Waves,
@@ -45,10 +45,10 @@ export default function DestinationsPage() {
 
   const SORT_OPTIONS = [
     { id: "popularity", label: "Popularity" },
-    { id: "top-rated",  label: "Top Rated" },
-    { id: "price-asc",  label: "Price: Low to High" },
+    { id: "top-rated", label: "Top Rated" },
+    { id: "price-asc", label: "Price: Low to High" },
     { id: "price-desc", label: "Price: High to Low" },
-    { id: "name-az",    label: "A – Z" },
+    { id: "name-az", label: "A – Z" },
   ];
 
   const REGIONS = Array.from(new Set(destinations.map(d => d.region))).sort();
@@ -94,8 +94,8 @@ export default function DestinationsPage() {
 
   const filteredDestinations = destinations
     .filter((dest) => {
-      const matchesSearch = dest.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                           dest.tagline.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = dest.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dest.tagline.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = activeCategory === "all" || dest.tag.toLowerCase() === activeCategory.toLowerCase();
       const matchesRegion = activeRegion === "all" || dest.region === activeRegion;
       const matchesVibe = activeVibe === "all" || dest.vibe.toLowerCase().includes(activeVibe.toLowerCase());
@@ -103,11 +103,11 @@ export default function DestinationsPage() {
     })
     .sort((a, b) => {
       switch (sortBy) {
-        case "top-rated":  return b.rating - a.rating;
-        case "price-asc":  return parsePrice(a.price) - parsePrice(b.price);
+        case "top-rated": return b.rating - a.rating;
+        case "price-asc": return parsePrice(a.price) - parsePrice(b.price);
         case "price-desc": return parsePrice(b.price) - parsePrice(a.price);
-        case "name-az":    return a.title.localeCompare(b.title);
-        default:           return b.reviews - a.reviews; // popularity
+        case "name-az": return a.title.localeCompare(b.title);
+        default: return b.reviews - a.reviews; // popularity
       }
     });
 
@@ -118,13 +118,13 @@ export default function DestinationsPage() {
         navLinks={navLinks}
         onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
       />
-      
+
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         navLinks={navLinks}
       />
-      
+
       <main>
         {/* Hero Section */}
         <section className="relative min-h-[70vh] w-full flex items-center justify-center overflow-hidden bg-slate">
@@ -146,18 +146,19 @@ export default function DestinationsPage() {
                     fill
                     priority
                     sizes="100vw"
-                    className="object-cover brightness-[0.7]"
+                    className="object-cover"
                   />
                 </motion.div>
               </AnimatePresence>
-              <div className="absolute inset-0 bg-gradient-to-b from-slate/95 via-slate/70 to-background z-10" />
+              <div className="absolute inset-0 bg-gradient-to-b from-slate/80 via-slate/40 to-slate/90 z-10" />
+              <div className="absolute inset-0 bg-black/20 z-10" />
             </div>
             {/* Bottom wave fade */}
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-20" />
           </div>
 
           <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24">
-            <motion.span 
+            <motion.span
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sunset/20 backdrop-blur-md text-sunset border border-sunset/30 text-xs font-black uppercase tracking-widest mb-8"
@@ -165,17 +166,17 @@ export default function DestinationsPage() {
               <Sparkles className="w-3 h-3" />
               Exploration Awaits
             </motion.span>
-            
-            <motion.h1 
+
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="text-6xl md:text-8xl lg:text-[7rem] font-serif font-bold text-white leading-[0.9] mb-8 text-balance"
             >
-              Find your <span className="text-sunset italic">paradise</span>.
+              Find your <span className="text-sunset">paradise</span>.
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -183,8 +184,8 @@ export default function DestinationsPage() {
             >
               Discover 87+ curated destinations across the Philippines and beyond. Verified for solo safety and meaningful connections.
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -204,7 +205,7 @@ export default function DestinationsPage() {
               </div>
             </motion.div>
           </div>
-          
+
           {/* Bottom wave fade */}
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent z-20" />
         </section>
@@ -219,8 +220,8 @@ export default function DestinationsPage() {
                   onClick={() => setActiveCategory(cat.id)}
                   className={cn(
                     "flex items-center gap-3 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2",
-                    activeCategory === cat.id 
-                      ? "bg-slate border-slate text-white shadow-xl shadow-slate/20" 
+                    activeCategory === cat.id
+                      ? "bg-slate border-slate text-white shadow-xl shadow-slate/20"
                       : "bg-white border-slate/5 text-slate/40 hover:border-slate/20 hover:text-slate"
                   )}
                 >
@@ -229,7 +230,7 @@ export default function DestinationsPage() {
                 </button>
               ))}
             </div>
-            
+
             <div className="flex items-center gap-4">
               {/* Filter Dropdown */}
               <div className="relative" ref={filterRef}>
@@ -237,8 +238,8 @@ export default function DestinationsPage() {
                   onClick={() => setFilterOpen((v) => !v)}
                   className={cn(
                     "flex items-center gap-2 px-6 py-3 rounded-full bg-white border text-xs font-bold transition-all",
-                    activeRegion !== "all" || activeVibe !== "all" 
-                      ? "border-ocean text-ocean ring-4 ring-ocean/5" 
+                    activeRegion !== "all" || activeVibe !== "all"
+                      ? "border-ocean text-ocean ring-4 ring-ocean/5"
                       : "border-slate/5 text-slate/60 hover:border-slate/20"
                   )}
                 >
@@ -251,7 +252,7 @@ export default function DestinationsPage() {
 
                 <AnimatePresence>
                   {filterOpen && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -272,8 +273,8 @@ export default function DestinationsPage() {
                                 onClick={() => setActiveRegion(region)}
                                 className={cn(
                                   "px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all",
-                                  activeRegion === region 
-                                    ? "bg-slate text-white" 
+                                  activeRegion === region
+                                    ? "bg-slate text-white"
                                     : "bg-slate/5 text-slate/60 hover:bg-slate/10"
                                 )}
                               >
@@ -297,8 +298,8 @@ export default function DestinationsPage() {
                                 onClick={() => setActiveVibe(vibe)}
                                 className={cn(
                                   "px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all",
-                                  activeVibe === vibe 
-                                    ? "bg-ocean text-white" 
+                                  activeVibe === vibe
+                                    ? "bg-ocean text-white"
                                     : "bg-ocean/5 text-ocean/60 hover:bg-ocean/10"
                                 )}
                               >
@@ -326,7 +327,7 @@ export default function DestinationsPage() {
 
                 <AnimatePresence>
                   {sortOpen && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -336,11 +337,10 @@ export default function DestinationsPage() {
                         <button
                           key={opt.id}
                           onClick={() => { setSortBy(opt.id); setSortOpen(false); }}
-                          className={`w-full text-left px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors ${
-                            sortBy === opt.id
+                          className={`w-full text-left px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors ${sortBy === opt.id
                               ? "bg-slate text-white"
                               : "text-slate/60 hover:bg-slate/5 hover:text-slate"
-                          }`}
+                            }`}
                         >
                           {opt.label}
                         </button>
@@ -365,25 +365,25 @@ export default function DestinationsPage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ 
-                    duration: 0.4, 
+                  transition={{
+                    duration: 0.4,
                     ease: [0.23, 1, 0.32, 1],
                     opacity: { duration: 0.2 }
                   }}
                   className="relative aspect-[4/5] w-full rounded-[3rem] overflow-hidden shadow-2xl"
                 >
-                  <Link 
+                  <Link
                     href={`/destinations/${dest.id}`}
                     className="group block w-full h-full focus-ring"
                   >
-                    <Image 
+                    <Image
                       src={dest.image}
                       alt={dest.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover transition-transform duration-1000 group-hover:scale-110"
                     />
-                    
+
                     <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                     <div className="absolute top-8 left-8">
@@ -426,9 +426,9 @@ export default function DestinationsPage() {
               ))}
             </AnimatePresence>
           </motion.div>
-          
+
           {filteredDestinations.length === 0 && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="py-32 text-center"
@@ -438,7 +438,7 @@ export default function DestinationsPage() {
               </div>
               <h2 className="text-3xl font-serif font-bold text-slate mb-4">No paradises found.</h2>
               <p className="text-slate/40 font-medium text-lg">Try adjusting your filters or search query.</p>
-              <button 
+              <button
                 onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
                 className="mt-8 text-sunset font-black uppercase tracking-widest text-xs hover:underline"
               >
@@ -448,7 +448,7 @@ export default function DestinationsPage() {
           )}
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

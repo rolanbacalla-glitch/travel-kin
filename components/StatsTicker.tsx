@@ -10,7 +10,7 @@ export function StatsTicker() {
         {[...tickerItems, ...tickerItems].map((item, idx) => (
           <span
             key={`${item}-${idx}`}
-            className="text-xs uppercase tracking-[0.4em] font-medium text-white/30 italic"
+            className="text-xs uppercase tracking-[0.4em] font-medium text-white/30"
           >
             {item}
           </span>

@@ -114,7 +114,7 @@ export default function OnboardingPage() {
       {/* ── Navigation ── */}
       <nav className="relative z-10 p-6 md:p-8 flex items-center justify-between">
         <Link href="/" className="text-2xl font-serif font-bold text-slate">
-          Travel <span className="text-sunset italic">Kin</span>
+          Travel <span className="text-sunset">Kin</span>
         </Link>
         <div className="px-4 py-1.5 bg-sunset/20 backdrop-blur-md rounded-full border border-sunset/30 text-[10px] font-black tracking-widest text-sunset uppercase shadow-sm">
           Step {currentStep + 1} of {steps.length}
@@ -439,7 +439,7 @@ function OnboardingSuccess() {
           <Check className="w-12 h-12 text-white" />
         </motion.div>
         <h2 className="text-5xl md:text-8xl font-serif font-bold text-slate mb-6 leading-tight tracking-tight">
-          You&apos;re All <span className="text-sunset italic">Set!</span>
+          You&apos;re All <span className="text-sunset">Set!</span>
         </h2>
         <p className="text-slate/60 text-xl md:text-2xl max-w-lg mx-auto mb-12 font-medium">
           Welcome to the tribe. Your Southeast Asia journey starts now.

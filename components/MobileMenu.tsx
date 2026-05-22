@@ -23,7 +23,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
     >
       <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
         <span className="text-2xl font-serif font-bold">
-          Travel <span className="text-sunset italic">Kin</span>
+          Travel <span className="text-sunset">Kin</span>
         </span>
         <button
           aria-label="Close navigation menu"

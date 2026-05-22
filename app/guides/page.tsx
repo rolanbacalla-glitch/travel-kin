@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowRight, 
-  MapPin, 
-  Shield, 
-  Heart, 
-  Star, 
-  ChevronRight, 
-  Search, 
+import {
+  ArrowRight,
+  MapPin,
+  Shield,
+  Heart,
+  Star,
+  ChevronRight,
+  Search,
   Calendar,
   Backpack,
   Wifi,
@@ -93,23 +93,23 @@ export default function GuidesPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const filteredDestinations = DESTINATIONS.filter(d => 
+  const filteredDestinations = DESTINATIONS.filter(d =>
     d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     d.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
     <main className="min-h-screen bg-sand overflow-x-hidden selection:bg-sunset selection:text-white">
-      <Navbar 
-        isScrolled={isScrolled} 
-        navLinks={navLinks} 
-        onOpenMobileMenu={() => setMobileMenuOpen(true)} 
+      <Navbar
+        isScrolled={isScrolled}
+        navLinks={navLinks}
+        onOpenMobileMenu={() => setMobileMenuOpen(true)}
       />
 
-      <MobileMenu 
-        isOpen={mobileMenuOpen} 
-        onClose={() => setMobileMenuOpen(false)} 
-        navLinks={navLinks} 
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        navLinks={navLinks}
       />
 
       {/* ══════════════════════════════════════════════════════════
@@ -118,14 +118,15 @@ export default function GuidesPage() {
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-slate">
         {/* Background Video/Image placeholder */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-slate/60 via-slate/20 to-sand z-10" />
-          <Image 
+          <Image
             src="https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Siargao Coastline"
             fill
-            className="object-cover scale-110 animate-subtle-zoom"
+            className="object-cover"
             priority
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate/80 via-slate/40 to-slate/90 z-10" />
+          <div className="absolute inset-0 bg-black/20 z-10" />
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-6 text-center">
@@ -138,14 +139,14 @@ export default function GuidesPage() {
               <span className="w-2 h-2 rounded-full bg-sunset animate-pulse" />
               <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Solo Expedition 2026</span>
             </div>
-            
+
             <h1 className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl xl:text-[10rem] font-serif font-bold text-white mb-4 md:mb-10 leading-[1.1] md:leading-[1.1] tracking-tighter">
-              The <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-orange-500 to-sunset bg-[length:200%_auto] animate-gradient italic px-4">Solo</span> <br />
+              The <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-orange-500 to-sunset bg-[length:200%_auto] animate-gradient px-4">Solo</span> <br />
               Survival Kit.
             </h1>
-            
+
             <p className="text-white/80 text-lg md:text-2xl max-w-2xl mx-auto font-medium leading-relaxed mb-12">
-              The ultimate blueprint for navigating the Philippines solo. 
+              The ultimate blueprint for navigating the Philippines solo.
               No fluff, just the essentials for your next loop.
             </p>
 
@@ -174,7 +175,7 @@ export default function GuidesPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-4 md:p-6 flex flex-col md:flex-row gap-4 items-center border border-slate-100">
             <div className="relative flex-1 w-full">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5" />
-              <input 
+              <input
                 type="text"
                 placeholder="Search islands, activities, or vibes..."
                 className="w-full pl-16 pr-6 py-5 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-sunset transition-all text-slate-700 font-medium"
@@ -187,11 +188,10 @@ export default function GuidesPage() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-5 rounded-2xl font-bold capitalize transition-all whitespace-nowrap ${
-                    activeTab === tab 
-                      ? "bg-slate text-white shadow-lg shadow-slate/20" 
-                      : "bg-slate-50 text-slate-400 hover:bg-slate-100"
-                  }`}
+                  className={`px-6 py-5 rounded-2xl font-bold capitalize transition-all whitespace-nowrap ${activeTab === tab
+                    ? "bg-slate text-white shadow-lg shadow-slate/20"
+                    : "bg-slate-50 text-slate-400 hover:bg-slate-100"
+                    }`}
                 >
                   {tab}
                 </button>
@@ -208,7 +208,7 @@ export default function GuidesPage() {
         <div className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl">
             <span className="text-sunset font-black tracking-widest uppercase text-[10px] mb-4 block">The 2026 Selection</span>
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-slate mb-6">Explore the <span className="italic text-sunset">Kin-Map</span>.</h2>
+            <h2 className="text-5xl md:text-7xl font-serif font-bold text-slate mb-6">Explore the <span className="text-sunset">Kin-Map</span>.</h2>
             <p className="text-slate-mid text-lg md:text-xl font-medium">
               We&rsquo;ve vetted these islands specifically for solo safety, social atmosphere, and the &ldquo;vibe&rdquo; factor.
             </p>
@@ -237,14 +237,14 @@ export default function GuidesPage() {
               className="group cursor-pointer"
             >
               <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl">
-                <Image 
+                <Image
                   src={dest.image}
                   alt={dest.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-                
+
                 {/* Floating Tags */}
                 <div className="absolute top-8 left-8 flex gap-2">
                   {dest.tags.map(tag => (
@@ -277,11 +277,11 @@ export default function GuidesPage() {
                 <p className="text-slate-mid text-lg leading-relaxed mb-6">
                   {dest.desc}
                 </p>
-                <Link 
+                <Link
                   href={`/guides/${dest.id}`}
                   className="inline-flex items-center gap-3 text-slate font-black uppercase tracking-widest text-xs group/link"
                 >
-                  Read Full Survival Guide 
+                  Read Full Survival Guide
                   <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center group-hover/link:bg-sunset group-hover/link:text-white transition-all shadow-sm">
                     <ChevronRight className="w-5 h-5" />
                   </span>
@@ -303,10 +303,10 @@ export default function GuidesPage() {
           <div className="text-center mb-20">
             <span className="text-sunset font-black tracking-widest uppercase text-[10px] mb-6 block">The Essentials</span>
             <h2 className="text-5xl md:text-8xl font-serif text-white leading-tight">
-              Pack Like a <span className="italic text-sunset">Pro.</span>
+              Pack Like a <span className="text-sunset">Pro.</span>
             </h2>
             <p className="text-white/60 text-lg mb-10 max-w-lg mx-auto">
-              Don&apos;t overpack. These are the non-negotiables for a solo loop in the Philippines. 
+              Don&apos;t overpack. These are the non-negotiables for a solo loop in the Philippines.
             </p>
           </div>
 
@@ -341,13 +341,13 @@ export default function GuidesPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-sunset/5 to-transparent" />
           <div className="relative z-10 p-12 md:p-24 text-center">
             <h2 className="text-5xl md:text-7xl font-serif font-bold text-slate mb-8 leading-tight">
-              Get the <span className="italic text-sunset">Weekly Loop</span>.
+              Get the <span className="text-sunset">Weekly Loop</span>.
             </h2>
             <p className="text-slate-mid text-xl mb-12 max-w-xl mx-auto font-medium">
               Join 47,000 solo travelers receiving secret spots, safety updates, and flight deals every Sunday.
             </p>
             <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-              <input 
+              <input
                 type="email"
                 placeholder="kin@travel.com"
                 className="flex-1 px-8 py-5 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-sunset transition-all text-slate font-bold"

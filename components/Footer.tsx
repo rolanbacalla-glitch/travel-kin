@@ -21,7 +21,7 @@ export function Footer() {
               href="/"
               className="text-4xl font-serif font-bold text-white mb-8 block"
             >
-              Travel <span className="text-sunset italic">Kin</span>
+              Travel <span className="text-sunset">Kin</span>
             </Link>
             <p className="text-white/50 text-lg max-w-sm mb-10 leading-relaxed">
               We&rsquo;re building the infrastructure for safe, meaningful solo
@@ -51,7 +51,7 @@ export function Footer() {
                 if (item === "Destinations") href = "/destinations";
                 else if (item === "Crew") href = "/#crew";
                 else if (item === "Safety") href = "/safety-commitment";
-                
+
                 return (
                   <li key={item}>
                     <Link

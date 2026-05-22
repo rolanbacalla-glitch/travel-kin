@@ -29,7 +29,7 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
           className="text-2xl font-serif font-bold text-white drop-shadow-md focus-ring rounded-sm"
           aria-label="Travel Kin — home"
         >
-          Travel <span className="text-sunset italic">Kin</span>
+          Travel <span className="text-sunset">Kin</span>
         </Link>
 
         {/* Desktop nav */}
@@ -40,7 +40,7 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
             else if (item === "Safety") href = "/safety-commitment";
             else if (item === "Destinations") href = "/destinations";
             else href = `/#${item.toLowerCase()}`;
-            
+
             return (
               <Link
                 key={item}

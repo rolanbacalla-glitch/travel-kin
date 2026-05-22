@@ -31,7 +31,7 @@ export function FeaturesSection() {
                 <div className="absolute inset-0 w-12 h-12 rounded-full bg-ocean animate-ping opacity-20" />
               </div>
               <div className="text-[10px] font-black text-slate uppercase tracking-[0.2em] leading-tight">
-                Emergency<br/>Support
+                Emergency<br />Support
               </div>
             </div>
             <p className="text-[11px] text-slate/70 leading-relaxed font-bold">
@@ -48,7 +48,7 @@ export function FeaturesSection() {
             Why Travel Kin
           </span>
           <h2 className="text-5xl md:text-7xl font-serif font-bold mb-12 leading-tight text-balance">
-            Safety is our <span className="italic text-sand">North Star.</span>
+            Safety is our <span className="text-sand">North Star.</span>
           </h2>
 
           <div className="space-y-6">
@@ -83,9 +83,9 @@ export function FeaturesSection() {
           </div>
 
           <div className="mt-16 pt-12 border-t border-white/10">
-            <Link 
+            <Link
               href="/safety-commitment"
-              className="group flex items-center gap-4 text-sand font-serif italic text-2xl hover:text-white transition-colors duration-200"
+              className="group flex items-center gap-4 text-sand font-serif text-2xl hover:text-white transition-colors duration-200"
             >
               Read our full Safety Commitment <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
             </Link>

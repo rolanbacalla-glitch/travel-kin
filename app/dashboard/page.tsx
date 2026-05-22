@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Users, 
-  Shield, 
-  MapPin, 
-  MessageSquare, 
-  Bell, 
-  Settings, 
-  LogOut, 
+import {
+  Users,
+  Shield,
+  MapPin,
+  MessageSquare,
+  Bell,
+  Settings,
+  LogOut,
   Search,
   Filter,
   CheckCircle2,
@@ -61,66 +61,66 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F8F6] flex flex-col md:flex-row">
-      
+
       {/* ── Desktop Sidebar ── */}
       <aside className="hidden md:flex w-72 bg-white border-r border-slate/5 flex-col p-8 space-y-12 shadow-[4px_0_24px_rgba(0,0,0,0.02)] fixed h-screen overflow-y-auto">
         <Link href="/" className="text-2xl font-serif font-bold text-slate">
-          Travel <span className="text-sunset italic">Kin</span>
+          Travel <span className="text-sunset">Kin</span>
         </Link>
 
         <nav className="flex-1 space-y-2">
-          <SidebarItem 
-            active={activeTab === "hub"} 
-            onClick={() => setActiveTab("hub")} 
-            icon={Users} 
-            label="The Hub" 
+          <SidebarItem
+            active={activeTab === "hub"}
+            onClick={() => setActiveTab("hub")}
+            icon={Users}
+            label="The Hub"
           />
-          <SidebarItem 
-            active={activeTab === "itinerary"} 
-            onClick={() => setActiveTab("itinerary")} 
-            icon={Calendar} 
-            label="Wander List" 
+          <SidebarItem
+            active={activeTab === "itinerary"}
+            onClick={() => setActiveTab("itinerary")}
+            icon={Calendar}
+            label="Wander List"
             badge="Vote!"
           />
-          <SidebarItem 
-            active={activeTab === "safety"} 
-            onClick={() => setActiveTab("safety")} 
-            icon={Shield} 
-            label="Safety Hub" 
+          <SidebarItem
+            active={activeTab === "safety"}
+            onClick={() => setActiveTab("safety")}
+            icon={Shield}
+            label="Safety Hub"
           />
-          <SidebarItem 
-            active={activeTab === "messages"} 
-            onClick={() => { setOpenConvId(null); setActiveTab("messages"); }} 
-            icon={MessageSquare} 
+          <SidebarItem
+            active={activeTab === "messages"}
+            onClick={() => { setOpenConvId(null); setActiveTab("messages"); }}
+            icon={MessageSquare}
             label="Messages"
             badge={totalUnread > 0 ? String(totalUnread) : undefined}
           />
-          <SidebarItem 
-            active={activeTab === "pulse"} 
-            onClick={() => setActiveTab("pulse")} 
-            icon={Zap} 
-            label="Pulse" 
+          <SidebarItem
+            active={activeTab === "pulse"}
+            onClick={() => setActiveTab("pulse")}
+            icon={Zap}
+            label="Pulse"
             badge="Live"
           />
 
           {/* Separator for "Your Story" section */}
           <div className="pt-10 pb-4">
-             <div className="h-px bg-slate/5 w-full mb-6" />
-             <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate/20">Your Story</p>
+            <div className="h-px bg-slate/5 w-full mb-6" />
+            <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate/20">Your Story</p>
           </div>
 
-          <SidebarItem 
-            active={activeTab === "memories"} 
-            onClick={() => setActiveTab("memories")} 
-            icon={Camera} 
-            label="Memory Vault" 
+          <SidebarItem
+            active={activeTab === "memories"}
+            onClick={() => setActiveTab("memories")}
+            icon={Camera}
+            label="Memory Vault"
             className={cn(activeTab === "memories" ? "bg-ocean text-white shadow-ocean/20" : "hover:text-ocean")}
           />
         </nav>
 
         <div className="pt-8 border-t border-slate/5 space-y-4">
-           <SidebarItem icon={Settings} label="Settings" />
-           <SidebarItem icon={LogOut} label="Log Out" className="text-red-400 hover:bg-red-50 hover:text-red-500" />
+          <SidebarItem icon={Settings} label="Settings" />
+          <SidebarItem icon={LogOut} label="Log Out" className="text-red-400 hover:bg-red-50 hover:text-red-500" />
         </div>
       </aside>
 
@@ -137,13 +137,13 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-4">
             <div className="relative">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/50" />
-               <input 
-                 placeholder="Search travellers..." 
-                 className="p-4 pl-12 bg-white border border-slate/5 rounded-2xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all"
-               />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/50" />
+              <input
+                placeholder="Search travellers..."
+                className="p-4 pl-12 bg-white border border-slate/5 rounded-2xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all"
+              />
             </div>
-            <button 
+            <button
               aria-label="Notifications"
               className="p-4 bg-white border border-slate/5 rounded-2xl shadow-sm hover:bg-slate/5 transition-all"
             >
@@ -232,12 +232,12 @@ export default function DashboardPage() {
 
       {/* ── Mobile Navigation ── */}
       <nav className="md:hidden sticky bottom-0 left-0 right-0 h-20 bg-white border-t border-slate/5 flex items-center justify-around px-2 z-30 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-        <MobileNavItem active={activeTab === "hub"}       onClick={() => setActiveTab("hub")}                                      icon={Users}         label="Hub" />
-        <MobileNavItem active={activeTab === "pulse"}     onClick={() => setActiveTab("pulse")}                                    icon={Zap}           label="Pulse" />
-        <MobileNavItem active={activeTab === "itinerary"} onClick={() => setActiveTab("itinerary")}                                 icon={Calendar}      label="Plan" />
-        <MobileNavItem active={activeTab === "safety"}    onClick={() => setActiveTab("safety")}                                   icon={Shield}        label="Safety" />
-        <MobileNavItem active={activeTab === "messages"}  onClick={() => { setOpenConvId(null); setActiveTab("messages"); }}        icon={MessageSquare} label="Chat" badge={totalUnread} />
-        <MobileNavItem active={activeTab === "memories"}  onClick={() => setActiveTab("memories")}                                 icon={Camera}        label="Vault" />
+        <MobileNavItem active={activeTab === "hub"} onClick={() => setActiveTab("hub")} icon={Users} label="Hub" />
+        <MobileNavItem active={activeTab === "pulse"} onClick={() => setActiveTab("pulse")} icon={Zap} label="Pulse" />
+        <MobileNavItem active={activeTab === "itinerary"} onClick={() => setActiveTab("itinerary")} icon={Calendar} label="Plan" />
+        <MobileNavItem active={activeTab === "safety"} onClick={() => setActiveTab("safety")} icon={Shield} label="Safety" />
+        <MobileNavItem active={activeTab === "messages"} onClick={() => { setOpenConvId(null); setActiveTab("messages"); }} icon={MessageSquare} label="Chat" badge={totalUnread} />
+        <MobileNavItem active={activeTab === "memories"} onClick={() => setActiveTab("memories")} icon={Camera} label="Vault" />
       </nav>
     </div>
   );
@@ -250,7 +250,7 @@ function SidebarItem({ icon: Icon, label, active, onClick, className, badge }: {
   onClick?: () => void; className?: string; badge?: string;
 }) {
   return (
-    <button 
+    <button
       onClick={onClick}
       className={cn(
         "w-full px-6 py-4 rounded-2xl flex items-center justify-between gap-4 font-bold transition-all group",
@@ -273,7 +273,7 @@ function MobileNavItem({ icon: Icon, label, active, onClick, badge }: {
   icon: React.ElementType; label: string; active?: boolean; onClick?: () => void; badge?: number;
 }) {
   return (
-    <button 
+    <button
       onClick={onClick}
       className={cn(
         "flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all relative",

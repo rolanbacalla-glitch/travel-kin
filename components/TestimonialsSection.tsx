@@ -11,7 +11,7 @@ export function TestimonialsSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24">
           <h2 className="text-5xl md:text-7xl font-serif font-bold text-slate mb-6">
-            Stories from <span className="text-ocean italic">the road</span>.
+            Stories from <span className="text-ocean">the road</span>.
           </h2>
           <p className="text-slate/50 font-medium uppercase tracking-[0.2em] text-xs">
             TRANSFORMING SOLO FEAR INTO COLLECTIVE FREEDOM
@@ -46,7 +46,7 @@ export function TestimonialsSection() {
                 </div>
               </div>
 
-              <p className="text-slate/70 leading-relaxed font-medium text-lg italic">
+              <p className="text-slate/70 leading-relaxed font-medium text-lg">
                 &ldquo;{t.quote}&rdquo;
               </p>
 

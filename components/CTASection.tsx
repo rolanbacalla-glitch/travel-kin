@@ -23,7 +23,7 @@ export function CTASection() {
       <div className="relative z-20 max-w-4xl mx-auto">
         <h2 className="text-5xl md:text-8xl font-serif font-bold text-white mb-10 leading-[1.1] text-balance">
           The world is <span className="text-sunset">waiting</span>. Stop
-          waiting for <span className="italic text-sand">them</span>.
+          waiting for <span className="text-sand">them</span>.
         </h2>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
           <Link

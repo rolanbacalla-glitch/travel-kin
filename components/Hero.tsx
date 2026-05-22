@@ -20,15 +20,15 @@ export function Hero() {
   }, []);
 
   return (
-    <section 
+    <section
       id="hero"
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-slate"
     >
       {/* 1. Persistent Static Background (Loads first, avoids flash) */}
-      <div 
-        className="absolute inset-0 z-0 transition-opacity duration-1000" 
-        style={{ 
-          opacity: currentImageIndex === 0 ? 1 : 0.4 
+      <div
+        className="absolute inset-0 z-0 transition-opacity duration-1000"
+        style={{
+          opacity: currentImageIndex === 0 ? 1 : 0.4
         }}
       >
         <Image
@@ -90,13 +90,13 @@ export function Hero() {
 
             <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
               Solo travel, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient italic">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
                 better together.
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
-              Ditch the stress of planning alone. Connect with verified companions, 
+              Ditch the stress of planning alone. Connect with verified companions,
               find expert local guides, and explore Southeast Asia&apos;s hidden gems.
             </p>
 
@@ -107,7 +107,7 @@ export function Hero() {
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-terra to-sunset opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </Link>
-              
+
               <Link href="/destinations" className="flex items-center gap-4 px-10 py-5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl backdrop-blur-md border border-white/20 transition-all duration-300">
                 <Search className="w-5 h-5 text-sunset" />
                 <span>Explore Destinations</span>

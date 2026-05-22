@@ -3,16 +3,16 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Shield, 
-  ShieldCheck, 
-  Heart, 
-  Clock, 
-  Phone, 
-  MapPin, 
-  CheckCircle, 
-  Users, 
-  Eye, 
+import {
+  Shield,
+  ShieldCheck,
+  Heart,
+  Clock,
+  Phone,
+  MapPin,
+  CheckCircle,
+  Users,
+  Eye,
   Lock,
   Zap,
   Globe,
@@ -105,16 +105,17 @@ export default function SafetyCommitmentPage() {
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-sunset/20 blur-[100px] rounded-full animate-pulse" />
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-ocean/20 blur-[100px] rounded-full animate-pulse" style={{ animationDelay: "2s" }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)]" />
-        
+
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/safety-hero.png"
             alt="Safety and Peace of Mind"
             fill
-            className="object-cover opacity-30 grayscale contrast-125"
+            className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate via-slate/90 to-slate" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate/80 via-slate/40 to-slate/90 z-10" />
+          <div className="absolute inset-0 bg-black/20 z-10" />
         </div>
 
         {/* Content Area - Centered with plenty of breathing room */}
@@ -132,12 +133,12 @@ export default function SafetyCommitmentPage() {
               </span>
               <span className="text-xs font-bold text-white uppercase tracking-widest text-[10px]">Global Safety Network Active</span>
             </div>
-            
+
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold text-white mb-8 leading-[1] tracking-tighter">
-              Your Safety is Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient italic">Sacred</span> Commitment.
+              Your Safety is Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">Sacred</span> Commitment.
             </h1>
             <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-12">
-              We&apos;ve built the world&apos;s most sophisticated safety infrastructure for solo travelers. 
+              We&apos;ve built the world&apos;s most sophisticated safety infrastructure for solo travelers.
               Because freedom only truly exists when you&apos;re protected.
             </p>
             <div className="flex flex-wrap gap-6 justify-center">
@@ -179,7 +180,7 @@ export default function SafetyCommitmentPage() {
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-6xl font-serif font-bold text-slate mb-6">Our Three Pillars</h2>
             <p className="text-slate-mid text-lg max-w-2xl mx-auto">
-              We built Travel Kin on a foundation of trust. Here is how we ensure 
+              We built Travel Kin on a foundation of trust. Here is how we ensure
               your journey is as safe as it is spectacular.
             </p>
           </div>
@@ -190,11 +191,10 @@ export default function SafetyCommitmentPage() {
                 <motion.div
                   key={pillar.title}
                   onClick={() => setActiveTab(idx)}
-                  className={`p-8 rounded-3xl cursor-pointer transition-all duration-300 ${
-                    activeTab === idx 
-                    ? "bg-white shadow-2xl scale-[1.02] border-l-8 border-sunset" 
-                    : "bg-transparent opacity-60 hover:opacity-100"
-                  }`}
+                  className={`p-8 rounded-3xl cursor-pointer transition-all duration-300 ${activeTab === idx
+                      ? "bg-white shadow-2xl scale-[1.02] border-l-8 border-sunset"
+                      : "bg-transparent opacity-60 hover:opacity-100"
+                    }`}
                 >
                   <div className="flex items-start gap-6">
                     <div className={`p-4 rounded-2xl ${pillar.color} text-white shrink-0`}>
@@ -279,7 +279,7 @@ export default function SafetyCommitmentPage() {
               <span className="inline-block px-4 py-2 bg-ocean/10 text-ocean rounded-full text-xs font-bold uppercase tracking-widest mb-6">Backend & Data</span>
               <h2 className="text-5xl md:text-6xl font-serif font-bold text-slate mb-8">Bank-Grade Security for Your Identity.</h2>
               <p className="text-xl text-slate/70 leading-relaxed mb-10">
-                We take your privacy as seriously as your physical safety. Your data is encrypted using 
+                We take your privacy as seriously as your physical safety. Your data is encrypted using
                 AES-256 standards and hosted on dedicated, isolated servers in secure jurisdictions.
               </p>
               <div className="space-y-6">
@@ -346,7 +346,7 @@ export default function SafetyCommitmentPage() {
             <ShieldCheck className="w-20 h-20 mx-auto mb-8 text-white drop-shadow-xl" />
             <h2 className="text-4xl md:text-6xl font-serif font-bold mb-8">Ready to travel with confidence?</h2>
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-12">
-              Join 50,000+ solo travelers who have discovered the peace of mind 
+              Join 50,000+ solo travelers who have discovered the peace of mind
               that comes with the Travel Kin community.
             </p>
             <Link
