@@ -104,7 +104,7 @@ export function DestinationsSection() {
           {showLeftArrow && (
             <button
               onClick={() => scroll("left")}
-              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95 shadow-2xl focus-ring cursor-pointer hover:bg-slate-900/95"
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95 shadow-2xl focus-ring cursor-pointer hover:bg-slate/80"
               aria-label="Previous Destinations"
             >
               <ChevronLeft className="w-6 h-6" />
@@ -115,7 +115,7 @@ export function DestinationsSection() {
           {showRightArrow && (
             <button
               onClick={() => scroll("right")}
-              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95 shadow-2xl focus-ring cursor-pointer hover:bg-slate-900/95"
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95 shadow-2xl focus-ring cursor-pointer hover:bg-slate/80"
               aria-label="Next Destinations"
             >
               <ChevronRight className="w-6 h-6" />
