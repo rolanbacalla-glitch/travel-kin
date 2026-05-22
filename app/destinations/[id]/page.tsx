@@ -47,6 +47,10 @@ export default function DestinationDetail() {
     notFound();
   }
 
+  const titleParts = destination.title.split(" ");
+  const firstPart = titleParts.slice(0, -1).join(" ");
+  const lastPart = titleParts[titleParts.length - 1];
+
   const sections = [
     { icon: ShieldCheck, title: "Solo-Safe", desc: "ID-verified community and 24/7 emergency support on the island." },
     { icon: Users, title: "Kin Matching", desc: "Find 3-5 verified companions sharing this exact route." },
@@ -105,13 +109,28 @@ export default function DestinationDetail() {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <span className="px-6 py-2 bg-sunset text-white rounded-full text-xs font-black uppercase tracking-widest shadow-xl shadow-sunset/20">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sunset/20 border border-sunset/30 text-sunset text-sm font-bold tracking-widest uppercase mb-8 backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sunset opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-sunset"></span>
+                </span>
                 {destination.tag} · {destination.subtitle}
               </span>
-              <h1 className="text-7xl md:text-9xl font-serif font-bold text-white leading-none tracking-tight">
-                {destination.title}
+              <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
+                {firstPart ? (
+                  <>
+                    {firstPart}{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
+                      {lastPart}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
+                    {destination.title}
+                  </span>
+                )}
               </h1>
-              <p className="text-white/80 text-xl md:text-2xl font-medium max-w-2xl leading-relaxed text-pretty">
+              <p className="text-xl md:text-2xl text-white/80 max-w-2xl mb-12 leading-relaxed font-medium">
                 {destination.tagline}
               </p>
             </motion.div>

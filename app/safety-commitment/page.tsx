@@ -126,18 +126,21 @@ export default function SafetyCommitmentPage() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center space-x-3 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-8">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sunset/20 border border-sunset/30 text-sunset text-sm font-bold tracking-widest uppercase mb-8 backdrop-blur-md">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sunset opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-sunset"></span>
               </span>
-              <span className="text-xs font-bold text-white uppercase tracking-widest text-[10px]">Global Safety Network Active</span>
-            </div>
+              Global Safety Network Active
+            </span>
 
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold text-white mb-8 leading-[1] tracking-tighter">
-              Your Safety is Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">Sacred</span> Commitment.
+            <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
+              Your Safety is Our <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
+                Sacred Commitment.
+              </span>
             </h1>
-            <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-12">
+            <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
               We&apos;ve built the world&apos;s most sophisticated safety infrastructure for solo travelers.
               Because freedom only truly exists when you&apos;re protected.
             </p>

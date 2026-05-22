@@ -161,9 +161,12 @@ export default function DestinationsPage() {
             <motion.span
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sunset/20 backdrop-blur-md text-sunset border border-sunset/30 text-xs font-black uppercase tracking-widest mb-8"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sunset/20 border border-sunset/30 text-sunset text-sm font-bold tracking-widest uppercase mb-8 backdrop-blur-md"
             >
-              <Sparkles className="w-3 h-3" />
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sunset opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-sunset"></span>
+              </span>
               Exploration Awaits
             </motion.span>
 
@@ -171,16 +174,19 @@ export default function DestinationsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-6xl md:text-8xl lg:text-[7rem] font-serif font-bold text-white leading-[0.9] mb-8 text-balance"
+              className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter"
             >
-              Find your <span className="text-sunset">paradise</span>.
+              Find your <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
+                paradise.
+              </span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-white/70 text-lg md:text-xl font-medium leading-relaxed mb-12 max-w-2xl mx-auto text-pretty"
+              className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed font-medium"
             >
               Discover 87+ curated destinations across the Philippines and beyond. Verified for solo safety and meaningful connections.
             </motion.p>
