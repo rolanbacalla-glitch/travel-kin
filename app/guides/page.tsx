@@ -23,7 +23,7 @@ import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
 
 // Mock Data for Guides
-const DESTINATIONS = [
+export const GUIDE_DESTINATIONS = [
   {
     id: "siargao",
     title: "Siargao Island",
@@ -93,7 +93,7 @@ export default function GuidesPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const filteredDestinations = DESTINATIONS.filter(d =>
+  const filteredDestinations = GUIDE_DESTINATIONS.filter(d =>
     d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     d.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
   );
@@ -156,15 +156,15 @@ export default function GuidesPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="group relative px-10 py-5 bg-sunset text-white font-bold rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
+              <a href="/solo-survival-kit.pdf" download className="group relative px-10 py-5 bg-sunset text-white font-bold rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95 inline-flex items-center justify-center">
                 <span className="relative z-10 flex items-center gap-2">
                   Download Full PDF <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              </button>
-              <button className="px-10 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all">
+              </a>
+              <a href="#checklist" className="px-10 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all inline-flex items-center justify-center">
                 View Checklist
-              </button>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -173,9 +173,42 @@ export default function GuidesPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
+          CHECKLIST SECTION
+          ══════════════════════════════════════════════════════════ */}
+      <section id="checklist" className="py-24 px-6 bg-sand relative z-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="text-sunset font-black tracking-widest uppercase text-[10px] mb-4 block">Preparation</span>
+            <h2 className="text-4xl md:text-6xl font-serif font-bold text-slate mb-6">The <span className="text-sunset">Solo Checklist</span>.</h2>
+            <p className="text-slate-mid text-lg font-medium max-w-2xl mx-auto">Ensure you have everything covered before your adventure begins.</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-white p-8 rounded-3xl shadow-xl shadow-slate/5 border border-slate-100">
+              <h3 className="text-2xl font-serif font-bold text-slate mb-6 flex items-center gap-3"><Shield className="text-sunset w-6 h-6"/> Documents & Admin</h3>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Passport (valid for at least 6 months)</span></li>
+                <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Travel Insurance Policy</span></li>
+                <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Printed return flight tickets</span></li>
+                <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Visa documents (if applicable)</span></li>
+              </ul>
+            </div>
+            <div className="bg-white p-8 rounded-3xl shadow-xl shadow-slate/5 border border-slate-100">
+              <h3 className="text-2xl font-serif font-bold text-slate mb-6 flex items-center gap-3"><Heart className="text-sunset w-6 h-6"/> Health & Safety</h3>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Basic First Aid Kit</span></li>
+                <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Personal Prescriptions & Meds</span></li>
+                <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Emergency Contacts printed</span></li>
+                <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Reef-safe sunscreen & mosquito repellant</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
           SEARCH & FILTER - INTERACTIVE
           ══════════════════════════════════════════════════════════ */}
-      <br></br><br></br>< section className="py-20 px-6 relative z-30 -mt-20" >
+      <section className="py-20 px-6 relative z-30">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-4 md:p-6 flex flex-col md:flex-row gap-4 items-center border border-slate-100">
             <div className="relative flex-1 w-full">

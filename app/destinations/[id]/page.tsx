@@ -197,17 +197,16 @@ export default function DestinationDetail() {
           <div className="lg:col-span-1">
             <div className="sticky top-32 space-y-8">
               <div className="bg-white rounded-[3.5rem] p-10 border border-slate/5 shadow-2xl shadow-slate/10 overflow-hidden relative">
-                <div className="absolute top-0 right-0 p-8">
-                  <div className="px-4 py-1.5 bg-ocean/10 text-ocean rounded-full text-[10px] font-black uppercase tracking-widest">
-                    Best Value
+                <div className="flex justify-between items-start mb-10">
+                  <div className="pr-4">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate/30 block mb-2">Private Room or Shared Villa</span>
+                    <div className="flex items-baseline gap-2">
+                      <h4 className="text-5xl font-serif font-bold text-slate">{destination.price}</h4>
+                      <span className="text-slate/40 font-bold uppercase text-[10px] tracking-widest">/ Per Trip</span>
+                    </div>
                   </div>
-                </div>
-
-                <div className="mb-10">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate/30 block mb-2">Private Room or Shared Villa</span>
-                  <div className="flex items-baseline gap-2">
-                    <h4 className="text-5xl font-serif font-bold text-slate">{destination.price}</h4>
-                    <span className="text-slate/40 font-bold uppercase text-[10px] tracking-widest">/ Per Trip</span>
+                  <div className="px-4 py-1.5 bg-ocean/10 text-ocean rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
+                    Best Value
                   </div>
                 </div>
 
