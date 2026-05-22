@@ -17,6 +17,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useMessagesStore } from "@/lib/stores/useMessages";
+import { useProfileStore } from "@/lib/stores/useProfile";
 import { useEffect } from "react";
 
 /* ─────────────────────────────────────────────────────────── */
@@ -43,6 +44,7 @@ export default function VerificationPage() {
     setTimeout(() => {
       setStep("success");
       store.setVerified(true);
+      useProfileStore.getState().updateProfile({ isVerified: true });
       if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
         const mockUser = {
           uid: "mock-uid-123",

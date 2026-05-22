@@ -14,10 +14,12 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { useProfileStore } from "@/lib/stores/useProfile";
+import { useMessagesStore } from "@/lib/stores/useMessages";
 import { logFirebaseEvent } from "@/lib/firebase";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 // Preset avatars user can choose from
 const AVATAR_PRESETS = [
@@ -71,6 +73,22 @@ export function ProfileSettings() {
   const [showAvatarSelector, setShowAvatarSelector] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          setAvatar(reader.result);
+          setShowAvatarSelector(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const isIdentityChanged = name !== profile.name || avatar !== profile.avatar;
+
   // Sync with store on mount
   useEffect(() => {
     setName(profile.name);
@@ -107,6 +125,8 @@ export function ProfileSettings() {
   };
 
   const handleSave = () => {
+    const isIdentityChanged = name !== profile.name || avatar !== profile.avatar;
+
     profile.updateProfile({
       name,
       username,
@@ -114,17 +134,23 @@ export function ProfileSettings() {
       avatar,
       styles,
       vibes,
-      destinations
+      destinations,
+      isVerified: isIdentityChanged ? false : profile.isVerified
     });
+
+    if (isIdentityChanged) {
+      useMessagesStore.getState().setVerified(false);
+    }
 
     logFirebaseEvent("profile_update_success", {
       styles_count: styles.length,
       vibes_count: vibes.length,
-      destinations_count: destinations.length
+      destinations_count: destinations.length,
+      verification_revoked: isIdentityChanged
     });
 
     // Show toast
-    setToastMessage("Profile saved successfully!");
+    setToastMessage(isIdentityChanged ? "Profile saved. ID Re-verification required!" : "Profile saved successfully!");
     setTimeout(() => {
       setToastMessage(null);
     }, 3000);
@@ -212,12 +238,12 @@ export function ProfileSettings() {
             <div className="mt-5 text-center">
               <div className="flex items-center justify-center gap-1.5">
                 <h3 className="text-xl font-bold text-slate">{name || "Mia Reyes"}</h3>
-                <ShieldCheck className="w-4.5 h-4.5 text-ocean" />
+                {profile.isVerified && <ShieldCheck className="w-4.5 h-4.5 text-ocean" />}
               </div>
               <p className="text-xs font-semibold text-slate/40 mt-1">@{username || "wanderer_mia"}</p>
             </div>
 
-            {/* Avatar Preset Selector */}
+            {/* Avatar Preset Selector & Custom Upload */}
             <AnimatePresence>
               {showAvatarSelector && (
                 <motion.div 
@@ -227,7 +253,7 @@ export function ProfileSettings() {
                   className="absolute inset-0 bg-white/95 backdrop-blur-sm p-6 flex flex-col justify-center items-center z-10"
                 >
                   <p className="text-xs font-black uppercase tracking-widest text-slate/40 mb-4">Select Avatar</p>
-                  <div className="flex gap-3 justify-center mb-6">
+                  <div className="flex gap-3 justify-center mb-4">
                     {AVATAR_PRESETS.map((p, idx) => (
                       <button
                         key={idx}
@@ -244,6 +270,19 @@ export function ProfileSettings() {
                       </button>
                     ))}
                   </div>
+
+                  <label className="mb-4 flex flex-col items-center gap-1 cursor-pointer group/upload">
+                    <span className="px-4 py-2 border border-slate/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-slate/60 hover:text-slate hover:bg-slate/5 transition-all">
+                      Upload Custom Photo
+                    </span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handlePhotoUpload} 
+                      className="hidden" 
+                    />
+                  </label>
+
                   <button 
                     onClick={() => setShowAvatarSelector(false)}
                     className="px-4 py-2 bg-slate/5 text-slate text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-slate/10 transition-colors"
@@ -256,16 +295,32 @@ export function ProfileSettings() {
           </div>
 
           {/* Verification Card */}
-          <div className="bg-gradient-to-br from-ocean/5 to-ocean/10 border border-ocean/10 rounded-[40px] p-8 shadow-sm text-center relative overflow-hidden group">
-            <div className="p-3 w-fit bg-ocean text-white rounded-2xl mx-auto shadow-md mb-4 group-hover:scale-105 transition-transform">
-              <ShieldCheck className="w-5 h-5" />
+          {profile.isVerified ? (
+            <div className="bg-gradient-to-br from-ocean/5 to-ocean/10 border border-ocean/10 rounded-[40px] p-8 shadow-sm text-center relative overflow-hidden group">
+              <div className="p-3 w-fit bg-ocean text-white rounded-2xl mx-auto shadow-md mb-4 group-hover:scale-105 transition-transform">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <h4 className="text-lg font-bold text-slate font-serif">Passport Verified</h4>
+              <p className="text-slate/60 text-xs font-semibold mt-1">Identity checked on May 20, 2026</p>
+              <div className="mt-4 px-3 py-1 bg-white/60 border border-ocean/10 rounded-full text-[9px] font-black uppercase tracking-wider text-ocean w-fit mx-auto">
+                Level 3 Security Active
+              </div>
             </div>
-            <h4 className="text-lg font-bold text-slate font-serif">Passport Verified</h4>
-            <p className="text-slate/60 text-xs font-semibold mt-1">Identity checked on May 20, 2026</p>
-            <div className="mt-4 px-3 py-1 bg-white/60 border border-ocean/10 rounded-full text-[9px] font-black uppercase tracking-wider text-ocean w-fit mx-auto">
-              Level 3 Security Active
+          ) : (
+            <div className="bg-gradient-to-br from-amber-500/5 to-amber-500/10 border border-amber-500/10 rounded-[40px] p-8 shadow-sm text-center relative overflow-hidden group">
+              <div className="p-3 w-fit bg-amber-500 text-white rounded-2xl mx-auto shadow-md mb-4 group-hover:scale-105 transition-transform">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <h4 className="text-lg font-bold text-slate font-serif">Verification Required</h4>
+              <p className="text-slate/60 text-xs font-semibold mt-1">Please verify your new identity details</p>
+              <Link
+                href="/verify"
+                className="mt-4 block w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95 text-center cursor-pointer"
+              >
+                Verify with New ID
+              </Link>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Right Side: Settings Fields */}
@@ -274,6 +329,26 @@ export function ProfileSettings() {
           {/* Section: Basic Info */}
           <div className="bg-white border border-slate/5 rounded-[40px] p-8 md:p-10 shadow-sm space-y-6">
             <h3 className="text-lg font-serif font-bold text-slate border-b border-slate/5 pb-4">Basic Information</h3>
+            
+            {/* Warning Banner */}
+            <AnimatePresence>
+              {isIdentityChanged && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="p-5 bg-amber-500/10 border border-amber-500/20 text-amber-800 rounded-3xl space-y-2 text-sm font-semibold overflow-hidden"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">⚠️</span>
+                    <span className="font-bold">Identity Change Detected</span>
+                  </div>
+                  <p className="text-xs text-amber-800/70 leading-relaxed font-medium">
+                    Changing your Legal Name or Profile Photo will revoke your **Passport Verified** status. You will need to submit a new ID matching the updated details to recover your verified checkmark.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">

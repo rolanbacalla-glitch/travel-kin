@@ -9,6 +9,7 @@ export interface ProfileState {
   styles: string[];
   vibes: string[];
   destinations: string[];
+  isVerified: boolean;
   
   // Actions
   updateProfile: (profile: Partial<Omit<ProfileState, 'updateProfile'>>) => void;
@@ -23,6 +24,7 @@ const DEFAULT_PROFILE = {
   styles: ["slow", "remote"],
   vibes: ["Zen Seeker", "Foodie", "Photographer"],
   destinations: ["Thailand", "Indonesia"],
+  isVerified: true,
 };
 
 export const useProfileStore = create<ProfileState>()(
