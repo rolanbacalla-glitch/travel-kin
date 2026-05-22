@@ -69,7 +69,7 @@ export default function DestinationDetail() {
 
       <main>
         {/* Full Screen Hero */}
-        <section className="relative h-[80vh] min-h-[600px] w-full overflow-hidden bg-slate">
+        <section className="relative min-h-screen w-full overflow-hidden bg-slate flex items-center justify-center">
           <Image
             src={destination.image}
             alt={destination.title}

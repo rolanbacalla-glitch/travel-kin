@@ -127,7 +127,7 @@ export default function DestinationsPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative min-h-[70vh] w-full flex items-center justify-center overflow-hidden bg-slate">
+        <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-slate">
           {/* Background image slider */}
           <div className="absolute inset-0 z-0" aria-hidden="true">
             <div className="relative w-full h-full overflow-hidden">
