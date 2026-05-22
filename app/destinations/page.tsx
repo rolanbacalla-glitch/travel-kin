@@ -20,7 +20,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
-import { destinations, HERO_IMAGES } from "@/lib/data";
+import { destinations, DESTINATION_HERO_IMAGES } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
@@ -63,7 +63,7 @@ export default function DestinationsPage() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+      setCurrentImageIndex((prev) => (prev + 1) % DESTINATION_HERO_IMAGES.length);
     }, 8000);
     return () => clearInterval(timer);
   }, []);
@@ -133,7 +133,7 @@ export default function DestinationsPage() {
             <div className="relative w-full h-full overflow-hidden">
               <AnimatePresence initial={false}>
                 <motion.div
-                  key={HERO_IMAGES[currentImageIndex]}
+                  key={DESTINATION_HERO_IMAGES[currentImageIndex]}
                   initial={{ opacity: 0, scale: 1.1 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 1.05 }}
@@ -141,7 +141,7 @@ export default function DestinationsPage() {
                   className="absolute inset-0"
                 >
                   <Image
-                    src={HERO_IMAGES[currentImageIndex]}
+                    src={DESTINATION_HERO_IMAGES[currentImageIndex]}
                     alt="Destination"
                     fill
                     priority

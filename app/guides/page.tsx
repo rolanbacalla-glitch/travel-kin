@@ -175,7 +175,7 @@ export default function GuidesPage() {
       {/* ══════════════════════════════════════════════════════════
           SEARCH & FILTER - INTERACTIVE
           ══════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 relative z-30 -mt-20">
+      <br></br><br></br>< section className="py-20 px-6 relative z-30 -mt-20" >
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-4 md:p-6 flex flex-col md:flex-row gap-4 items-center border border-slate-100">
             <div className="relative flex-1 w-full">
@@ -204,12 +204,12 @@ export default function GuidesPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ══════════════════════════════════════════════════════════
           DESTINATION CARDS - BENTO GRID STYLE
           ══════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 max-w-7xl mx-auto">
+      < section className="py-20 px-6 max-w-7xl mx-auto" >
         <div className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl">
             <span className="text-sunset font-black tracking-widest uppercase text-[10px] mb-4 block">The 2026 Selection</span>
@@ -295,12 +295,12 @@ export default function GuidesPage() {
             </motion.div>
           ))}
         </div>
-      </section>
+      </section >
 
       {/* ══════════════════════════════════════════════════════════
           QUICK TIPS SECTION - GLASSY TILES
           ══════════════════════════════════════════════════════════ */}
-      <section className="py-32 px-6 bg-slate overflow-hidden relative">
+      < section className="py-32 px-6 bg-slate overflow-hidden relative" >
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sunset/10 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[150px] rounded-full translate-y-1/2 -translate-x-1/4" />
 
@@ -336,12 +336,12 @@ export default function GuidesPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ══════════════════════════════════════════════════════════
           NEWSLETTER / CTA
           ══════════════════════════════════════════════════════════ */}
-      <section className="py-40 px-6">
+      < section className="py-40 px-6" >
         <div className="max-w-5xl mx-auto relative rounded-[3.5rem] overflow-hidden bg-white shadow-2xl">
           <div className="absolute inset-0 bg-gradient-to-br from-sunset/5 to-transparent" />
           <div className="relative z-10 p-12 md:p-24 text-center">
@@ -366,9 +366,9 @@ export default function GuidesPage() {
             </p>
           </div>
         </div>
-      </section>
+      </section >
 
       <Footer />
-    </main>
+    </main >
   );
 }

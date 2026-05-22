@@ -1,12 +1,21 @@
 import { ShieldCheck, Users, Compass, Globe, Mountain, Waves, TreePine, MapPin } from "lucide-react";
 
 export const HERO_IMAGES = [
-  "https://images.pexels.com/photos/13874296/pexels-photo-13874296.jpeg?auto=compress&cs=tinysrgb&w=1920", // El Nido
-  "https://images.pexels.com/photos/3533659/pexels-photo-3533659.jpeg?auto=compress&cs=tinysrgb&w=1920",  // Siargao
+
   "https://images.pexels.com/photos/17263722/pexels-photo-17263722.jpeg?auto=compress&cs=tinysrgb&w=1920", // Cebu
   "https://images.pexels.com/photos/20788066/pexels-photo-20788066.jpeg?auto=compress&cs=tinysrgb&w=1920", // Batanes
   "https://images.pexels.com/photos/33676228/pexels-photo-33676228.jpeg?auto=compress&cs=tinysrgb&w=1920", // Boracay
   "https://images.pexels.com/photos/13518466/pexels-photo-13518466.jpeg?auto=compress&cs=tinysrgb&w=1920", // Coron
+  "https://images.pexels.com/photos/13874296/pexels-photo-13874296.jpeg?auto=compress&cs=tinysrgb&w=1920", // El Nido
+  "https://images.pexels.com/photos/3533659/pexels-photo-3533659.jpeg?auto=compress&cs=tinysrgb&w=1920",  // Siargao
+];
+
+export const DESTINATION_HERO_IMAGES = [
+  "https://images.pexels.com/photos/14634010/pexels-photo-14634010.jpeg?auto=compress&cs=tinysrgb&w=1920", // Siquijor
+  "https://images.pexels.com/photos/29152393/pexels-photo-29152393.jpeg?auto=compress&cs=tinysrgb&w=1920", // Camiguin
+  "https://images.pexels.com/photos/14386264/pexels-photo-14386264.jpeg?auto=compress&cs=tinysrgb&w=1920", // Sagada
+  "https://images.pexels.com/photos/6877001/pexels-photo-6877001.jpeg?auto=compress&cs=tinysrgb&w=1920", // Puerto Princesa
+  "https://images.pexels.com/photos/15258036/pexels-photo-15258036.jpeg?auto=compress&cs=tinysrgb&w=1920", // Bukidnon
 ];
 
 export const destinations = [
@@ -276,26 +285,26 @@ export const testimonials = [
 ];
 
 export const stats = [
-  { 
-    value: "47K+", 
+  {
+    value: "47K+",
     label: "Solo Travellers",
     description: "Verified solo explorers adventuring safely across Southeast Asia.",
     href: "/dashboard"
   },
-  { 
-    value: "87", 
+  {
+    value: "87",
     label: "Destinations",
     description: "Curated islands, cities, and jungle escapes across the Philippines and beyond.",
     href: "/destinations"
   },
-  { 
-    value: "24/7", 
+  {
+    value: "24/7",
     label: "Emergency Support",
     description: "Real-time monitoring and local rapid response in 12 SE Asian countries.",
     href: "/safety-commitment"
   },
-  { 
-    value: "180+", 
+  {
+    value: "180+",
     label: "Local Guides",
     description: "Vetted, community-trusted guides who know every hidden trail and reef.",
     href: "/guides"
