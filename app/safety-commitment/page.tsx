@@ -145,12 +145,12 @@ export default function SafetyCommitmentPage() {
               Because freedom only truly exists when you&apos;re protected.
             </p>
             <div className="flex flex-wrap gap-6 justify-center">
-              <button className="px-10 py-5 bg-sunset text-white font-bold rounded-2xl hover:scale-105 transition-transform shadow-xl">
-                Explore Our Infrastructure
-              </button>
-              <button className="px-10 py-5 bg-white/10 backdrop-blur-md text-white font-bold rounded-2xl border border-white/20 hover:bg-white/20 transition-all">
-                Download Safety Whitepaper
-              </button>
+              <Link href="/destinations" className="px-10 py-5 bg-sunset text-white font-bold rounded-2xl hover:scale-105 transition-transform shadow-xl">
+                Explore Destinations
+              </Link>
+              <Link href="/guides" className="px-10 py-5 bg-white/10 backdrop-blur-md text-white font-bold rounded-2xl border border-white/20 hover:bg-white/20 transition-all">
+                Read Safety Guides
+              </Link>
             </div>
           </motion.div>
 
@@ -195,8 +195,8 @@ export default function SafetyCommitmentPage() {
                   key={pillar.title}
                   onClick={() => setActiveTab(idx)}
                   className={`p-8 rounded-3xl cursor-pointer transition-all duration-300 ${activeTab === idx
-                      ? "bg-white shadow-2xl scale-[1.02] border-l-8 border-sunset"
-                      : "bg-transparent opacity-60 hover:opacity-100"
+                    ? "bg-white shadow-2xl scale-[1.02] border-l-8 border-sunset"
+                    : "bg-transparent opacity-60 hover:opacity-100"
                     }`}
                 >
                   <div className="flex items-start gap-6">
@@ -247,7 +247,7 @@ export default function SafetyCommitmentPage() {
         <div className="absolute top-0 right-0 w-1/3 h-full bg-sunset/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="container mx-auto px-6 relative z-10">
           <div className="mb-20 text-center max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">Redundant Systems for Absolute Peace</h2>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">Redundant Systems for<br></br>Absolute Peace</h2>
             <p className="text-white/60 text-lg">Our protocols are built on multiple layers of redundancy, ensuring that help is always available, even in the most remote locations.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -313,7 +313,7 @@ export default function SafetyCommitmentPage() {
                       <Shield className="w-8 h-8 text-white/50" />
                     </div>
                   </div>
-                  <div className="aspect-[4/5] relative rounded-2xl overflow-hidden mt-8">
+                  <div className="aspect-[4/5] relative rounded-2xl overflow-hidden">
                     <Image src="/images/siargao.png" alt="Secure Siargao" fill className="object-cover grayscale-[0.5] opacity-80" />
                     <div className="absolute inset-0 bg-slate/40 flex items-center justify-center">
                       <MapPin className="w-8 h-8 text-white/50" />
