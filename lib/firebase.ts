@@ -13,10 +13,28 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+// Check if configuration is present (at least apiKey and projectId should exist)
+const isFirebaseConfigValid = 
+  typeof window !== "undefined"
+    ? !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY
+    : !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
+let app: any;
+let auth: any;
+let db: any;
+let storage: any;
+
+if (isFirebaseConfigValid) {
+  app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  storage = getStorage(app);
+} else {
+  // Return dummy placeholder objects to prevent compile/build-time exceptions
+  app = {} as any;
+  auth = {} as any;
+  db = {} as any;
+  storage = {} as any;
+}
 
 export { app, auth, db, storage };
