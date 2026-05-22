@@ -30,9 +30,35 @@ if (isFirebaseConfigValid) {
   db = getFirestore(app);
   storage = getStorage(app);
 } else {
-  // Return dummy placeholder objects to prevent compile/build-time exceptions
-  app = {} as any;
-  auth = {} as any;
+  // Return dummy placeholder objects with safe methods to prevent runtime exceptions
+  app = {
+    name: "[DEFAULT]",
+    options: {},
+    automaticDataCollectionEnabled: false,
+  } as any;
+
+  auth = {
+    currentUser: null,
+    onAuthStateChanged: (nextOrObserver: any) => {
+      // Call with null to prevent components from hanging in a loading state
+      if (typeof nextOrObserver === "function") {
+        setTimeout(() => nextOrObserver(null), 0);
+      } else if (nextOrObserver && typeof nextOrObserver.next === "function") {
+        setTimeout(() => nextOrObserver.next(null), 0);
+      }
+      return () => {};
+    },
+    onIdTokenChanged: (nextOrObserver: any) => {
+      if (typeof nextOrObserver === "function") {
+        setTimeout(() => nextOrObserver(null), 0);
+      } else if (nextOrObserver && typeof nextOrObserver.next === "function") {
+        setTimeout(() => nextOrObserver.next(null), 0);
+      }
+      return () => {};
+    },
+    signOut: async () => {},
+  } as any;
+
   db = {} as any;
   storage = {} as any;
 }
