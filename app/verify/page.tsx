@@ -43,6 +43,20 @@ export default function VerificationPage() {
     setTimeout(() => {
       setStep("success");
       store.setVerified(true);
+      if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+        const mockUser = {
+          uid: "mock-uid-123",
+          email: "mia@example.com",
+          displayName: "Mia Reyes",
+        };
+        if (typeof window !== "undefined") {
+          if ((window as any).__setTravelKinMockUser) {
+            (window as any).__setTravelKinMockUser(mockUser);
+          } else {
+            localStorage.setItem("travelkin-mock-user", JSON.stringify(mockUser));
+          }
+        }
+      }
     }, 3500);
   };
 

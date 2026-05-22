@@ -1,8 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { X } from "lucide-react";
+import { useAuthContext } from "@/components/providers/AuthProvider";
+import { useProfileStore } from "@/lib/stores/useProfile";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -11,6 +14,19 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
+  const { user } = useAuthContext();
+  const profile = useProfileStore();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const hasMockUser = typeof window !== "undefined" && !!localStorage.getItem("travelkin-mock-user");
+    if (user || hasMockUser) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [user]);
+
   if (!isOpen) return null;
 
   return (
@@ -56,20 +72,52 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
       </nav>
 
       <div className="px-8 pb-12 space-y-3 flex flex-col">
-        <Link
-          href="/verify"
-          onClick={onClose}
-          className="w-full py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
-        >
-          Sign In
-        </Link>
-        <Link
-          href="/verify"
-          onClick={onClose}
-          className="w-full py-4 bg-sunset rounded-2xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
-        >
-          Start Exploring
-        </Link>
+        {isLoggedIn ? (
+          <>
+            <Link
+              href="/dashboard?tab=profile"
+              onClick={onClose}
+              className="w-full py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center flex items-center justify-center gap-2"
+            >
+              {profile.avatar && (
+                <div className="relative w-6 h-6 rounded-full overflow-hidden border border-white/20">
+                  <Image
+                    src={profile.avatar}
+                    alt="Avatar"
+                    fill
+                    sizes="24px"
+                    className="object-cover"
+                  />
+                </div>
+              )}
+              <span>My Profile</span>
+            </Link>
+            <Link
+              href="/dashboard"
+              onClick={onClose}
+              className="w-full py-4 bg-sunset rounded-2xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
+            >
+              Go to Dashboard
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/login"
+              onClick={onClose}
+              className="w-full py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/verify"
+              onClick={onClose}
+              className="w-full py-4 bg-sunset rounded-2xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
+            >
+              Start Exploring
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

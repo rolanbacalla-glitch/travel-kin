@@ -49,26 +49,62 @@ if (isFirebaseConfigValid) {
     automaticDataCollectionEnabled: false,
   } as any;
 
-  auth = {
-    currentUser: null,
-    onAuthStateChanged: (nextOrObserver: any) => {
-      // Call with null to prevent components from hanging in a loading state
-      if (typeof nextOrObserver === "function") {
-        setTimeout(() => nextOrObserver(null), 0);
-      } else if (nextOrObserver && typeof nextOrObserver.next === "function") {
-        setTimeout(() => nextOrObserver.next(null), 0);
+  const mockListeners = new Set<(user: any) => void>();
+
+  const getMockUser = () => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("travelkin-mock-user");
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          return null;
+        }
       }
-      return () => {};
+    }
+    return null;
+  };
+
+  if (typeof window !== "undefined") {
+    (window as any).__setTravelKinMockUser = (user: any) => {
+      if (user) {
+        localStorage.setItem("travelkin-mock-user", JSON.stringify(user));
+      } else {
+        localStorage.removeItem("travelkin-mock-user");
+      }
+      mockListeners.forEach((cb) => cb(user));
+    };
+  }
+
+  auth = {
+    get currentUser() {
+      return getMockUser();
+    },
+    onAuthStateChanged: (nextOrObserver: any) => {
+      const callback = typeof nextOrObserver === "function" ? nextOrObserver : nextOrObserver?.next;
+      if (callback) {
+        mockListeners.add(callback);
+        setTimeout(() => callback(getMockUser()), 0);
+      }
+      return () => {
+        if (callback) {
+          mockListeners.delete(callback);
+        }
+      };
     },
     onIdTokenChanged: (nextOrObserver: any) => {
-      if (typeof nextOrObserver === "function") {
-        setTimeout(() => nextOrObserver(null), 0);
-      } else if (nextOrObserver && typeof nextOrObserver.next === "function") {
-        setTimeout(() => nextOrObserver.next(null), 0);
+      const callback = typeof nextOrObserver === "function" ? nextOrObserver : nextOrObserver?.next;
+      if (callback) {
+        setTimeout(() => callback(getMockUser()), 0);
       }
       return () => {};
     },
-    signOut: async () => {},
+    signOut: async () => {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("travelkin-mock-user");
+      }
+      mockListeners.forEach((cb) => cb(null));
+    },
   } as any;
 
   db = {} as any;

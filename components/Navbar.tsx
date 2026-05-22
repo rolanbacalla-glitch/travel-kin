@@ -1,9 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuthContext } from "@/components/providers/AuthProvider";
+import { useProfileStore } from "@/lib/stores/useProfile";
 
 interface NavbarProps {
   isScrolled: boolean;
@@ -12,6 +15,18 @@ interface NavbarProps {
 }
 
 export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) {
+  const { user } = useAuthContext();
+  const profile = useProfileStore();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const hasMockUser = typeof window !== "undefined" && !!localStorage.getItem("travelkin-mock-user");
+    if (user || hasMockUser) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [user]);
   return (
     <nav
       aria-label="Main navigation"
@@ -54,18 +69,48 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
         </div>
 
         <div className="hidden md:flex items-center space-x-3">
-          <Link
-            href="/verify"
-            className="px-5 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/verify"
-            className="px-6 py-2.5 bg-sunset text-white text-sm font-semibold rounded-full shadow-lg hover:bg-sunset-dark transition-all duration-200 focus-ring active:scale-95 cursor-pointer"
-          >
-            Start Exploring
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/dashboard?tab=profile"
+                className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/10 backdrop-blur-md transition-all active:scale-95 cursor-pointer focus-ring"
+              >
+                {profile.avatar && (
+                  <div className="relative w-6 h-6 rounded-full overflow-hidden border border-white/20">
+                    <Image
+                      src={profile.avatar}
+                      alt="Avatar"
+                      fill
+                      sizes="24px"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <span className="text-xs font-semibold text-white/95 tracking-wide">My Profile</span>
+              </Link>
+              <Link
+                href="/dashboard"
+                className="px-5 py-2 bg-sunset text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-lg hover:bg-sunset-dark transition-all duration-200 focus-ring active:scale-95 cursor-pointer"
+              >
+                Dashboard
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="px-5 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/verify"
+                className="px-6 py-2.5 bg-sunset text-white text-sm font-semibold rounded-full shadow-lg hover:bg-sunset-dark transition-all duration-200 focus-ring active:scale-95 cursor-pointer"
+              >
+                Start Exploring
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile menu toggle */}

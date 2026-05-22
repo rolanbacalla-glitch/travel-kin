@@ -36,6 +36,26 @@ export default function LoginPage() {
     } else {
       logFirebaseEvent("login_start", { method: "email" });
     }
+    
+    // If Firebase config is invalid/absent, bypass SDK and use mock login
+    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      const mockUser = {
+        uid: "mock-uid-123",
+        email: email || "mia@example.com",
+        displayName: "Mia Reyes",
+      };
+      if (typeof window !== "undefined") {
+        if ((window as any).__setTravelKinMockUser) {
+          (window as any).__setTravelKinMockUser(mockUser);
+        } else {
+          localStorage.setItem("travelkin-mock-user", JSON.stringify(mockUser));
+        }
+      }
+      logFirebaseEvent(isSignUp ? "sign_up_success" : "login_success", { method: "email" });
+      router.push("/dashboard");
+      return;
+    }
+
     try {
       if (isSignUp) {
         await createUserWithEmailAndPassword(auth, email, password);
@@ -58,6 +78,26 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     logFirebaseEvent("google_login_click");
+    
+    // If Firebase config is invalid/absent, bypass SDK and use mock login
+    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      const mockUser = {
+        uid: "mock-uid-123",
+        email: "mia@example.com",
+        displayName: "Mia Reyes",
+      };
+      if (typeof window !== "undefined") {
+        if ((window as any).__setTravelKinMockUser) {
+          (window as any).__setTravelKinMockUser(mockUser);
+        } else {
+          localStorage.setItem("travelkin-mock-user", JSON.stringify(mockUser));
+        }
+      }
+      logFirebaseEvent("google_login_success");
+      router.push("/dashboard");
+      return;
+    }
+
     try {
       await signInWithPopup(auth, provider);
       logFirebaseEvent("google_login_success");

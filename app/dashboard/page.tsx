@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { auth } from "@/lib/firebase";
 import {
   Users,
   Shield,
@@ -55,9 +56,40 @@ export default function DashboardPage() {
 
   const store = useMessagesStore();
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab");
+      if (tab === "profile") {
+        setActiveTab("profile");
+      }
+    }
+  }, []);
+
   const goToChat = (kinId: string) => {
     store.setActiveId(kinId);
     setActiveTab("messages");
+  };
+
+  const handleSignOut = async () => {
+    try {
+      if (auth && typeof auth.signOut === "function") {
+        await auth.signOut();
+      } else if (auth) {
+        const { signOut } = await import("firebase/auth");
+        await signOut(auth);
+      }
+      if (typeof window !== "undefined") {
+        if ((window as any).__setTravelKinMockUser) {
+          (window as any).__setTravelKinMockUser(null);
+        } else {
+          localStorage.removeItem("travelkin-mock-user");
+        }
+        window.location.href = "/";
+      }
+    } catch (err) {
+      console.error("Failed to sign out:", err);
+    }
   };
 
   const totalUnread = 3;
@@ -128,7 +160,12 @@ export default function DashboardPage() {
             icon={Settings} 
             label="Settings" 
           />
-          <SidebarItem icon={LogOut} label="Log Out" className="text-red-400 hover:bg-red-50 hover:text-red-500" />
+          <SidebarItem 
+            icon={LogOut} 
+            label="Log Out" 
+            className="text-red-400 hover:bg-red-50 hover:text-red-500" 
+            onClick={handleSignOut}
+          />
         </div>
       </aside>
 
