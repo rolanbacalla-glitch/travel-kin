@@ -5,20 +5,17 @@ import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported, logEvent } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyATE_YJOD0bz-6yA-0fvayK1duLwdLjgYs",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "travel-kin.firebaseapp.com",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "travel-kin",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "travel-kin.firebasestorage.app",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "242680929180",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:242680929180:web:f262bf63cc5cc21acc0659",
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-NC2HLDVPWZ",
 };
 
 // Check if configuration is present (at least apiKey and projectId should exist)
-const isFirebaseConfigValid = 
-  typeof window !== "undefined"
-    ? !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY
-    : !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+const isFirebaseConfigValid = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
 
 let app: any;
 let auth: any;
@@ -26,7 +23,7 @@ let db: any;
 let storage: any;
 let analytics: any = null;
 const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({ prompt: 'select_account' });
+googleProvider.setCustomParameters({ prompt: "select_account" });
 
 if (isFirebaseConfigValid) {
   app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);

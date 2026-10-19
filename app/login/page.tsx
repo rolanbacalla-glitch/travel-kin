@@ -7,9 +7,10 @@ import {
   signInWithPopup, 
   GoogleAuthProvider 
 } from "firebase/auth";
-import { auth, logFirebaseEvent, googleProvider } from "@/lib/firebase";
+import { auth, logFirebaseEvent } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/components/providers/AuthProvider";
+import { useProfileStore } from "@/lib/stores/useProfile";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -44,26 +45,6 @@ export default function LoginPage() {
     } else {
       logFirebaseEvent("login_start", { method: "email" });
     }
-    
-    // If Firebase config is invalid/absent, bypass SDK and use mock login
-    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
-      const mockUser = {
-        uid: "mock-uid-123",
-        email: email || "mia@example.com",
-        displayName: "Mia Reyes",
-        photoURL: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=100&w=1600",
-      };
-      if (typeof window !== "undefined") {
-        if ((window as any).__setTravelKinMockUser) {
-          (window as any).__setTravelKinMockUser(mockUser);
-        } else {
-          localStorage.setItem("travelkin-mock-user", JSON.stringify(mockUser));
-        }
-      }
-      logFirebaseEvent(isSignUp ? "sign_up_success" : "login_success", { method: "email" });
-      router.push("/dashboard");
-      return;
-    }
 
     try {
       if (isSignUp) {
@@ -85,30 +66,24 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    setError("");
     logFirebaseEvent("google_login_click");
-    
-    // If Firebase config is invalid/absent, bypass SDK and use mock login
-    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
-      const mockUser = {
-        uid: "mock-uid-123",
-        email: "mia@example.com",
-        displayName: "Mia Reyes",
-        photoURL: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=100&w=1600",
-      };
-      if (typeof window !== "undefined") {
-        if ((window as any).__setTravelKinMockUser) {
-          (window as any).__setTravelKinMockUser(mockUser);
-        } else {
-          localStorage.setItem("travelkin-mock-user", JSON.stringify(mockUser));
-        }
-      }
-      logFirebaseEvent("google_login_success");
-      router.push("/dashboard");
-      return;
-    }
 
     try {
-      await signInWithPopup(auth, googleProvider);
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({
+        prompt: "select_account",
+      });
+      const result = await signInWithPopup(auth, provider);
+      if (result.user) {
+        const providerPhoto = result.user.providerData?.find((p) => p?.photoURL)?.photoURL;
+        const providerName = result.user.providerData?.find((p) => p?.displayName)?.displayName;
+        useProfileStore.getState().updateProfile({
+          name: result.user.displayName || providerName || result.user.email?.split("@")[0] || "Traveler",
+          avatar: result.user.photoURL || providerPhoto || `https://api.dicebear.com/7.x/notionists/png?seed=${result.user.uid}`,
+          username: result.user.email?.split("@")[0] || "wanderer",
+        });
+      }
       logFirebaseEvent("google_login_success");
       router.push("/dashboard");
     } catch (err: any) {
