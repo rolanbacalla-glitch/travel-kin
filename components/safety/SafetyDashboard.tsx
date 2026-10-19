@@ -319,30 +319,6 @@ export function SafetyDashboard() {
             </div>
             <div className="rounded-[40px] overflow-hidden border border-slate/5 shadow-2xl relative z-0">
               <InteractiveMap />
-              {/* Map Overlay Controls */}
-              <div className="absolute top-6 left-6 max-w-[200px] hidden sm:block">
-                <div className="p-4 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-slate/5 space-y-3">
-                  <h4 className="text-[9px] font-black uppercase tracking-widest text-slate/40">Zone Legend</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-                      <span className="text-[10px] font-bold text-slate/70 leading-tight">Verified Safe Spaces</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
-                      <span className="text-[10px] font-bold text-slate/70 leading-tight">Recent Safety Reports</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute bottom-8 right-8 flex flex-col gap-3">
-                <button title="Locate Me" className="p-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl text-slate hover:bg-white active:scale-90 transition-all border border-slate/5">
-                  <Navigation className="w-5 h-5" />
-                </button>
-                <button title="Map Settings" className="p-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl text-slate hover:bg-white active:scale-90 transition-all border border-slate/5">
-                  <Filter className="w-5 h-5" />
-                </button>
-              </div>
             </div>
           </div>
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Roboto } from "next/font/google";
 import "./globals.css";
+import "leaflet/dist/leaflet.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,6 +12,13 @@ const inter = Inter({
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
+  display: "swap",
+});
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["500"],
+  variable: "--font-roboto",
   display: "swap",
 });
 
@@ -58,7 +66,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Travel Kin" />
       </head>
       <body
-        className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
+        className={`${inter.variable} ${playfair.variable} ${roboto.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
         <AuthProvider>
