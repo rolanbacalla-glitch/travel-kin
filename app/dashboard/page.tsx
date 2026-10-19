@@ -70,9 +70,11 @@ export default function DashboardPage() {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        const providerPhoto = user.providerData?.find((p) => p?.photoURL)?.photoURL;
+        const providerName = user.providerData?.find((p) => p?.displayName)?.displayName;
         profile.updateProfile({
-          name: user.displayName || user.email?.split("@")[0] || "Traveler",
-          avatar: user.photoURL || `https://api.dicebear.com/7.x/notionists/svg?seed=${user.uid}`,
+          name: user.displayName || providerName || user.email?.split("@")[0] || "Traveler",
+          avatar: user.photoURL || providerPhoto || `https://api.dicebear.com/7.x/notionists/png?seed=${user.uid}`,
           username: user.email?.split("@")[0] || "wanderer",
         });
 
@@ -246,6 +248,9 @@ export default function DashboardPage() {
                 src={profile.avatar} 
                 alt="Profile" 
                 fill 
+                sizes="48px"
+                referrerPolicy="no-referrer"
+                unoptimized
                 className="object-cover"
               />
             </button>

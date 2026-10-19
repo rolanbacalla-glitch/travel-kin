@@ -51,6 +51,7 @@ export default function LoginPage() {
         uid: "mock-uid-123",
         email: email || "mia@example.com",
         displayName: "Mia Reyes",
+        photoURL: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=100&w=1600",
       };
       if (typeof window !== "undefined") {
         if ((window as any).__setTravelKinMockUser) {
@@ -92,6 +93,7 @@ export default function LoginPage() {
         uid: "mock-uid-123",
         email: "mia@example.com",
         displayName: "Mia Reyes",
+        photoURL: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=100&w=1600",
       };
       if (typeof window !== "undefined") {
         if ((window as any).__setTravelKinMockUser) {

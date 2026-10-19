@@ -142,7 +142,7 @@ export default function AdminUsersPage() {
                       <div className="flex items-center gap-4">
                         <div className="relative w-10 h-10 rounded-full overflow-hidden bg-slate-100 shrink-0">
                           {user.photoURL ? (
-                            <Image src={user.photoURL} alt={user.displayName || "User"} fill className="object-cover" />
+                            <Image src={user.photoURL} alt={user.displayName || "User"} fill sizes="40px" referrerPolicy="no-referrer" unoptimized className="object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-slate-200 text-slate-400 font-bold">
                               {(user.displayName || user.email || "?")[0].toUpperCase()}

@@ -86,6 +86,8 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
                     alt="Avatar"
                     fill
                     sizes="24px"
+                    referrerPolicy="no-referrer"
+                    unoptimized
                     className="object-cover"
                   />
                 </div>

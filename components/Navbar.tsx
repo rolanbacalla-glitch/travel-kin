@@ -82,6 +82,8 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
                       alt="Avatar"
                       fill
                       sizes="24px"
+                      referrerPolicy="no-referrer"
+                      unoptimized
                       className="object-cover"
                     />
                   </div>

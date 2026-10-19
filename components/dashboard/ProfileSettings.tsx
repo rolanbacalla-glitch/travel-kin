@@ -225,6 +225,9 @@ export function ProfileSettings() {
                 src={avatar || AVATAR_PRESETS[0]} 
                 alt="Avatar" 
                 fill 
+                sizes="144px"
+                referrerPolicy="no-referrer"
+                unoptimized
                 className="object-cover"
               />
               <button 
