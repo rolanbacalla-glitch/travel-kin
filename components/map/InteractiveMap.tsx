@@ -276,12 +276,11 @@ export default function InteractiveMap() {
       zoomControl: false,
     });
 
-    // CARTO Light tiles — free, no API key required
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    // OpenStreetMap standard tiles — 100% free, no API key required
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: "abcd",
-      maxZoom: 20,
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
     }).addTo(map);
 
     const layerGroup = L.layerGroup().addTo(map);
@@ -579,7 +578,7 @@ export default function InteractiveMap() {
       {/* Attribution */}
       <div className="absolute bottom-3 right-6 z-[500] pointer-events-none">
         <span className="text-[9px] font-bold text-slate/40 uppercase tracking-widest bg-white/80 backdrop-blur px-2.5 py-1 rounded-full">
-          Leaflet · OpenStreetMap · CARTO
+          Leaflet · OpenStreetMap
         </span>
       </div>
 

@@ -29,10 +29,9 @@ export default function RadarMiniMap({ kinLat, kinLng, trustStatus, isSOSActive 
       attributionControl: false,
     });
 
-    // CARTO Light tiles
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      subdomains: "abcd",
-      maxZoom: 20,
+    // OpenStreetMap tiles — free, no API key required
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
     }).addTo(map);
 
     mapRef.current = map;
