@@ -21,7 +21,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMessagesStore, TrustStatus, Message } from "@/lib/stores/useMessages";
+import { useProfileStore } from "@/lib/stores/useProfile";
 import { KINS, Kin } from "@/lib/data/kins";
+import Link from "next/link";
 
 // Dynamic Import for Leaflet to fix SSR
 const RadarMiniMap = dynamic(() => import("./RadarMiniMap"), {
@@ -100,6 +102,9 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
 
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [verifyPrompt, setVerifyPrompt] = useState(false);
+  const profileVerified = useProfileStore((s) => s.isVerified);
+  const isUserVerified = store.isVerified || profileVerified;
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -108,8 +113,13 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [session.messages]);
 
-  // Handshake Handlers
+  // Handshake Handlers (NomadHer Verification Gate)
   const handleRequestHandshake = () => {
+    if (!isUserVerified) {
+      setVerifyPrompt(true);
+      return;
+    }
+    setVerifyPrompt(false);
     store.addMessage(conv.id, {
       fromMe: true,
       text: "Requested Trust Handshake",
@@ -119,7 +129,11 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
   };
 
   const handleAcceptHandshake = (msgId: string) => {
-    // In a real app, update the specific message
+    if (!isUserVerified) {
+      setVerifyPrompt(true);
+      return;
+    }
+    setVerifyPrompt(false);
     store.updateTrustStatus(conv.id, 'PRECISE', 2);
     store.addMessage(conv.id, {
       fromMe: true,
@@ -256,6 +270,25 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
           Session Active · End-to-End Secure
         </div>
 
+        {verifyPrompt && (
+          <div className="w-full max-w-md p-5 bg-amber-500/10 border border-amber-500/20 rounded-3xl flex items-center justify-between gap-4">
+            <div className="space-y-1">
+              <p className="text-xs font-black uppercase tracking-widest text-amber-800">
+                ID Verification Required
+              </p>
+              <p className="text-xs text-slate/70">
+                Complete your biometric ID check to unlock 2-hour precise GPS handshakes.
+              </p>
+            </div>
+            <Link
+              href="/verify"
+              className="px-4 py-2.5 bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shrink-0 hover:bg-amber-600 transition-colors"
+            >
+              Verify ID
+            </Link>
+          </div>
+        )}
+
         {session.messages.map((msg: Message, i: number) => (
           <div key={msg.id} className={cn("w-full flex", msg.fromMe ? "justify-end" : "justify-start")}>
             {msg.type === 'handshake_request' ? (
@@ -326,14 +359,14 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
   // Seed the store with initial messages if it's completely empty
   useEffect(() => {
     if (Object.keys(store.sessions).length === 0) {
-      // Initial messages for Suki
-      store.addMessage("1", { fromMe: false, text: "Hey! Saw your profile — you're into food too?" });
-      store.addMessage("1", { fromMe: true, text: "Yes! Been hunting for the best khao soi in Chiang Mai 😄" });
-      store.addMessage("1", { fromMe: false, text: "There's an amazing ramen spot near the moat 🍜" });
+      // Initial messages for Suki (Siargao)
+      store.addMessage("1", { fromMe: false, text: "Hey! Saw your profile — are you catching dawn surf at Cloud 9 tomorrow?" });
+      store.addMessage("1", { fromMe: true, text: "Yes! Meeting at the boardwalk at 6am, then hunting for fresh kinilaw in General Luna 😄" });
+      store.addMessage("1", { fromMe: false, text: "Count me in! There's an incredible coastal spot right by the pier 🥥🌊" });
 
-      // Initial messages for Liam
-      store.addMessage("2", { fromMe: true, text: "Hey Liam! Any night market recs in Bangkok?" });
-      store.addMessage("2", { fromMe: false, text: "Rod Fai is the move. Way cooler than the tourist ones" });
+      // Initial messages for Liam (El Nido)
+      store.addMessage("2", { fromMe: true, text: "Hey Liam! Are you joining the early outrigger to Big Lagoon in El Nido?" });
+      store.addMessage("2", { fromMe: false, text: "100% — departing Corong-Corong at 6:30am beats all the tour boats!" });
     }
   }, [store]);
 
@@ -430,7 +463,7 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
             </div>
             <h3 className="text-3xl font-serif font-black text-slate">Secure Line</h3>
             <p className="text-xs text-slate/60 max-w-sm mt-4 font-medium leading-relaxed">
-              Select a Kin to start coordinating. Every conversation in the Ring is end-to-end shielded by the Traveler Protocol.
+              Select a Kin to start coordinating. Every conversation in the Ring is end-to-end shielded by the Traveller Protocol.
             </p>
           </div>
         )}

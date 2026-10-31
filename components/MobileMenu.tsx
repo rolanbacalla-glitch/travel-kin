@@ -56,6 +56,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
           if (item === "Guides") href = "/guides";
           else if (item === "Safety") href = "/safety-commitment";
           else if (item === "Destinations") href = "/destinations";
+          else if (item === "Crew") href = "/dashboard?tab=hub";
           else href = `/#${item.toLowerCase()}`;
 
           return (

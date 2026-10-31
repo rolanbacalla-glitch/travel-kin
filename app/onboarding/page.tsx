@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ShieldCheck,
   User,
@@ -15,6 +15,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useProfileStore } from "@/lib/stores/useProfile";
 
 /* ─────────────────────────────────────────────────────────── */
 /* Steps Definitions                                           */
@@ -65,6 +66,30 @@ export default function OnboardingPage() {
     destinations: [] as string[],
   });
 
+  useEffect(() => {
+    const current = useProfileStore.getState();
+    setFormData({
+      name: current.name || "",
+      username: current.username || "",
+      bio: current.bio || "",
+      styles: current.styles || [],
+      vibes: current.vibes || [],
+      destinations: current.destinations || ["Philippines"],
+    });
+  }, []);
+
+  const persistOnboardingData = () => {
+    const current = useProfileStore.getState();
+    useProfileStore.getState().updateProfile({
+      name: formData.name.trim() || current.name,
+      username: formData.username.trim() || current.username,
+      bio: formData.bio.trim() || current.bio,
+      styles: formData.styles.length > 0 ? formData.styles : current.styles,
+      vibes: formData.vibes.length > 0 ? formData.vibes : current.vibes,
+      destinations: formData.destinations.length > 0 ? formData.destinations : current.destinations,
+    });
+  };
+
   const updateField = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -80,6 +105,7 @@ export default function OnboardingPage() {
   };
 
   const nextStep = () => {
+    persistOnboardingData();
     if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
@@ -165,7 +191,7 @@ export default function OnboardingPage() {
                     toggleDest={(v) => toggleItem("destinations", v)}
                   />
                 )}
-                {currentStep === 3 && <SafetyForm />}
+                {currentStep === 3 && <SafetyForm onPersist={persistOnboardingData} />}
               </div>
 
               {/* Navigation Actions */}
@@ -371,7 +397,7 @@ function VibeForm({
   );
 }
 
-function SafetyForm() {
+function SafetyForm({ onPersist }: { onPersist: () => void }) {
   return (
     <div className="space-y-8">
       <div className="p-10 glass-warm border border-white/40 rounded-[3rem] flex flex-col md:flex-row gap-8 relative overflow-hidden group shadow-sm">
@@ -391,6 +417,7 @@ function SafetyForm() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/verify"
+              onClick={onPersist}
               className="px-10 py-5 bg-ocean text-white font-bold rounded-full shadow-xl hover:shadow-2xl hover:shadow-ocean/20 transition-all duration-300 active:scale-95 flex items-center justify-center gap-3 group/btn"
             >
               Verify with Passport
@@ -398,6 +425,7 @@ function SafetyForm() {
             </Link>
             <Link
               href="/dashboard"
+              onClick={onPersist}
               className="px-10 py-5 bg-white/60 backdrop-blur-sm text-slate font-bold rounded-full border border-white/40 hover:bg-white/80 transition-all text-center flex items-center justify-center shadow-sm"
             >
               Skip for Now

@@ -62,9 +62,9 @@ export default function DashboardPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const tab = params.get("tab");
-      if (tab === "profile") {
-        setActiveTab("profile");
+      const tab = params.get("tab") as any;
+      if (["hub", "safety", "messages", "itinerary", "memories", "pulse", "profile"].includes(tab)) {
+        setActiveTab(tab);
       }
     }
 
@@ -72,8 +72,8 @@ export default function DashboardPage() {
       if (user) {
         const providerPhoto = user.providerData?.find((p) => p?.photoURL)?.photoURL;
         const providerName = user.providerData?.find((p) => p?.displayName)?.displayName;
-        profile.updateProfile({
-          name: user.displayName || providerName || user.email?.split("@")[0] || "Traveler",
+        useProfileStore.getState().updateProfile({
+          name: user.displayName || providerName || user.email?.split("@")[0] || "Traveller",
           avatar: user.photoURL || providerPhoto || `https://api.dicebear.com/7.x/notionists/png?seed=${user.uid}`,
           username: user.email?.split("@")[0] || "wanderer",
         });
@@ -99,9 +99,18 @@ export default function DashboardPage() {
     return () => unsubscribe();
   }, []);
 
+  const handleTabChange = (tab: "hub" | "safety" | "messages" | "itinerary" | "memories" | "pulse" | "profile") => {
+    setActiveTab(tab);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", tab);
+      window.history.replaceState({}, "", url.toString());
+    }
+  };
+
   const goToChat = (kinId: string) => {
     store.setActiveId(kinId);
-    setActiveTab("messages");
+    handleTabChange("messages");
   };
 
   const handleSignOut = async () => {
@@ -139,33 +148,33 @@ export default function DashboardPage() {
         <nav className="flex-1 space-y-2">
           <SidebarItem
             active={activeTab === "hub"}
-            onClick={() => setActiveTab("hub")}
+            onClick={() => handleTabChange("hub")}
             icon={Users}
             label="The Hub"
           />
           <SidebarItem
             active={activeTab === "itinerary"}
-            onClick={() => setActiveTab("itinerary")}
+            onClick={() => handleTabChange("itinerary")}
             icon={Calendar}
             label="Wander List"
             badge="Vote!"
           />
           <SidebarItem
             active={activeTab === "safety"}
-            onClick={() => setActiveTab("safety")}
+            onClick={() => handleTabChange("safety")}
             icon={Shield}
             label="Safety Hub"
           />
           <SidebarItem
             active={activeTab === "messages"}
-            onClick={() => { setOpenConvId(null); setActiveTab("messages"); }}
+            onClick={() => { setOpenConvId(null); handleTabChange("messages"); }}
             icon={MessageSquare}
             label="Messages"
             badge={totalUnread > 0 ? String(totalUnread) : undefined}
           />
           <SidebarItem
             active={activeTab === "pulse"}
-            onClick={() => setActiveTab("pulse")}
+            onClick={() => handleTabChange("pulse")}
             icon={Zap}
             label="Pulse"
             badge="Live"
@@ -179,7 +188,7 @@ export default function DashboardPage() {
 
           <SidebarItem
             active={activeTab === "memories"}
-            onClick={() => setActiveTab("memories")}
+            onClick={() => handleTabChange("memories")}
             icon={Camera}
             label="Memory Vault"
             className={cn(activeTab === "memories" ? "bg-ocean text-white shadow-ocean/20" : "hover:text-ocean")}
@@ -198,7 +207,7 @@ export default function DashboardPage() {
           )}
           <SidebarItem 
             active={activeTab === "profile"} 
-            onClick={() => setActiveTab("profile")} 
+            onClick={() => handleTabChange("profile")} 
             icon={Settings} 
             label="Settings" 
           />
@@ -349,12 +358,12 @@ export default function DashboardPage() {
 
       {/* ── Mobile Navigation ── */}
       <nav className="md:hidden sticky bottom-0 left-0 right-0 h-20 bg-white border-t border-slate/5 flex items-center justify-around px-2 z-30 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-        <MobileNavItem active={activeTab === "hub"} onClick={() => setActiveTab("hub")} icon={Users} label="Hub" />
-        <MobileNavItem active={activeTab === "pulse"} onClick={() => setActiveTab("pulse")} icon={Zap} label="Pulse" />
-        <MobileNavItem active={activeTab === "itinerary"} onClick={() => setActiveTab("itinerary")} icon={Calendar} label="Plan" />
-        <MobileNavItem active={activeTab === "safety"} onClick={() => setActiveTab("safety")} icon={Shield} label="Safety" />
-        <MobileNavItem active={activeTab === "messages"} onClick={() => { setOpenConvId(null); setActiveTab("messages"); }} icon={MessageSquare} label="Chat" badge={totalUnread} />
-        <MobileNavItem active={activeTab === "memories"} onClick={() => setActiveTab("memories")} icon={Camera} label="Vault" />
+        <MobileNavItem active={activeTab === "hub"} onClick={() => handleTabChange("hub")} icon={Users} label="Hub" />
+        <MobileNavItem active={activeTab === "pulse"} onClick={() => handleTabChange("pulse")} icon={Zap} label="Pulse" />
+        <MobileNavItem active={activeTab === "itinerary"} onClick={() => handleTabChange("itinerary")} icon={Calendar} label="Plan" />
+        <MobileNavItem active={activeTab === "safety"} onClick={() => handleTabChange("safety")} icon={Shield} label="Safety" />
+        <MobileNavItem active={activeTab === "messages"} onClick={() => { setOpenConvId(null); handleTabChange("messages"); }} icon={MessageSquare} label="Chat" badge={totalUnread} />
+        <MobileNavItem active={activeTab === "memories"} onClick={() => handleTabChange("memories")} icon={Camera} label="Vault" />
       </nav>
     </div>
   );

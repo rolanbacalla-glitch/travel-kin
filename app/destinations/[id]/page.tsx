@@ -90,9 +90,25 @@ export default function DestinationDetail() {
 
   const sections = [
     { icon: ShieldCheck, title: "Solo-Safe", desc: "ID-verified community and 24/7 emergency support on the island." },
-    { icon: Users, title: "Kin Matching", desc: "Find 3-5 verified companions sharing this exact route." },
-    { icon: Clock, title: "Flexible Pace", desc: "Curated itineraries that prioritize freedom over strict schedules." },
+    { icon: Users, title: "Kin Matching", desc: "Find 3–5 verified companions sharing this exact route." },
+    { icon: Clock, title: "Flexible Pace", desc: "Curated itineraries that prioritise freedom over strict schedules." },
   ];
+
+  const soloStats = destination.soloStats || {
+    soloRatio: "94% Solo Travellers",
+    avgAge: "25 – 38 yrs",
+    crewChemistry: "Balanced · Golden-Hour Social & Daytime Autonomy",
+    activeKinsCount: 18,
+  };
+
+  const localGuide = destination.localGuide || {
+    name: "Kuya Marco Santos",
+    role: "Lead Archipelago Navigator",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop",
+    specialty: "Secret Lagoon Routes & Reef Conservation",
+    tripsLed: 142,
+    rating: 4.98,
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -200,6 +216,58 @@ export default function DestinationDetail() {
                   </div>
                 ))}
               </div>
+
+              {/* Flash Pack Style: Solo Crew Chemistry & Vetted Local Guide */}
+              <div className="grid md:grid-cols-2 gap-8 pt-6">
+                <div className="p-8 rounded-[2.5rem] bg-slate text-white space-y-6 relative overflow-hidden">
+                  <div className="absolute -top-16 -right-16 w-40 h-40 bg-sunset/20 blur-3xl rounded-full" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-sunset">Crew Chemistry</span>
+                    <span className="px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold uppercase tracking-widest text-white/80">
+                      {soloStats.soloRatio}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-2xl font-serif font-bold mb-2">{destination.vibe || "Electric & Communal"}</h4>
+                    <p className="text-sm text-white/60 leading-relaxed">{soloStats.crewChemistry}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Typical Age Range</p>
+                      <p className="text-lg font-serif font-bold text-white">{soloStats.avgAge}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Active Solo Kins</p>
+                      <p className="text-lg font-serif font-bold text-sunset">{soloStats.activeKinsCount} on island</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-8 rounded-[2.5rem] bg-white border border-slate/10 shadow-xl shadow-slate/5 flex flex-col justify-between space-y-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-ocean">Vetted Local Skipper</span>
+                    <div className="flex items-center gap-1 text-sunset">
+                      <Star className="w-3.5 h-3.5 fill-current" />
+                      <span className="text-xs font-black text-slate">{localGuide.rating}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-ocean/20 shrink-0">
+                      <Image src={localGuide.avatar} alt={localGuide.name} fill className="object-cover" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="text-lg font-serif font-bold text-slate">{localGuide.name}</h4>
+                        <ShieldCheck className="w-4 h-4 text-ocean" />
+                      </div>
+                      <p className="text-xs font-bold text-slate/50">{localGuide.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate/60 font-medium leading-relaxed">
+                    Specialty: <span className="text-slate font-bold">{localGuide.specialty}</span> · {localGuide.tripsLed} verified loops led.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Gallery Preview */}
@@ -301,9 +369,20 @@ export default function DestinationDetail() {
                 </div>
 
                 <div className="space-y-4">
-                  <button className="w-full py-6 bg-slate text-white rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-slate/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                    Apply to Join Crew
-                  </button>
+                  <Link
+                    href={`/dashboard?tab=hub&hub=${destination.id}`}
+                    className="w-full py-6 bg-slate text-white rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-slate/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                  >
+                    <span>Apply to Join Crew</span>
+                    <ArrowRight className="w-4 h-4 text-sunset" />
+                  </Link>
+                  <Link
+                    href={`/dashboard?tab=itinerary`}
+                    className="w-full py-4 bg-sunset/10 border border-sunset/20 text-sunset rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-sunset hover:text-white transition-all flex items-center justify-center gap-2"
+                  >
+                    <Calendar className="w-4 h-4" />
+                    <span>Save to My Wander List</span>
+                  </Link>
                   <p className="text-[10px] text-center text-slate/30 font-bold uppercase tracking-widest leading-loose">
                     Vetting required for all members. <br /> Safety is our priority.
                   </p>

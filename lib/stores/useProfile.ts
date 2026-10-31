@@ -19,11 +19,11 @@ export interface ProfileState {
 const DEFAULT_PROFILE = {
   name: "Mia Reyes",
   username: "wanderer_mia",
-  bio: "A digital nomad currently exploring Southeast Asia. I love slow travel, local food, and finding quiet cafes to work from.",
+  bio: "A solo explorer currently looping through Siargao and Palawan. I love dawn surf sessions, local kinilaw spots, and Starlink cafés.",
   avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=100&w=1600",
   styles: ["slow", "remote"],
   vibes: ["Zen Seeker", "Foodie", "Photographer"],
-  destinations: ["Thailand", "Indonesia"],
+  destinations: ["Philippines", "Indonesia"],
   isVerified: true,
 };
 

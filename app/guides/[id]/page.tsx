@@ -4,12 +4,12 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Star, Shield, MapPin } from "lucide-react";
+import { ArrowLeft, Star, Shield, MapPin, Calendar, Users, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
-import { GUIDE_DESTINATIONS } from "../page";
+import { GUIDE_DESTINATIONS } from "@/lib/data";
 
 export default function GuideDetailPage() {
   const params = useParams();
@@ -120,7 +120,7 @@ export default function GuideDetailPage() {
             <ul className="space-y-4 text-slate-600">
               <li className="flex items-start gap-3">
                 <span className="text-sunset font-bold mt-1">1.</span>
-                <span>Connect with local communities and verified solo travelers through our app to plan your days.</span>
+                <span>Connect with local communities and verified solo travellers through our app to plan your days.</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-sunset font-bold mt-1">2.</span>
@@ -133,9 +133,33 @@ export default function GuideDetailPage() {
             </ul>
 
             <h3 className="text-2xl font-serif font-bold text-slate mb-4 mt-12">Getting Around</h3>
-            <p className="text-slate-600 leading-relaxed">
-              Tricycles and motorbikes are the main mode of transport. Always negotiate fares before hopping in, or use trusted local apps if available. If renting a scooter, ensure you have an international license and always wear a helmet—safety first.
+            <p className="text-slate-600 leading-relaxed mb-12">
+              Tricycles and motorbikes are the main mode of transport. Always negotiate fares before hopping in, or use trusted local apps if available. If renting a scooter, ensure you have an international licence and always wear a helmet—safety first.
             </p>
+
+            {/* Cross-Link Actions to Dashboard */}
+            <div className="p-8 rounded-3xl bg-slate/5 border border-slate/10 flex flex-col sm:flex-row items-center justify-between gap-6 not-prose">
+              <div>
+                <h4 className="text-xl font-serif font-bold text-slate mb-1">Travelling to {guide.title}?</h4>
+                <p className="text-sm text-slate-500">Connect with active solo travellers or add this island loop to your itinerary.</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href={`/dashboard?tab=itinerary`}
+                  className="px-6 py-3.5 bg-sunset text-white font-bold rounded-2xl text-xs uppercase tracking-widest hover:bg-sunset/90 transition-all flex items-center gap-2"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>Add to Wander List</span>
+                </Link>
+                <Link
+                  href={`/dashboard?tab=hub&hub=${guide.id}`}
+                  className="px-6 py-3.5 bg-slate text-white font-bold rounded-2xl text-xs uppercase tracking-widest hover:bg-slate/90 transition-all flex items-center gap-2"
+                >
+                  <Users className="w-4 h-4" />
+                  <span>Discover Kin in {guide.title}</span>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>

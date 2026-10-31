@@ -34,6 +34,8 @@ export function SafetyDashboard() {
   const [sosProgress, setSosProgress] = useState(0);
   const [isHolding, setIsHolding] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [checkedInAt, setCheckedInAt] = useState<string | null>(null);
+  const [practiceAlert, setPracticeAlert] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isSOSActive = Object.values(store.sessions).some(s => s.isSOSActive);
@@ -204,10 +206,10 @@ export function SafetyDashboard() {
           <div className="space-y-2">
             <div className="flex items-center gap-3 text-slate font-bold tracking-widest text-xs uppercase bg-slate/5 rounded-full px-4 py-1.5 w-fit border border-slate/10 shadow-sm">
               <Shield className="w-3.5 h-3.5" />
-              Safety Center
+              Safety Centre
             </div>
             <h2 className="text-4xl font-serif text-slate font-bold">Your Safety Ring</h2>
-            <p className="text-slate/60 font-medium">Active protection across Southeast Asia.</p>
+            <p className="text-slate/60 font-medium">Active protection across the Philippines &amp; Southeast Asia.</p>
           </div>
 
           <div className="flex items-center gap-4">
@@ -274,9 +276,13 @@ export function SafetyDashboard() {
                     {isSOSActive ? "Broadcasting to local Ring..." : "Long-press to avoid accidental trigger"}
                   </p>
                   {!isSOSActive && (
-                    <button className="text-[10px] text-white/50 hover:text-white/80 transition-colors w-fit mx-auto sm:mx-0 flex items-center gap-1 group">
+                    <button
+                      type="button"
+                      onClick={() => setPracticeAlert((v) => !v)}
+                      className="text-[10px] text-white/50 hover:text-white/80 transition-colors w-fit mx-auto sm:mx-0 flex items-center gap-1 group"
+                    >
                       <AlertTriangle className="w-3 h-3 group-hover:rotate-12 transition-transform" />
-                      Try Practice Mode
+                      {practiceAlert ? "Practice Drill Verified (0.4s latency)" : "Try Practice Mode"}
                     </button>
                   )}
                 </div>
@@ -291,16 +297,34 @@ export function SafetyDashboard() {
                 <div className="p-4 bg-green-50 rounded-2xl">
                   <CheckCircle2 className="w-6 h-6 text-green-500" />
                 </div>
-                <button className="group flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-green-600 bg-green-50/50 hover:bg-green-50 border border-green-200 hover:border-green-300 px-4 py-2 rounded-full transition-all active:scale-95 cursor-pointer shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setShowSettings(true)}
+                  className="group flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-green-600 bg-green-50/50 hover:bg-green-50 border border-green-200 hover:border-green-300 px-4 py-2 rounded-full transition-all active:scale-95 cursor-pointer shadow-sm"
+                >
                   <Clock className="w-3 h-3 text-green-500 group-hover:rotate-12 transition-transform" />
-                  Next pulse: 11h 45m
+                  {checkedInAt ? `Checked in · ${checkedInAt}` : "Next pulse: 12h 00m"}
                 </button>
               </div>
               <h3 className="text-2xl font-serif font-bold text-slate">Safety Pulse</h3>
-              <p className="text-slate/60 text-sm leading-relaxed font-medium">Auto-ping your trusted circle every 12 hours. Keeps your family calm without the &quot;where are you?&quot; texts.</p>
+              <p className="text-slate/60 text-sm leading-relaxed font-medium">
+                Auto-ping your trusted circle every 12 hours. Keeps your family calm without the &ldquo;where are you?&rdquo; texts.
+              </p>
             </div>
-            <button className="mt-8 py-5 bg-[#F9F8F6] text-slate border border-slate/5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-green-500 hover:text-white hover:border-green-500 transition-all shadow-sm hover:shadow-md hover:shadow-green-500/20 active:scale-95">
-              Check-in as Safe
+            <button
+              type="button"
+              onClick={() =>
+                setCheckedInAt(
+                  new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
+                )
+              }
+              className={`mt-8 py-5 border rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-sm active:scale-95 ${
+                checkedInAt
+                  ? "bg-green-500 text-white border-green-500 shadow-green-500/20"
+                  : "bg-[#F9F8F6] text-slate border-slate/5 hover:bg-green-500 hover:text-white hover:border-green-500"
+              }`}
+            >
+              {checkedInAt ? "Safe Check-In Broadcast Sent" : "Check-in as Safe"}
             </button>
           </div>
         </div>
@@ -314,7 +338,7 @@ export function SafetyDashboard() {
               <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate/40">Real-time Safety Heatmap</h3>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-[10px] font-bold text-slate/60 uppercase">Chiang Mai (Secure)</span>
+                <span className="text-[10px] font-bold text-slate/60 uppercase">General Luna, Siargao (Secure)</span>
               </div>
             </div>
             <div className="rounded-[40px] overflow-hidden border border-slate/5 shadow-2xl relative z-0">
@@ -361,12 +385,12 @@ export function SafetyDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-4 bg-[#F9F8F6] rounded-3xl flex flex-col items-center justify-center text-center gap-1 hover:bg-slate/5 transition-colors cursor-pointer">
-                  <span className="text-[9px] font-black text-slate/40 uppercase tracking-widest">Police</span>
-                  <span className="text-xl font-serif font-bold text-slate">191</span>
+                  <span className="text-[9px] font-black text-slate/40 uppercase tracking-widest">Emergency PH</span>
+                  <span className="text-xl font-serif font-bold text-slate">911</span>
                 </div>
                 <div className="p-4 bg-[#F9F8F6] rounded-3xl flex flex-col items-center justify-center text-center gap-1 hover:bg-slate/5 transition-colors cursor-pointer">
-                  <span className="text-[9px] font-black text-slate/40 uppercase tracking-widest">Ambulance</span>
-                  <span className="text-xl font-serif font-bold text-slate">1669</span>
+                  <span className="text-[9px] font-black text-slate/40 uppercase tracking-widest">Coast Guard</span>
+                  <span className="text-xl font-serif font-bold text-slate">8527</span>
                 </div>
               </div>
             </div>

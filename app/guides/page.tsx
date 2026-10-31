@@ -21,54 +21,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
-
-// Mock Data for Guides
-export const GUIDE_DESTINATIONS = [
-  {
-    id: "siargao",
-    title: "Siargao Island",
-    tagline: "The Surfing Capital",
-    desc: "More than just waves, Siargao offers a laid-back island vibe perfect for solo travelers. From the famous Cloud 9 boardwalk to hidden lagoons and coconut forests, it's a place where you'll find your tribe instantly.",
-    image: "https://images.pexels.com/photos/1450361/pexels-photo-1450361.jpeg?auto=compress&cs=tinysrgb&w=800",
-    safetyScore: "9.5/10",
-    rating: 4.9,
-    tags: ["Surfing", "Island Life", "Social"],
-    color: "bg-blue-500"
-  },
-  {
-    id: "el-nido",
-    title: "El Nido, Palawan",
-    tagline: "The Last Frontier",
-    desc: "Dramatic limestone cliffs, turquoise lagoons, and secret beaches. El Nido is the crown jewel of Palawan. Perfect for solo boat tours where you can bond with fellow travelers over grilled seafood and breathtaking sunsets.",
-    image: "https://images.pexels.com/photos/1024967/pexels-photo-1024967.jpeg?auto=compress&cs=tinysrgb&w=800",
-    safetyScore: "9.2/10",
-    rating: 4.8,
-    tags: ["Nature", "Adventure", "Photography"],
-    color: "bg-emerald-500"
-  },
-  {
-    id: "boracay",
-    title: "Boracay Island",
-    tagline: "The Ivory Playground",
-    desc: "Renowned for its White Beach, Boracay is the ultimate place to unwind and socialize. After its restoration, it's cleaner and more regulated, making it incredibly safe for solo travelers to enjoy sunset drinks and meet fellow wanderers at beachfront lounges.",
-    image: "https://images.pexels.com/photos/33676228/pexels-photo-33676228.jpeg?auto=compress&cs=tinysrgb&w=800",
-    safetyScore: "9.3/10",
-    rating: 4.6,
-    tags: ["Relaxation", "Nightlife", "Beach"],
-    color: "bg-orange-400"
-  },
-  {
-    id: "cebu",
-    title: "Cebu & Moalboal",
-    tagline: "The Adventure Hub",
-    desc: "Swim with millions of sardines, trek to Kawasan Falls, or dive with thresher sharks in Malapascua. Cebu is for the solo traveler who can't sit still and wants a mix of city convenience and raw nature.",
-    image: "https://images.pexels.com/photos/2034335/pexels-photo-2034335.jpeg?auto=compress&cs=tinysrgb&w=800",
-    safetyScore: "8.9/10",
-    rating: 4.7,
-    tags: ["Diving", "Canyoning", "Wildlife"],
-    color: "bg-indigo-500"
-  }
-];
+import { GUIDE_DESTINATIONS } from "@/lib/data";
 
 const PACKING_ESSENTIALS = [
   { icon: Backpack, title: "Dry Bag", desc: "A 20L dry bag is non-negotiable for boat tours." },
@@ -382,7 +335,7 @@ export default function GuidesPage() {
               Get the <span className="text-sunset">Weekly Loop</span>.
             </h2>
             <p className="text-slate-mid text-xl mb-12 max-w-xl mx-auto font-medium">
-              Join 47,000 solo travelers receiving secret spots, safety updates, and flight deals every Sunday.
+              Join 47,000 solo travellers receiving secret spots, safety updates, and flight deals every Sunday.
             </p>
             <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
               <input
